@@ -23,26 +23,8 @@ import { projects } from '../data/projects';
 				<p class="tagline">{SITE_DESCRIPTION}</p>
 			</section>
 
-			<!-- Skills Section -->
-			<Section background="alt">
-				<div class="skills-grid scroll-reveal">
-					<div class="skill-card scroll-reveal" style="transition-delay: 0.1s">
-						<h3>Development</h3>
-						<p>Full-stack web applications with modern frameworks and best practices</p>
-					</div>
-					<div class="skill-card scroll-reveal" style="transition-delay: 0.2s">
-						<h3>Architecture</h3>
-						<p>Scalable system design and technical decision-making</p>
-					</div>
-					<div class="skill-card scroll-reveal" style="transition-delay: 0.3s">
-						<h3>Problem Solving</h3>
-						<p>Analytical approach to complex technical challenges</p>
-					</div>
-				</div>
-			</Section>
-
 			<!-- About Section -->
-			<Section>
+			<Section background="alt">
 				<div class="section-header scroll-reveal">
 					<h2>About</h2>
 					<p class="section-description">
@@ -239,43 +221,6 @@ import { projects } from '../data/projects';
 		transform: translateY(0);
 	}
 
-	/* Skills Section */
-	.skills-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-		gap: 2rem;
-		margin: 2rem 0;
-	}
-
-	.skill-card {
-		background: #fdf5ea;
-		padding: 2rem;
-		border-radius: 16px;
-		border: 1px solid #e6d7b9;
-		transition: all 0.3s ease;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-	}
-
-	.skill-card:hover {
-		transform: translateY(-4px);
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-		border-color: #d4c5a5;
-	}
-
-	.skill-card h3 {
-		font-size: 1.35rem;
-		margin: 0 0 0.75rem 0;
-		color: rgb(var(--black));
-		font-weight: 600;
-	}
-
-	.skill-card p {
-		color: rgb(var(--gray-dark));
-		margin: 0;
-		font-size: 1rem;
-		line-height: 1.6;
-	}
-
 	/* Social Links */
 	.social-links {
 		display: flex;
@@ -350,11 +295,6 @@ import { projects } from '../data/projects';
 
 		.hero {
 			padding: 6rem 1.5rem 4rem;
-		}
-
-		.skills-grid {
-			grid-template-columns: 1fr;
-			gap: 1.5rem;
 		}
 
 		.projects-grid {
