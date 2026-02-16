@@ -18,14 +18,14 @@ import { projects } from '../data/projects';
 
 		<main class="landing">
 			<!-- Hero Section -->
-			<section class="hero">
+			<section class="hero fade-in">
 				<h1 class="site-title">arthur3.com</h1>
 				<p class="tagline">{SITE_DESCRIPTION}</p>
 			</section>
 
 			<!-- About Section -->
 			<Section>
-				<div class="section-header">
+				<div class="section-header scroll-reveal">
 					<h2>About</h2>
 					<p class="section-description">
 						Creator, builder, and storyteller. I specialize in crafting elegant solutions
@@ -36,22 +36,24 @@ import { projects } from '../data/projects';
 
 			<!-- Projects Section -->
 			<Section id="projects" background="alt">
-				<div class="section-header">
+				<div class="section-header scroll-reveal">
 					<h2>Featured Work</h2>
 					<p class="section-description">
 						Selected projects that showcase my approach to development and design.
 					</p>
 				</div>
 				<div class="projects-grid">
-					{projects.map((project) => (
-						<ProjectCard {...project} />
+					{projects.map((project, index) => (
+						<div class="scroll-reveal" style={`transition-delay: ${index * 0.1}s`}>
+							<ProjectCard {...project} />
+						</div>
 					))}
 				</div>
 			</Section>
 
 			<!-- Blog Section -->
 			<Section>
-				<div class="section-header centered">
+				<div class="section-header centered scroll-reveal">
 					<h2>Latest Thoughts</h2>
 					<p class="section-description">
 						Insights, tutorials, and reflections on technology and creativity.
@@ -62,20 +64,60 @@ import { projects } from '../data/projects';
 
 			<!-- Contact Section -->
 			<Section id="contact" background="alt">
-				<div class="section-header centered">
+				<div class="section-header centered scroll-reveal">
 					<h2>Let's Connect</h2>
 					<p class="section-description">
 						Interested in collaborating? Let's start a conversation.
 					</p>
 					<div class="social-links">
-						<a href="https://github.com" target="_blank" class="social-link">GitHub</a>
-						<a href="https://twitter.com" target="_blank" class="social-link">Twitter</a>
-						<a href="https://linkedin.com" target="_blank" class="social-link">LinkedIn</a>
-						<a href="mailto:hello@arthur3.com" class="social-link">Email</a>
+						{['GitHub', 'Twitter', 'LinkedIn', 'Email'].map((social, index) => {
+							const href = social === 'Email' ? 'mailto:hello@arthur3.com' :
+							             `https://${social.toLowerCase()}.com`;
+							return (
+								<a
+									href={href}
+									target={social === 'Email' ? undefined : '_blank'}
+									class="social-link scroll-reveal"
+									style={`transition-delay: ${index * 0.1}s`}
+								>
+									{social}
+								</a>
+							);
+						})}
 					</div>
 				</div>
 			</Section>
 		</main>
+
+		<script>
+			// Intersection Observer for scroll animations
+			const observerOptions = {
+				threshold: 0.1,
+				rootMargin: '0px 0px -50px 0px'
+			};
+
+			const observer = new IntersectionObserver((entries) => {
+				entries.forEach((entry) => {
+					if (entry.isIntersecting) {
+						entry.target.classList.add('visible');
+						// Optionally unobserve after animation
+						observer.unobserve(entry.target);
+					}
+				});
+			}, observerOptions);
+
+			// Observe all elements with scroll-reveal class
+			document.addEventListener('DOMContentLoaded', () => {
+				const revealElements = document.querySelectorAll('.scroll-reveal');
+				revealElements.forEach((el) => observer.observe(el));
+
+				// Trigger hero animation immediately
+				const hero = document.querySelector('.fade-in');
+				if (hero) {
+					setTimeout(() => hero.classList.add('visible'), 100);
+				}
+			});
+		</script>
 
 		<Footer />
 	</body>
@@ -209,6 +251,40 @@ import { projects } from '../data/projects';
 		transform: translateY(-2px) scale(1.02);
 	}
 
+	/* Scroll Animations */
+	.fade-in {
+		opacity: 0;
+		animation: fadeIn 1s ease-out forwards;
+		animation-delay: 0.2s;
+	}
+
+	.fade-in.visible {
+		animation-play-state: running;
+	}
+
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(20px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.scroll-reveal {
+		opacity: 0;
+		transform: translateY(30px);
+		transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+		            transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+
+	.scroll-reveal.visible {
+		opacity: 1;
+		transform: translateY(0);
+	}
+
 	/* Responsive */
 	@media (max-width: 768px) {
 		body {
@@ -230,6 +306,17 @@ import { projects } from '../data/projects';
 
 		.social-link {
 			text-align: center;
+		}
+	}
+
+	/* Reduced motion support */
+	@media (prefers-reduced-motion: reduce) {
+		.fade-in,
+		.scroll-reveal {
+			animation: none;
+			transition: none;
+			opacity: 1;
+			transform: none;
 		}
 	}
 </style>
