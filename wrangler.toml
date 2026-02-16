@@ -1,0 +1,5 @@
+name = "arthur3-com"
+compatibility_date = "2024-01-01"
+
+[vars]
+KEYSTATIC_GITHUB_CLIENT_ID = "Ov23lirYLacMwrYl34DX"
