@@ -19,39 +19,24 @@ import { projects } from '../data/projects';
 		<main class="landing">
 			<!-- Hero Section -->
 			<section class="hero fade-in">
-				<div class="hero-content">
-					<h1 class="site-title">arthur3.com</h1>
-					<p class="tagline">{SITE_DESCRIPTION}</p>
-					<div class="hero-cta">
-						<a href="/#projects" class="cta-button primary">View Projects</a>
-						<a href="/#contact" class="cta-button secondary">Get in Touch</a>
-					</div>
-				</div>
-				<div class="hero-decoration"></div>
+				<h1 class="site-title">arthur3.com</h1>
+				<p class="tagline">{SITE_DESCRIPTION}</p>
 			</section>
 
-			<!-- USPs Section -->
+			<!-- Skills Section -->
 			<Section background="alt">
-				<div class="usps-grid scroll-reveal">
-					<div class="usp-card scroll-reveal" style="transition-delay: 0.1s">
-						<div class="usp-icon">⚡</div>
-						<h3>Fast Delivery</h3>
-						<p>Lightning-fast turnaround without compromising quality</p>
+				<div class="skills-grid scroll-reveal">
+					<div class="skill-card scroll-reveal" style="transition-delay: 0.1s">
+						<h3>Development</h3>
+						<p>Full-stack web applications with modern frameworks and best practices</p>
 					</div>
-					<div class="usp-card scroll-reveal" style="transition-delay: 0.2s">
-						<div class="usp-icon">🎯</div>
-						<h3>Precision Focused</h3>
-						<p>Clean, maintainable code that solves real problems</p>
+					<div class="skill-card scroll-reveal" style="transition-delay: 0.2s">
+						<h3>Architecture</h3>
+						<p>Scalable system design and technical decision-making</p>
 					</div>
-					<div class="usp-card scroll-reveal" style="transition-delay: 0.3s">
-						<div class="usp-icon">🚀</div>
-						<h3>Modern Stack</h3>
-						<p>Latest technologies for scalable solutions</p>
-					</div>
-					<div class="usp-card scroll-reveal" style="transition-delay: 0.4s">
-						<div class="usp-icon">💎</div>
-						<h3>Premium Quality</h3>
-						<p>Attention to detail in every line of code</p>
+					<div class="skill-card scroll-reveal" style="transition-delay: 0.3s">
+						<h3>Problem Solving</h3>
+						<p>Analytical approach to complex technical challenges</p>
 					</div>
 				</div>
 			</Section>
@@ -168,44 +153,16 @@ import { projects } from '../data/projects';
 
 	/* Hero Section */
 	.hero {
-		position: relative;
 		text-align: center;
-		padding: 12rem 2rem 10rem;
-		background: linear-gradient(135deg, #f8ebd5 0%, #fdf5ea 50%, #f2e2c4 100%);
-		overflow: hidden;
-	}
-
-	.hero-decoration {
-		position: absolute;
-		top: -50%;
-		right: -20%;
-		width: 800px;
-		height: 800px;
-		background: radial-gradient(circle, rgba(198, 40, 40, 0.08) 0%, transparent 70%);
-		border-radius: 50%;
-		pointer-events: none;
-		animation: float 20s ease-in-out infinite;
-	}
-
-	@keyframes float {
-		0%, 100% { transform: translate(0, 0) rotate(0deg); }
-		33% { transform: translate(30px, -30px) rotate(120deg); }
-		66% { transform: translate(-20px, 20px) rotate(240deg); }
-	}
-
-	.hero-content {
-		position: relative;
-		z-index: 1;
+		padding: 10rem 2rem 8rem;
+		background: transparent;
 	}
 
 	.site-title {
 		font-size: clamp(3.5rem, 10vw, 7rem);
 		margin: 0 0 1.5rem 0;
 		font-weight: 700;
-		background: linear-gradient(135deg, rgb(var(--black)) 0%, #C62828 100%);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-clip: text;
+		color: rgb(var(--black));
 		letter-spacing: -0.04em;
 		line-height: 1;
 		white-space: nowrap;
@@ -213,19 +170,11 @@ import { projects } from '../data/projects';
 
 	.tagline {
 		font-size: clamp(1.15rem, 2.5vw, 1.5rem);
-		color: rgb(var(--gray-dark));
+		color: rgb(var(--gray));
 		max-width: 700px;
-		margin: 0 auto 2.5rem;
+		margin: 0 auto;
 		line-height: 1.6;
-		font-weight: 500;
-	}
-
-	.hero-cta {
-		display: flex;
-		gap: 1rem;
-		justify-content: center;
-		flex-wrap: wrap;
-		margin-top: 2.5rem;
+		font-weight: 400;
 	}
 
 	/* Section Styles */
@@ -265,119 +214,62 @@ import { projects } from '../data/projects';
 		gap: 2rem;
 	}
 
-	/* CTA Buttons */
+	/* CTA Button */
 	.cta-button {
 		display: inline-block;
 		padding: 1rem 2.5rem;
+		background: #e6d7b9;
+		color: rgb(var(--black));
 		text-decoration: none;
 		border-radius: 16px;
 		font-weight: 600;
-		font-size: 1.05rem;
-		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+		font-size: 1rem;
+		transition: all 0.3s ease;
 		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-		border: 2px solid transparent;
+		border: 1px solid #d4c5a5;
 	}
 
-	.cta-button.primary {
-		background: linear-gradient(135deg, #C62828 0%, #A52020 100%);
-		color: white;
-		box-shadow: 0 6px 24px rgba(198, 40, 40, 0.3);
-	}
-
-	.cta-button.primary:hover {
-		transform: translateY(-4px) scale(1.05);
-		box-shadow: 0 12px 40px rgba(198, 40, 40, 0.4);
-	}
-
-	.cta-button.secondary {
-		background: #fdf5ea;
-		color: rgb(var(--black));
-		border-color: #e6d7b9;
-	}
-
-	.cta-button.secondary:hover {
-		background: #e6d7b9;
-		transform: translateY(-4px) scale(1.05);
-		box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
-		border-color: #d4c5a5;
+	.cta-button:hover {
+		background: #d4c5a5;
+		transform: translateY(-2px);
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
 	}
 
 	.cta-button:active {
-		transform: translateY(-2px) scale(1.02);
+		transform: translateY(0);
 	}
 
-	/* For existing blog/article buttons */
-	a.cta-button:not(.primary):not(.secondary) {
-		background: #e6d7b9;
-		color: rgb(var(--black));
-		border-color: #d4c5a5;
-	}
-
-	a.cta-button:not(.primary):not(.secondary):hover {
-		background: #d4c5a5;
-	}
-
-	/* USPs Section */
-	.usps-grid {
+	/* Skills Section */
+	.skills-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 		gap: 2rem;
-		margin: 3rem 0;
+		margin: 2rem 0;
 	}
 
-	.usp-card {
+	.skill-card {
 		background: #fdf5ea;
-		padding: 2.5rem 2rem;
-		border-radius: 24px;
+		padding: 2rem;
+		border-radius: 16px;
 		border: 1px solid #e6d7b9;
-		text-align: center;
-		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-		position: relative;
-		overflow: hidden;
+		transition: all 0.3s ease;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 	}
 
-	.usp-card::before {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 0;
-		right: 0;
-		height: 4px;
-		background: linear-gradient(90deg, #C62828, #A52020);
-		transform: scaleX(0);
-		transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-	}
-
-	.usp-card:hover {
-		transform: translateY(-12px) scale(1.03);
-		box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+	.skill-card:hover {
+		transform: translateY(-4px);
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
 		border-color: #d4c5a5;
 	}
 
-	.usp-card:hover::before {
-		transform: scaleX(1);
-	}
-
-	.usp-icon {
-		font-size: 3.5rem;
-		margin-bottom: 1rem;
-		display: inline-block;
-		transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-	}
-
-	.usp-card:hover .usp-icon {
-		transform: scale(1.15) rotate(5deg);
-	}
-
-	.usp-card h3 {
-		font-size: 1.5rem;
+	.skill-card h3 {
+		font-size: 1.35rem;
 		margin: 0 0 0.75rem 0;
 		color: rgb(var(--black));
 		font-weight: 600;
 	}
 
-	.usp-card p {
+	.skill-card p {
 		color: rgb(var(--gray-dark));
 		margin: 0;
 		font-size: 1rem;
@@ -457,31 +349,10 @@ import { projects } from '../data/projects';
 		}
 
 		.hero {
-			padding: 8rem 1.5rem 6rem;
+			padding: 6rem 1.5rem 4rem;
 		}
 
-		.hero-decoration {
-			width: 500px;
-			height: 500px;
-			right: -30%;
-		}
-
-		.site-title {
-			font-size: clamp(2.5rem, 12vw, 4rem);
-		}
-
-		.hero-cta {
-			flex-direction: column;
-			align-items: stretch;
-			gap: 0.75rem;
-		}
-
-		.cta-button {
-			width: 100%;
-			text-align: center;
-		}
-
-		.usps-grid {
+		.skills-grid {
 			grid-template-columns: 1fr;
 			gap: 1.5rem;
 		}
