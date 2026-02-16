@@ -77,6 +77,7 @@ import { projects } from '../data/projects';
 								<a
 									href={href}
 									target={social === 'Email' ? undefined : '_blank'}
+									rel={social === 'Email' ? undefined : 'noopener noreferrer'}
 									class="social-link scroll-reveal"
 									style={`transition-delay: ${index * 0.1}s`}
 								>
