@@ -10,7 +10,9 @@ const navLinks = [
 
 <nav class="navbar">
 	<div class="nav-container">
-		<a href="/" class="logo">arthur3</a>
+		<a href="/" class="logo">
+			<img src="/logo.png" alt="arthur3" class="logo-image" />
+		</a>
 		<ul class="nav-links">
 			{navLinks.map((link) => (
 				<li>
@@ -27,11 +29,12 @@ const navLinks = [
 		top: 0;
 		left: 0;
 		right: 0;
-		background: rgba(255, 255, 255, 0.95);
+		background: rgba(248, 235, 213, 0.95);
 		backdrop-filter: blur(10px);
-		border-bottom: 1px solid rgba(var(--gray-light), 0.8);
+		border-bottom: 1px solid rgba(230, 215, 185, 0.5);
 		z-index: 1000;
 		padding: 1rem 0;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 	}
 
 	.nav-container {
@@ -44,11 +47,21 @@ const navLinks = [
 	}
 
 	.logo {
-		font-size: 1.5rem;
-		font-weight: 700;
-		color: rgb(var(--black));
+		display: flex;
+		align-items: center;
 		text-decoration: none;
-		letter-spacing: -0.02em;
+	}
+
+	.logo-image {
+		height: 107px;
+		width: auto;
+		display: block;
+		border-radius: 12px;
+		transition: transform 0.3s ease;
+	}
+
+	.logo-image:hover {
+		transform: scale(1.05);
 	}
 
 	.nav-links {
@@ -63,11 +76,15 @@ const navLinks = [
 		color: rgb(var(--gray-dark));
 		text-decoration: none;
 		font-weight: 500;
-		transition: color 0.2s ease;
+		padding: 0.5rem 1rem;
+		border-radius: 8px;
+		transition: all 0.3s ease;
 	}
 
 	.nav-links a:hover {
 		color: var(--accent);
+		background: rgba(230, 215, 185, 0.3);
+		transform: translateY(-1px);
 	}
 
 	@media (max-width: 768px) {

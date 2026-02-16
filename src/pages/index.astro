@@ -83,7 +83,7 @@ import { projects } from '../data/projects';
 
 <style>
 	body {
-		padding-top: 4rem;
+		padding-top: 8rem;
 	}
 
 	.landing {
@@ -94,12 +94,7 @@ import { projects } from '../data/projects';
 	.hero {
 		text-align: center;
 		padding: 10rem 2rem 8rem;
-		background: linear-gradient(
-			135deg,
-			rgba(var(--gray-light), 0.15) 0%,
-			transparent 50%,
-			rgba(var(--accent), 0.03) 100%
-		);
+		background: transparent;
 	}
 
 	.site-title {
@@ -161,20 +156,25 @@ import { projects } from '../data/projects';
 	.cta-button {
 		display: inline-block;
 		padding: 1rem 2.5rem;
-		background: rgb(var(--black));
-		color: white;
+		background: #e6d7b9;
+		color: rgb(var(--black));
 		text-decoration: none;
-		border-radius: 10px;
+		border-radius: 16px;
 		font-weight: 600;
 		font-size: 1rem;
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		box-shadow: 0 2px 12px rgba(var(--black), 0.15);
+		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+		border: 1px solid #d4c5a5;
 	}
 
 	.cta-button:hover {
-		background: var(--accent);
-		transform: translateY(-2px);
-		box-shadow: 0 6px 20px rgba(var(--accent), 0.3);
+		background: #d4c5a5;
+		transform: translateY(-4px) scale(1.05);
+		box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+	}
+
+	.cta-button:active {
+		transform: translateY(-2px) scale(1.02);
 	}
 
 	/* Social Links */
@@ -188,26 +188,31 @@ import { projects } from '../data/projects';
 
 	.social-link {
 		padding: 0.875rem 1.75rem;
-		background: white;
+		background: #fdf5ea;
 		color: rgb(var(--black));
 		text-decoration: none;
-		border-radius: 10px;
+		border-radius: 16px;
 		font-weight: 500;
-		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-		border: 1px solid rgba(var(--gray-light), 0.6);
+		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+		border: 1px solid #e6d7b9;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 	}
 
 	.social-link:hover {
-		transform: translateY(-2px);
-		border-color: var(--accent);
-		color: var(--accent);
-		box-shadow: 0 4px 16px rgba(var(--gray), 0.15);
+		transform: translateY(-4px) scale(1.05);
+		border-color: #d4c5a5;
+		background: #f2e2c4;
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+	}
+
+	.social-link:active {
+		transform: translateY(-2px) scale(1.02);
 	}
 
 	/* Responsive */
 	@media (max-width: 768px) {
 		body {
-			padding-top: 3.5rem;
+			padding-top: 7rem;
 		}
 
 		.hero {
