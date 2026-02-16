@@ -1,0 +1,87 @@
+---
+// Project Card Component - just pass title, description, and link
+interface Props {
+	title: string;
+	description: string;
+	link?: string;
+	tags?: string[];
+}
+
+const { title, description, link = '#', tags = [] } = Astro.props;
+---
+
+<article class="project-card">
+	<h3>{title}</h3>
+	<p>{description}</p>
+	{tags.length > 0 && (
+		<div class="tags">
+			{tags.map((tag) => <span class="tag">{tag}</span>)}
+		</div>
+	)}
+	<a href={link} class="project-link">View Project →</a>
+</article>
+
+<style>
+	.project-card {
+		background: white;
+		padding: 2rem;
+		border-radius: 16px;
+		border: 1px solid rgba(var(--gray-light), 0.6);
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+
+	.project-card:hover {
+		transform: translateY(-6px);
+		box-shadow: 0 12px 32px rgba(var(--gray), 0.15);
+		border-color: rgba(var(--accent), 0.3);
+	}
+
+	.project-card h3 {
+		font-size: 1.5rem;
+		margin-bottom: 0.75rem;
+		color: rgb(var(--black));
+		font-weight: 600;
+	}
+
+	.project-card p {
+		color: rgb(var(--gray-dark));
+		margin-bottom: auto;
+		line-height: 1.6;
+		font-size: 1rem;
+	}
+
+	.tags {
+		display: flex;
+		gap: 0.5rem;
+		flex-wrap: wrap;
+		margin: 1rem 0;
+	}
+
+	.tag {
+		font-size: 0.85rem;
+		padding: 0.25rem 0.75rem;
+		background: rgba(var(--accent), 0.1);
+		color: var(--accent);
+		border-radius: 6px;
+		font-weight: 500;
+	}
+
+	.project-link {
+		color: var(--accent);
+		text-decoration: none;
+		font-weight: 600;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		margin-top: 1rem;
+		transition: all 0.2s ease;
+	}
+
+	.project-link:hover {
+		color: var(--accent-dark);
+		transform: translateX(4px);
+	}
+</style>

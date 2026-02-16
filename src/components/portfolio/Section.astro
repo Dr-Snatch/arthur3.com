@@ -1,0 +1,37 @@
+---
+// Reusable Section Component
+interface Props {
+	id?: string;
+	background?: 'default' | 'alt';
+	className?: string;
+}
+
+const { id, background = 'default', className = '' } = Astro.props;
+---
+
+<section id={id} class={`section ${background} ${className}`}>
+	<div class="container">
+		<slot />
+	</div>
+</section>
+
+<style>
+	.section {
+		padding: 6rem 2rem;
+	}
+
+	.section.alt {
+		background: rgba(var(--gray-light), 0.15);
+	}
+
+	.container {
+		max-width: 1200px;
+		margin: 0 auto;
+	}
+
+	@media (max-width: 768px) {
+		.section {
+			padding: 4rem 1.5rem;
+		}
+	}
+</style>

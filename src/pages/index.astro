@@ -1,8 +1,11 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
+import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import Header from '../components/Header.astro';
+import Section from '../components/portfolio/Section.astro';
+import ProjectCard from '../components/portfolio/ProjectCard.astro';
 import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { projects } from '../data/projects';
 ---
 
 <!doctype html>
@@ -11,39 +14,217 @@ import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
 	</head>
 	<body>
-		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This template
-				serves as a lightweight, minimally-styled starting point for anyone looking to build a personal
-				website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to
-				<a href="https://docs.astro.build/">read the docs</a>
-				or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out
-				<a href="https://github.com/Charca/astro-blog-template">astro-blog-template</a>
-				by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
+		<Nav />
+
+		<main class="landing">
+			<!-- Hero Section -->
+			<section class="hero">
+				<h1 class="site-title">arthur3.com</h1>
+				<p class="tagline">{SITE_DESCRIPTION}</p>
+			</section>
+
+			<!-- About Section -->
+			<Section>
+				<div class="section-header">
+					<h2>About</h2>
+					<p class="section-description">
+						Creator, builder, and storyteller. I specialize in crafting elegant solutions
+						to complex problems through thoughtful design and engineering.
+					</p>
+				</div>
+			</Section>
+
+			<!-- Projects Section -->
+			<Section id="projects" background="alt">
+				<div class="section-header">
+					<h2>Featured Work</h2>
+					<p class="section-description">
+						Selected projects that showcase my approach to development and design.
+					</p>
+				</div>
+				<div class="projects-grid">
+					{projects.map((project) => (
+						<ProjectCard {...project} />
+					))}
+				</div>
+			</Section>
+
+			<!-- Blog Section -->
+			<Section>
+				<div class="section-header centered">
+					<h2>Latest Thoughts</h2>
+					<p class="section-description">
+						Insights, tutorials, and reflections on technology and creativity.
+					</p>
+					<a href="/blog" class="cta-button">Explore Articles</a>
+				</div>
+			</Section>
+
+			<!-- Contact Section -->
+			<Section id="contact" background="alt">
+				<div class="section-header centered">
+					<h2>Let's Connect</h2>
+					<p class="section-description">
+						Interested in collaborating? Let's start a conversation.
+					</p>
+					<div class="social-links">
+						<a href="https://github.com" target="_blank" class="social-link">GitHub</a>
+						<a href="https://twitter.com" target="_blank" class="social-link">Twitter</a>
+						<a href="https://linkedin.com" target="_blank" class="social-link">LinkedIn</a>
+						<a href="mailto:hello@arthur3.com" class="social-link">Email</a>
+					</div>
+				</div>
+			</Section>
 		</main>
+
 		<Footer />
 	</body>
 </html>
+
+<style>
+	body {
+		padding-top: 4rem;
+	}
+
+	.landing {
+		min-height: 100vh;
+	}
+
+	/* Hero Section */
+	.hero {
+		text-align: center;
+		padding: 10rem 2rem 8rem;
+		background: linear-gradient(
+			135deg,
+			rgba(var(--gray-light), 0.15) 0%,
+			transparent 50%,
+			rgba(var(--accent), 0.03) 100%
+		);
+	}
+
+	.site-title {
+		font-size: clamp(3.5rem, 10vw, 7rem);
+		margin: 0 0 1.5rem 0;
+		font-weight: 700;
+		color: rgb(var(--black));
+		letter-spacing: -0.04em;
+		line-height: 1;
+	}
+
+	.tagline {
+		font-size: clamp(1.15rem, 2.5vw, 1.5rem);
+		color: rgb(var(--gray));
+		max-width: 700px;
+		margin: 0 auto;
+		line-height: 1.6;
+		font-weight: 400;
+	}
+
+	/* Section Styles */
+	.section-header {
+		margin-bottom: 3rem;
+	}
+
+	.section-header.centered {
+		text-align: center;
+	}
+
+	.section-header h2 {
+		font-size: clamp(2rem, 4vw, 2.75rem);
+		margin-bottom: 1rem;
+		color: rgb(var(--black));
+		font-weight: 600;
+		letter-spacing: -0.02em;
+	}
+
+	.section-description {
+		font-size: 1.15rem;
+		color: rgb(var(--gray-dark));
+		max-width: 700px;
+		line-height: 1.7;
+		margin-bottom: 2rem;
+	}
+
+	.section-header.centered .section-description {
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	/* Projects Grid */
+	.projects-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+		gap: 2rem;
+	}
+
+	/* CTA Button */
+	.cta-button {
+		display: inline-block;
+		padding: 1rem 2.5rem;
+		background: rgb(var(--black));
+		color: white;
+		text-decoration: none;
+		border-radius: 10px;
+		font-weight: 600;
+		font-size: 1rem;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		box-shadow: 0 2px 12px rgba(var(--black), 0.15);
+	}
+
+	.cta-button:hover {
+		background: var(--accent);
+		transform: translateY(-2px);
+		box-shadow: 0 6px 20px rgba(var(--accent), 0.3);
+	}
+
+	/* Social Links */
+	.social-links {
+		display: flex;
+		gap: 1rem;
+		justify-content: center;
+		flex-wrap: wrap;
+		margin-top: 2rem;
+	}
+
+	.social-link {
+		padding: 0.875rem 1.75rem;
+		background: white;
+		color: rgb(var(--black));
+		text-decoration: none;
+		border-radius: 10px;
+		font-weight: 500;
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		border: 1px solid rgba(var(--gray-light), 0.6);
+	}
+
+	.social-link:hover {
+		transform: translateY(-2px);
+		border-color: var(--accent);
+		color: var(--accent);
+		box-shadow: 0 4px 16px rgba(var(--gray), 0.15);
+	}
+
+	/* Responsive */
+	@media (max-width: 768px) {
+		body {
+			padding-top: 3.5rem;
+		}
+
+		.hero {
+			padding: 6rem 1.5rem 4rem;
+		}
+
+		.projects-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.social-links {
+			flex-direction: column;
+			align-items: stretch;
+		}
+
+		.social-link {
+			text-align: center;
+		}
+	}
+</style>

@@ -1,0 +1,83 @@
+---
+// Navigation component - easy to add more links
+const navLinks = [
+	{ href: '/', label: 'Home' },
+	{ href: '/blog', label: 'Blog' },
+	{ href: '#projects', label: 'Projects' },
+	{ href: '#contact', label: 'Contact' },
+];
+---
+
+<nav class="navbar">
+	<div class="nav-container">
+		<a href="/" class="logo">arthur3</a>
+		<ul class="nav-links">
+			{navLinks.map((link) => (
+				<li>
+					<a href={link.href}>{link.label}</a>
+				</li>
+			))}
+		</ul>
+	</div>
+</nav>
+
+<style>
+	.navbar {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		background: rgba(255, 255, 255, 0.95);
+		backdrop-filter: blur(10px);
+		border-bottom: 1px solid rgba(var(--gray-light), 0.8);
+		z-index: 1000;
+		padding: 1rem 0;
+	}
+
+	.nav-container {
+		max-width: 1200px;
+		margin: 0 auto;
+		padding: 0 2rem;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.logo {
+		font-size: 1.5rem;
+		font-weight: 700;
+		color: rgb(var(--black));
+		text-decoration: none;
+		letter-spacing: -0.02em;
+	}
+
+	.nav-links {
+		display: flex;
+		gap: 2rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.nav-links a {
+		color: rgb(var(--gray-dark));
+		text-decoration: none;
+		font-weight: 500;
+		transition: color 0.2s ease;
+	}
+
+	.nav-links a:hover {
+		color: var(--accent);
+	}
+
+	@media (max-width: 768px) {
+		.nav-container {
+			padding: 0 1.5rem;
+		}
+
+		.nav-links {
+			gap: 1.25rem;
+			font-size: 0.9rem;
+		}
+	}
+</style>
