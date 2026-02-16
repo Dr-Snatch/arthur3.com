@@ -29,8 +29,8 @@ const navLinks = [
 		</button>
 	</div>
 
-	<!-- Mobile Menu Overlay -->
-	<div class="mobile-menu">
+	<!-- Mobile Dropdown Menu -->
+	<div class="mobile-dropdown">
 		<ul class="mobile-nav-links">
 			{navLinks.map((link) => (
 				<li>
@@ -44,14 +44,13 @@ const navLinks = [
 <script is:inline>
 	document.addEventListener('DOMContentLoaded', () => {
 		const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
-		const mobileMenu = document.querySelector('.mobile-menu');
-		const body = document.body;
+		const mobileDropdown = document.querySelector('.mobile-dropdown');
 
-		if (mobileMenuBtn && mobileMenu) {
-			mobileMenuBtn.addEventListener('click', () => {
+		if (mobileMenuBtn && mobileDropdown) {
+			mobileMenuBtn.addEventListener('click', (e) => {
+				e.stopPropagation();
 				mobileMenuBtn.classList.toggle('active');
-				mobileMenu.classList.toggle('active');
-				body.classList.toggle('menu-open');
+				mobileDropdown.classList.toggle('active');
 			});
 
 			// Close menu when clicking a link
@@ -59,9 +58,16 @@ const navLinks = [
 			mobileLinks.forEach(link => {
 				link.addEventListener('click', () => {
 					mobileMenuBtn.classList.remove('active');
-					mobileMenu.classList.remove('active');
-					body.classList.remove('menu-open');
+					mobileDropdown.classList.remove('active');
 				});
+			});
+
+			// Close menu when clicking outside
+			document.addEventListener('click', (e) => {
+				if (!mobileDropdown.contains(e.target) && !mobileMenuBtn.contains(e.target)) {
+					mobileMenuBtn.classList.remove('active');
+					mobileDropdown.classList.remove('active');
+				}
 			});
 		}
 	});
@@ -189,70 +195,54 @@ const navLinks = [
 		top: 0;
 	}
 
-	/* Mobile Menu Overlay */
-	.mobile-menu {
+	/* Mobile Dropdown Menu */
+	.mobile-dropdown {
 		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		background: #f8ebd5;
-		display: flex;
-		align-items: center;
-		justify-content: center;
+		top: calc(107px + 2rem + 2px);
+		right: 1.5rem;
+		background: #fdf5ea;
+		border: 1px solid #e6d7b9;
+		border-radius: 16px;
+		box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
 		opacity: 0;
 		visibility: hidden;
-		transition: all 0.4s ease;
-		z-index: 999;
+		transform: translateY(-10px);
+		transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+		z-index: 998;
+		min-width: 200px;
 	}
 
-	.mobile-menu.active {
+	.mobile-dropdown.active {
 		opacity: 1;
 		visibility: visible;
+		transform: translateY(0);
 	}
 
 	.mobile-nav-links {
 		list-style: none;
 		margin: 0;
-		padding: 0;
-		text-align: center;
+		padding: 0.5rem;
 	}
 
 	.mobile-nav-links li {
-		margin: 2rem 0;
-		opacity: 0;
-		transform: translateY(20px);
-		transition: all 0.3s ease;
+		margin: 0;
 	}
-
-	.mobile-menu.active .mobile-nav-links li {
-		opacity: 1;
-		transform: translateY(0);
-	}
-
-	.mobile-menu.active .mobile-nav-links li:nth-child(1) { transition-delay: 0.1s; }
-	.mobile-menu.active .mobile-nav-links li:nth-child(2) { transition-delay: 0.2s; }
-	.mobile-menu.active .mobile-nav-links li:nth-child(3) { transition-delay: 0.3s; }
-	.mobile-menu.active .mobile-nav-links li:nth-child(4) { transition-delay: 0.4s; }
 
 	.mobile-nav-links a {
 		color: rgb(var(--black));
 		text-decoration: none;
-		font-size: 2rem;
-		font-weight: 600;
-		padding: 1rem 2rem;
-		display: inline-block;
-		border-radius: 16px;
-		transition: all 0.3s ease;
+		font-size: 1.1rem;
+		font-weight: 500;
+		padding: 0.875rem 1.25rem;
+		display: block;
+		border-radius: 12px;
+		transition: all 0.2s ease;
 	}
 
 	.mobile-nav-links a:hover {
 		color: var(--accent);
-		background: rgba(230, 215, 185, 0.3);
-	}
-
-	:global(body.menu-open) {
-		overflow: hidden;
+		background: rgba(230, 215, 185, 0.5);
+		transform: translateX(4px);
 	}
 
 	@media (max-width: 768px) {
@@ -270,6 +260,10 @@ const navLinks = [
 
 		.mobile-menu-btn {
 			display: flex;
+		}
+
+		.mobile-dropdown {
+			top: calc(80px + 2rem + 2px);
 		}
 	}
 </style>
