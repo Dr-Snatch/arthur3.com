@@ -4,7 +4,7 @@ import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import Section from '../components/portfolio/Section.astro';
 import ProjectCard from '../components/portfolio/ProjectCard.astro';
-import { SITE_DESCRIPTION, SITE_TITLE } from '../consts';
+import { SITE_DESCRIPTION, SITE_TITLE, ABOUT_TEXT, CONTACT_HEADING, CONTACT_TEXT, SOCIAL_LINKS } from '../consts';
 import { projects } from '../data/projects';
 ---
 
@@ -27,10 +27,7 @@ import { projects } from '../data/projects';
 			<Section background="alt">
 				<div class="section-header scroll-reveal">
 					<h2>About</h2>
-					<p class="section-description">
-						Creator, builder, and storyteller. I specialize in crafting elegant solutions
-						to complex problems through thoughtful design and engineering.
-					</p>
+					<p class="section-description">{ABOUT_TEXT}</p>
 				</div>
 			</Section>
 
@@ -65,23 +62,20 @@ import { projects } from '../data/projects';
 			<!-- Contact Section -->
 			<Section id="contact" background="alt">
 				<div class="section-header centered scroll-reveal">
-					<h2>Let's Connect</h2>
-					<p class="section-description">
-						Interested in collaborating? Let's start a conversation.
-					</p>
+					<h2>{CONTACT_HEADING}</h2>
+					<p class="section-description">{CONTACT_TEXT}</p>
 					<div class="social-links">
-						{['GitHub', 'Twitter', 'LinkedIn', 'Email'].map((social, index) => {
-							const href = social === 'Email' ? 'mailto:hello@arthur3.com' :
-							             `https://${social.toLowerCase()}.com`;
+						{SOCIAL_LINKS.map((link, index) => {
+							const isEmail = link.href.startsWith('mailto:');
 							return (
 								<a
-									href={href}
-									target={social === 'Email' ? undefined : '_blank'}
-									rel={social === 'Email' ? undefined : 'noopener noreferrer'}
+									href={link.href}
+									target={isEmail ? undefined : '_blank'}
+									rel={isEmail ? undefined : 'noopener noreferrer'}
 									class="social-link scroll-reveal"
 									style={`transition-delay: ${index * 0.1}s`}
 								>
-									{social}
+									{link.label}
 								</a>
 							);
 						})}

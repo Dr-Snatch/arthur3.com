@@ -1,5 +1,4 @@
 ---
-import { Image } from 'astro:assets';
 import type { CollectionEntry } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
@@ -22,19 +21,6 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 				width: 100%;
 				max-width: 100%;
 				margin: 0;
-			}
-			.hero-image {
-				width: 100%;
-				max-height: 500px;
-				overflow: hidden;
-				background: #f2e2c4;
-			}
-			.hero-image img {
-				display: block;
-				width: 100%;
-				height: 500px;
-				object-fit: cover;
-				margin: 0 auto;
 			}
 			.prose {
 				width: 800px;
@@ -64,10 +50,6 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 				body {
 					padding-top: 7rem;
 				}
-				.hero-image,
-				.hero-image img {
-					height: 300px;
-				}
 				.prose {
 					padding: 2rem 1.5rem;
 				}
@@ -79,9 +61,6 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 		<Nav />
 		<main>
 			<article>
-				<div class="hero-image">
-					{heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
-				</div>
 				<div class="prose">
 					<div class="title">
 						<div class="date">

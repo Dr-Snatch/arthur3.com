@@ -1,120 +1,124 @@
 # Portfolio Site Guide
 
-## 📁 File Structure
+## File Structure
 
 ```
 src/
-├── components/
-│   ├── Nav.astro              # Navigation bar
-│   └── portfolio/
-│       ├── ProjectCard.astro  # Reusable project card
-│       └── Section.astro      # Reusable section wrapper
+├── consts.ts                          ⭐ Site title, about text, social links
 ├── data/
-│   └── projects.ts            # ⭐ Add projects here!
+│   └── projects.ts                   ⭐ Your portfolio projects
+├── content/
+│   └── blog/                         ⭐ Blog posts (.md or .mdx files)
+├── styles/
+│   └── global.css                    Global colours and base styles
+├── components/
+│   ├── Nav.astro                     Navigation bar
+│   ├── Footer.astro                  Footer
+│   ├── BaseHead.astro                <head> tags (SEO, favicon)
+│   ├── FormattedDate.astro           Date formatting helper
+│   └── portfolio/
+│       ├── Section.astro             Section wrapper with optional alt background
+│       └── ProjectCard.astro         Project card component
+├── layouts/
+│   └── BlogPost.astro                Layout for individual blog posts
 └── pages/
-    └── index.astro            # Main landing page
-```
-
-## ✨ How to Add Content
-
-### Adding New Projects
-
-1. Open `src/data/projects.ts`
-2. Add a new project to the array:
-
-```typescript
-{
-  title: 'My Cool Project',
-  description: 'What this project does and why it matters.',
-  link: 'https://project-url.com',
-  tags: ['React', 'TypeScript', 'Design'],
-}
-```
-
-That's it! The project will automatically appear on your homepage.
-
-### Updating Navigation Links
-
-1. Open `src/components/Nav.astro`
-2. Edit the `navLinks` array:
-
-```typescript
-const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/blog', label: 'Blog' },
-  { href: '#projects', label: 'Projects' },
-  { href: '#contact', label: 'Contact' },
-  // Add more links here
-];
-```
-
-### Changing Site Information
-
-Edit `src/consts.ts`:
-
-```typescript
-export const SITE_TITLE = 'Your Name';
-export const SITE_DESCRIPTION = 'Your tagline';
-```
-
-### Updating Social Links
-
-In `src/pages/index.astro`, find the Contact Section and update the links:
-
-```astro
-<a href="https://github.com/yourusername" target="_blank" class="social-link">GitHub</a>
-```
-
-## 🎨 Customizing Styles
-
-### Global Colors
-
-Edit `src/styles/global.css`:
-
-```css
-:root {
-  --accent: #2337ff;       /* Primary accent color */
-  --accent-dark: #000d8a;  /* Darker accent */
-}
-```
-
-### Component Styles
-
-- **Nav**: `src/components/Nav.astro` (bottom of file)
-- **ProjectCard**: `src/components/portfolio/ProjectCard.astro`
-- **Section**: `src/components/portfolio/Section.astro`
-- **Homepage**: `src/pages/index.astro`
-
-## 🚀 Adding New Sections
-
-Copy this template in `index.astro`:
-
-```astro
-<Section id="new-section" background="alt">
-  <div class="section-header centered">
-    <h2>Section Title</h2>
-    <p class="section-description">
-      Your description here.
-    </p>
-  </div>
-</Section>
-```
-
-## 📝 Quick Tips
-
-- Use `background="alt"` for alternating section colors
-- Add `centered` class to center section content
-- Project tags automatically style themselves
-- All components are responsive by default
-
-## 🔧 Development
-
-```bash
-npm run dev      # Start dev server
-npm run build    # Build for production
-npm run preview  # Preview production build
+    ├── index.astro                   Homepage
+    ├── blog/
+    │   ├── index.astro               Blog listing page
+    │   └── [...slug].astro           Individual blog post page
+    └── rss.xml.js                    RSS feed
 ```
 
 ---
 
-**Need help?** All components have clear comments and are designed to be self-explanatory!
+## How to Change Things
+
+### Site title, tagline, about text, social links
+
+Open `src/consts.ts` — everything you'd regularly update lives here:
+
+```ts
+export const SITE_TITLE = 'Arthur3.com';
+export const SITE_DESCRIPTION = 'Your tagline here';
+export const ABOUT_TEXT = 'Your about blurb here.';
+
+export const SOCIAL_LINKS = [
+  { label: 'GitHub',   href: 'https://github.com/yourusername' },
+  { label: 'Twitter',  href: 'https://twitter.com/yourusername' },
+  { label: 'LinkedIn', href: 'https://linkedin.com/in/yourusername' },
+  { label: 'Email',    href: 'mailto:you@example.com' },
+];
+```
+
+Remove any entry from `SOCIAL_LINKS` to hide that button entirely.
+
+---
+
+### Projects
+
+Open `src/data/projects.ts` and add/edit the array:
+
+```ts
+{
+  title: 'My Project',
+  description: 'What it does and why it matters.',
+  link: 'https://github.com/yourusername/project',
+  tags: ['React', 'TypeScript'],
+}
+```
+
+---
+
+### Blog posts
+
+Add a new `.md` file to `src/content/blog/`:
+
+```md
+---
+title: 'My Post Title'
+description: 'A short summary'
+pubDate: '2024-01-15'
+---
+
+Your content here...
+```
+
+---
+
+### Navigation links
+
+Open `src/components/Nav.astro` and edit the `navLinks` array:
+
+```ts
+const navLinks = [
+  { href: '/',          label: 'Home' },
+  { href: '/blog',      label: 'Blog' },
+  { href: '/#projects', label: 'Projects' },
+  { href: '/#contact',  label: 'Contact' },
+];
+```
+
+---
+
+### Colours
+
+Open `src/styles/global.css` and edit the `:root` block:
+
+```css
+:root {
+  --accent: #C62828;       /* Link / highlight colour */
+  --accent-dark: #A52020;  /* Hover state */
+}
+```
+
+The cream background (`#f8ebd5`) is set on `body` in the same file.
+
+---
+
+## Development
+
+```bash
+npm run dev      # Start local dev server at localhost:4321
+npm run build    # Build for production
+npm run preview  # Preview the production build locally
+```
