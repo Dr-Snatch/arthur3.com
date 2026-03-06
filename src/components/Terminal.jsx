@@ -17,7 +17,8 @@ const COMMANDS = {
       { text: "│  projects    — things I've built        │" },
       { text: "│  skills      — my tech stack            │" },
       { text: "│  contact     — get in touch             │" },
-      { text: "│  cd /path    — navigate the site        │" },
+      { text: "│  cd /path    — change directory         │" },
+      { text: "│  open        — go to current directory  │" },
       { text: "│  ls          — list site sections       │" },
       { text: "│  whoami      — current user             │" },
       { text: "│  clear       — clear terminal           │" },
@@ -152,6 +153,7 @@ export default function Terminal() {
   const [history, setHistory] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [booted, setBooted] = useState(false);
+  const [cwd, setCwd] = useState("~");
   const [windowState, setWindowState] = useState("normal");
   const inputRef = useRef(null);
   const bottomRef = useRef(null);
@@ -189,7 +191,7 @@ export default function Terminal() {
 
     setLines((prev) => [
       ...prev,
-      { text: `user@arthur3 ~ % ${raw}`, color: "#a78bfa" },
+      { text: `user@arthur3 ${cwd} % ${raw}`, color: "#a78bfa" },
     ]);
 
     if (!trimmed) return;
@@ -203,23 +205,40 @@ export default function Terminal() {
     }
 
     if (base === "cd") {
-      const path = parts[1] || "/";
+      const path = parts[1] || "~";
+      const normalised = path.startsWith("/") ? path : `/${path}`;
       const route = CD_ROUTES[path];
       if (route) {
+        const dir = route === "/" ? "~" : route;
+        setCwd(dir);
         setLines((prev) => [
           ...prev,
-          { text: `navigating to ${route}...`, color: "#34d399" },
-          { text: "redirecting...", color: "#475569" },
+          { text: `${dir}`, color: "#34d399" },
         ]);
-        setTimeout(() => { window.location.href = route; }, 800);
-        return;
       } else {
         setLines((prev) => [
           ...prev,
           { text: `cd: ${path}: no such directory`, color: "#f87171" },
         ]);
-        return;
       }
+      return;
+    }
+
+    if (base === "open") {
+      const route = CD_ROUTES[cwd] || CD_ROUTES[parts[1]];
+      if (route && route !== "/") {
+        setLines((prev) => [
+          ...prev,
+          { text: `opening ${route}...`, color: "#34d399" },
+        ]);
+        setTimeout(() => { window.location.href = route; }, 600);
+      } else {
+        setLines((prev) => [
+          ...prev,
+          { text: `open: nothing to open`, color: "#f87171" },
+        ]);
+      }
+      return;
     }
 
     const command = COMMANDS[base];
@@ -236,6 +255,7 @@ export default function Terminal() {
 
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
+      e.preventDefault();
       handleCommand(input);
       setInput("");
     } else if (e.key === "ArrowUp") {
@@ -442,14 +462,7 @@ export default function Terminal() {
         }
         .term-window.maximized .term-input { font-size: 14px; }
 
-        .term-hint {
-          font-family: 'JetBrains Mono', monospace;
-          font-size: 10px;
-          color: #1e293b;
-          text-align: right;
-          margin-top: 6px;
-          padding-right: 4px;
-        }
+
       `}</style>
 
       {/* Minimised tab */}
@@ -524,7 +537,7 @@ export default function Terminal() {
 
             {/* Input */}
             <div className="term-input-row">
-              <span className="term-prompt">user@arthur3 ~ %</span>
+              <span className="term-prompt">user@arthur3 {cwd} %</span>
               <input
                 ref={inputRef}
                 className="term-input"
@@ -540,9 +553,7 @@ export default function Terminal() {
             </div>
           </div>
 
-          {!isMaximized && (
-            <p className="term-hint">↑↓ history · ctrl+l clear</p>
-          )}
+    
         </>
       )}
 
