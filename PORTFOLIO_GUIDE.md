@@ -43,10 +43,10 @@ export const SITE_DESCRIPTION = 'Your tagline here';
 export const ABOUT_TEXT = 'Your about blurb here.';
 
 export const SOCIAL_LINKS = [
-  { label: 'GitHub',   href: 'https://github.com/yourusername' },
-  { label: 'Twitter',  href: 'https://twitter.com/yourusername' },
-  { label: 'LinkedIn', href: 'https://linkedin.com/in/yourusername' },
-  { label: 'Email',    href: 'mailto:you@example.com' },
+  { label: 'GitHub',   href: 'https://github.com/Dr-Snatch' },
+  { label: 'Twitter',  href: 'https://x.com/ExpoArturo' },
+  { label: 'LinkedIn', href: 'https://www.linkedin.com/in/arthurwheildon/' },
+  { label: 'Email',    href: 'mailto:arthurwheildon0@gmail.com' },
 ];
 ```
 

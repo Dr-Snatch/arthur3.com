@@ -2,10 +2,31 @@
 import BaseHead from '../components/BaseHead.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
-import Section from '../components/portfolio/Section.astro';
 import ProjectCard from '../components/portfolio/ProjectCard.astro';
-import { SITE_DESCRIPTION, SITE_TITLE, ABOUT_TEXT, CONTACT_HEADING, CONTACT_TEXT, SOCIAL_LINKS } from '../consts';
+import { SITE_DESCRIPTION, SITE_TITLE, SOCIAL_LINKS } from '../consts';
 import { projects } from '../data/projects';
+
+const techStack = [
+	'Python', 'JavaScript', 'TypeScript', 'React',
+	'Next.js', 'FastAPI', 'Docker', 'PostgreSQL',
+	'Linux', 'Bash', 'Git', 'Machine Learning',
+];
+
+const exploring = [
+	'AI agents & autonomous systems',
+	'LLM application development',
+	'Application security & pentesting',
+	'Automation & scripting',
+	'Cloud infrastructure',
+];
+
+const buildLog = [
+	{ date: 'Mar 2026', entry: 'Experimenting with AI security tooling and adversarial prompting techniques.' },
+	{ date: 'Feb 2026', entry: 'Built a full-stack web app with React frontend and Python FastAPI backend.' },
+	{ date: 'Jan 2026', entry: 'Deep dive into web application vulnerabilities — SQL injection, XSS, CSRF.' },
+	{ date: 'Dec 2025', entry: 'Built a context-aware coding assistant using RAG and an LLM API.' },
+	{ date: 'Nov 2025', entry: 'Started this site. Shipped arthur3.com on Cloudflare Pages.' },
+];
 ---
 
 <!doctype html>
@@ -16,303 +37,594 @@ import { projects } from '../data/projects';
 	<body>
 		<Nav />
 
-		<main class="landing">
-			<!-- Hero Section -->
-			<section class="hero fade-in">
-				<h1 class="site-title">arthur3.com</h1>
-				<p class="tagline">{SITE_DESCRIPTION}</p>
+		<main>
+
+			<!-- ── HERO ────────────────────────────────────────────── -->
+			<section class="hero">
+				<div class="hero-grid-bg" aria-hidden="true"></div>
+				<div class="hero-glow" aria-hidden="true"></div>
+				<div class="hero-content reveal">
+					<p class="hero-label">AI Student &amp; App Builder</p>
+					<h1 class="hero-heading">Arthur.</h1>
+					<p class="hero-sub">
+						Exploring the intersection of artificial intelligence,<br class="hero-br" />
+						cybersecurity, and software engineering.
+					</p>
+					<p class="hero-body">
+						I build applications, experiment with intelligent systems, and explore how to make software more secure.
+					</p>
+					<div class="hero-actions">
+						<a href="#projects" class="btn-primary">View Projects</a>
+						<a href="#lab" class="btn-ghost">Explore the Lab</a>
+					</div>
+				</div>
 			</section>
 
-			<!-- About Section -->
-			<Section background="alt">
-				<div class="section-header scroll-reveal">
-					<h2>About</h2>
-					<p class="section-description">{ABOUT_TEXT}</p>
+			<!-- ── THE LAB ─────────────────────────────────────────── -->
+			<section id="lab" class="section-pad">
+				<div class="container">
+					<div class="section-label reveal">the lab</div>
+					<h2 class="section-title reveal">What I Build</h2>
+					<div class="lab-grid">
+						{[
+							{
+								num: '01',
+								title: 'AI Experiments',
+								desc: 'Training models, building agents, experimenting with LLMs and intelligent pipelines.',
+							},
+							{
+								num: '02',
+								title: 'Security Tools',
+								desc: 'Web vulnerabilities, CTF challenges, security research, and defensive tooling.',
+							},
+							{
+								num: '03',
+								title: 'Web Applications',
+								desc: 'Full-stack apps with modern frameworks, clean UIs, and reliable backends.',
+							},
+							{
+								num: '04',
+								title: 'Automation Systems',
+								desc: 'Scripts, bots, and systems that do the repetitive work so you don\'t have to.',
+							},
+						].map((item) => (
+							<div class="lab-card reveal">
+								<span class="lab-num">{item.num}</span>
+								<h3 class="lab-card-title">{item.title}</h3>
+								<p class="lab-card-desc">{item.desc}</p>
+							</div>
+						))}
+					</div>
 				</div>
-			</Section>
+			</section>
 
-			<!-- Projects Section -->
-			<Section id="projects" background="alt">
-				<div class="section-header scroll-reveal">
-					<h2>Featured Work</h2>
-					<p class="section-description">
-						Selected projects that showcase my approach to development and design.
+			<!-- ── FEATURED PROJECTS ───────────────────────────────── -->
+			<section id="projects" class="section-pad section-alt">
+				<div class="container">
+					<div class="section-label reveal">featured projects</div>
+					<h2 class="section-title reveal">Selected Work</h2>
+					<div class="projects-grid">
+						{projects.map((project, i) => (
+							<div class="reveal" style={`transition-delay: ${i * 0.08}s`}>
+								<ProjectCard {...project} />
+							</div>
+						))}
+					</div>
+				</div>
+			</section>
+
+			<!-- ── TECH STACK ──────────────────────────────────────── -->
+			<section class="section-pad">
+				<div class="container">
+					<div class="section-label reveal">tools of the trade</div>
+					<h2 class="section-title reveal">Tech Stack</h2>
+					<div class="stack-grid reveal">
+						{techStack.map((tech) => (
+							<span class="stack-item">{tech}</span>
+						))}
+					</div>
+				</div>
+			</section>
+
+			<!-- ── CURRENTLY EXPLORING ────────────────────────────── -->
+			<section class="section-pad section-alt">
+				<div class="container">
+					<div class="section-label reveal">always learning</div>
+					<h2 class="section-title reveal">Currently Exploring</h2>
+					<ul class="exploring-list">
+						{exploring.map((item, i) => (
+							<li class="exploring-item reveal" style={`transition-delay: ${i * 0.07}s`}>
+								<span class="exploring-dot" aria-hidden="true">→</span>
+								{item}
+							</li>
+						))}
+					</ul>
+				</div>
+			</section>
+
+			<!-- ── BUILD LOG ───────────────────────────────────────── -->
+			<section class="section-pad">
+				<div class="container">
+					<div class="section-label reveal">build log</div>
+					<h2 class="section-title reveal">Recent Activity</h2>
+					<div class="timeline">
+						{buildLog.map((item, i) => (
+							<div class="timeline-item reveal" style={`transition-delay: ${i * 0.08}s`}>
+								<span class="timeline-date">{item.date}</span>
+								<p class="timeline-entry">{item.entry}</p>
+							</div>
+						))}
+					</div>
+					<div class="blog-cta reveal">
+						<a href="/blog" class="btn-ghost">Read the blog →</a>
+					</div>
+				</div>
+			</section>
+
+			<!-- ── PHILOSOPHY ─────────────────────────────────────── -->
+			<section class="section-pad section-alt">
+				<div class="container">
+					<blockquote class="philosophy reveal">
+						"I believe the best way to learn technology is to build things, break them, and rebuild them better."
+					</blockquote>
+				</div>
+			</section>
+
+			<!-- ── CONTACT ────────────────────────────────────────── -->
+			<section id="contact" class="section-pad">
+				<div class="container">
+					<div class="section-label reveal">get in touch</div>
+					<h2 class="section-title reveal">Let's Build Something</h2>
+					<p class="contact-sub reveal">
+						Open to collaborations, interesting projects, and conversations about AI and security.
 					</p>
-				</div>
-				<div class="projects-grid">
-					{projects.map((project, index) => (
-						<div class="scroll-reveal" style={`transition-delay: ${index * 0.1}s`}>
-							<ProjectCard {...project} />
-						</div>
-					))}
-				</div>
-			</Section>
-
-			<!-- Blog Section -->
-			<Section>
-				<div class="section-header centered scroll-reveal">
-					<h2>Latest Thoughts</h2>
-					<p class="section-description">
-						Insights, tutorials, and reflections on technology and creativity.
-					</p>
-					<a href="/blog" class="cta-button">Explore Articles</a>
-				</div>
-			</Section>
-
-			<!-- Contact Section -->
-			<Section id="contact" background="alt">
-				<div class="section-header centered scroll-reveal">
-					<h2>{CONTACT_HEADING}</h2>
-					<p class="section-description">{CONTACT_TEXT}</p>
-					<div class="social-links">
-						{SOCIAL_LINKS.map((link, index) => {
+					<div class="contact-links reveal">
+						{SOCIAL_LINKS.map((link) => {
 							const isEmail = link.href.startsWith('mailto:');
 							return (
 								<a
 									href={link.href}
 									target={isEmail ? undefined : '_blank'}
 									rel={isEmail ? undefined : 'noopener noreferrer'}
-									class="social-link scroll-reveal"
-									style={`transition-delay: ${index * 0.1}s`}
+									class="contact-link"
 								>
 									{link.label}
+									<span class="contact-arrow" aria-hidden="true">↗</span>
 								</a>
 							);
 						})}
 					</div>
 				</div>
-			</Section>
+			</section>
+
 		</main>
 
+		<Footer />
+
 		<script>
-			// Intersection Observer for scroll animations
-			const observerOptions = {
-				threshold: 0.1,
-				rootMargin: '0px 0px -50px 0px'
-			};
-
-			const observer = new IntersectionObserver((entries) => {
-				entries.forEach((entry) => {
-					if (entry.isIntersecting) {
-						entry.target.classList.add('visible');
-						// Optionally unobserve after animation
-						observer.unobserve(entry.target);
-					}
-				});
-			}, observerOptions);
-
-			// Observe all elements with scroll-reveal class
+			// Scroll reveal
+			const observer = new IntersectionObserver(
+				(entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } }),
+				{ threshold: 0.1, rootMargin: '0px 0px -40px 0px' }
+			);
 			document.addEventListener('DOMContentLoaded', () => {
-				const revealElements = document.querySelectorAll('.scroll-reveal');
-				revealElements.forEach((el) => observer.observe(el));
-
-				// Trigger hero animation immediately
-				const hero = document.querySelector('.fade-in');
-				if (hero) {
-					setTimeout(() => hero.classList.add('visible'), 100);
-				}
+				document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 			});
 		</script>
-
-		<Footer />
 	</body>
 </html>
 
 <style>
-	body {
-		padding-top: 8rem;
+	/* ── Reset / layout ── */
+	body { padding-top: 0; }
+
+	main {
+		width: 100%;
+		max-width: 100%;
+		margin: 0;
+		padding: 0;
 	}
 
-	.landing {
-		min-height: 100vh;
-	}
-
-	/* Hero Section */
-	.hero {
-		text-align: center;
-		padding: 10rem 2rem 8rem;
-		background: transparent;
-	}
-
-	.site-title {
-		font-size: clamp(3.5rem, 10vw, 7rem);
-		margin: 0 0 1.5rem 0;
-		font-weight: 700;
-		color: rgb(var(--black));
-		letter-spacing: -0.04em;
-		line-height: 1;
-		white-space: nowrap;
-	}
-
-	.tagline {
-		font-size: clamp(1.15rem, 2.5vw, 1.5rem);
-		color: rgb(var(--gray));
-		max-width: 700px;
+	.container {
+		max-width: 1100px;
 		margin: 0 auto;
-		line-height: 1.6;
-		font-weight: 400;
+		padding: 0 2rem;
 	}
 
-	/* Section Styles */
-	.section-header {
-		margin-bottom: 3rem;
+	.section-pad {
+		padding: 7rem 0;
 	}
 
-	.section-header.centered {
-		text-align: center;
+	.section-alt {
+		background: #111111;
 	}
 
-	.section-header h2 {
-		font-size: clamp(2rem, 4vw, 2.75rem);
-		margin-bottom: 1rem;
-		color: rgb(var(--black));
-		font-weight: 600;
-		letter-spacing: -0.02em;
-	}
-
-	.section-description {
-		font-size: 1.15rem;
-		color: rgb(var(--gray-dark));
-		max-width: 700px;
-		line-height: 1.7;
-		margin-bottom: 2rem;
-	}
-
-	.section-header.centered .section-description {
-		margin-left: auto;
-		margin-right: auto;
-	}
-
-	/* Projects Grid */
-	.projects-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-		gap: 2rem;
-	}
-
-	/* CTA Button */
-	.cta-button {
-		display: inline-block;
-		padding: 1rem 2.5rem;
-		background: #e6d7b9;
-		color: rgb(var(--black));
-		text-decoration: none;
-		border-radius: 16px;
-		font-weight: 600;
-		font-size: 1rem;
-		transition: all 0.3s ease;
-		box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-		border: 1px solid #d4c5a5;
-	}
-
-	.cta-button:hover {
-		background: #d4c5a5;
-		transform: translateY(-2px);
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
-	}
-
-	.cta-button:active {
-		transform: translateY(0);
-	}
-
-	/* Social Links */
-	.social-links {
-		display: flex;
-		gap: 1rem;
-		justify-content: center;
-		flex-wrap: wrap;
-		margin-top: 2rem;
-	}
-
-	.social-link {
-		padding: 0.875rem 1.75rem;
-		background: #fdf5ea;
-		color: rgb(var(--black));
-		text-decoration: none;
-		border-radius: 16px;
-		font-weight: 500;
-		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-		border: 1px solid #e6d7b9;
-		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-	}
-
-	.social-link:hover {
-		transform: translateY(-4px) scale(1.05);
-		border-color: #d4c5a5;
-		background: #f2e2c4;
-		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-	}
-
-	.social-link:active {
-		transform: translateY(-2px) scale(1.02);
-	}
-
-	/* Scroll Animations */
-	.fade-in {
+	/* ── Scroll reveal ── */
+	.reveal {
 		opacity: 0;
-		animation: fadeIn 1s ease-out forwards;
-		animation-delay: 0.2s;
-	}
-
-	.fade-in.visible {
-		animation-play-state: running;
-	}
-
-	@keyframes fadeIn {
-		from {
-			opacity: 0;
-			transform: translateY(20px);
-		}
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-
-	.scroll-reveal {
-		opacity: 0;
-		transform: translateY(30px);
+		transform: translateY(24px);
 		transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
 		            transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 	}
-
-	.scroll-reveal.visible {
+	.reveal.visible {
 		opacity: 1;
 		transform: translateY(0);
 	}
 
-	/* Responsive */
+	/* ── Section labels ── */
+	.section-label {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.75rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: #6366F1;
+		margin-bottom: 0.75rem;
+	}
+
+	.section-title {
+		font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+		font-weight: 700;
+		color: #FFFFFF;
+		margin: 0 0 3rem 0;
+		letter-spacing: -0.03em;
+	}
+
+	/* ── Buttons ── */
+	.btn-primary {
+		display: inline-block;
+		padding: 0.75rem 1.75rem;
+		background: #6366F1;
+		color: #FFFFFF;
+		text-decoration: none;
+		border-radius: 10px;
+		font-weight: 600;
+		font-size: 0.95rem;
+		transition: background 0.2s ease, transform 0.2s ease;
+	}
+	.btn-primary:hover {
+		background: #4F46E5;
+		color: #FFFFFF;
+		transform: translateY(-1px);
+	}
+
+	.btn-ghost {
+		display: inline-block;
+		padding: 0.75rem 1.75rem;
+		background: transparent;
+		color: rgba(255, 255, 255, 0.7);
+		text-decoration: none;
+		border-radius: 10px;
+		font-weight: 500;
+		font-size: 0.95rem;
+		border: 1px solid rgba(255, 255, 255, 0.12);
+		transition: color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+	}
+	.btn-ghost:hover {
+		color: #FFFFFF;
+		border-color: rgba(255, 255, 255, 0.3);
+		transform: translateY(-1px);
+	}
+
+	/* ── HERO ── */
+	.hero {
+		position: relative;
+		min-height: 100vh;
+		display: flex;
+		align-items: center;
+		overflow: hidden;
+		padding: 8rem 2rem 6rem;
+	}
+
+	.hero-grid-bg {
+		position: absolute;
+		inset: 0;
+		background-image:
+			linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+			linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+		background-size: 48px 48px;
+		pointer-events: none;
+	}
+
+	.hero-glow {
+		position: absolute;
+		top: 20%;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 800px;
+		height: 600px;
+		background: radial-gradient(ellipse at center, rgba(99,102,241,0.12) 0%, transparent 70%);
+		pointer-events: none;
+	}
+
+	.hero-content {
+		position: relative;
+		z-index: 1;
+		max-width: 1100px;
+		margin: 0 auto;
+		width: 100%;
+	}
+
+	.hero-label {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.8rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: #6366F1;
+		margin: 0 0 1.5rem 0;
+	}
+
+	.hero-heading {
+		font-size: clamp(4rem, 12vw, 9rem);
+		font-weight: 700;
+		letter-spacing: -0.04em;
+		line-height: 0.95;
+		color: #FFFFFF;
+		margin: 0 0 2rem 0;
+	}
+
+	.hero-sub {
+		font-size: clamp(1.1rem, 2vw, 1.35rem);
+		color: rgba(255, 255, 255, 0.6);
+		margin: 0 0 1rem 0;
+		line-height: 1.5;
+		max-width: 640px;
+	}
+
+	.hero-body {
+		font-size: 1rem;
+		color: rgba(255, 255, 255, 0.4);
+		margin: 0 0 2.5rem 0;
+		max-width: 540px;
+		line-height: 1.7;
+	}
+
+	.hero-actions {
+		display: flex;
+		gap: 1rem;
+		flex-wrap: wrap;
+	}
+
+	.hero-br { display: block; }
+
+	/* ── THE LAB ── */
+	.lab-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+		gap: 1px;
+		background: rgba(255, 255, 255, 0.06);
+		border: 1px solid rgba(255, 255, 255, 0.06);
+		border-radius: 16px;
+		overflow: hidden;
+	}
+
+	.lab-card {
+		background: #0B0B0B;
+		padding: 2rem;
+		transition: background 0.25s ease;
+	}
+
+	.lab-card:hover {
+		background: #111111;
+	}
+
+	.lab-num {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.75rem;
+		color: #6366F1;
+		display: block;
+		margin-bottom: 1rem;
+	}
+
+	.lab-card-title {
+		font-size: 1.1rem;
+		font-weight: 600;
+		color: #FFFFFF;
+		margin: 0 0 0.75rem 0;
+	}
+
+	.lab-card-desc {
+		font-size: 0.9rem;
+		color: rgba(255, 255, 255, 0.45);
+		line-height: 1.6;
+		margin: 0;
+	}
+
+	/* ── PROJECTS GRID ── */
+	.projects-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		gap: 1.25rem;
+	}
+
+	/* ── TECH STACK ── */
+	.stack-grid {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+	}
+
+	.stack-item {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.85rem;
+		padding: 0.4rem 1rem;
+		background: rgba(255, 255, 255, 0.04);
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		border-radius: 8px;
+		color: rgba(255, 255, 255, 0.6);
+		transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+		cursor: default;
+	}
+
+	.stack-item:hover {
+		color: #FFFFFF;
+		border-color: rgba(99, 102, 241, 0.4);
+		background: rgba(99, 102, 241, 0.08);
+	}
+
+	/* ── CURRENTLY EXPLORING ── */
+	.exploring-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+	}
+
+	.exploring-item {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		padding: 1.1rem 0;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+		font-size: 1.1rem;
+		color: rgba(255, 255, 255, 0.7);
+		transition: color 0.2s ease;
+	}
+
+	.exploring-item:hover {
+		color: #FFFFFF;
+	}
+
+	.exploring-dot {
+		font-family: 'JetBrains Mono', monospace;
+		color: #6366F1;
+		font-size: 0.9rem;
+	}
+
+	/* ── BUILD LOG / TIMELINE ── */
+	.timeline {
+		display: flex;
+		flex-direction: column;
+		gap: 0;
+		margin-bottom: 3rem;
+	}
+
+	.timeline-item {
+		display: grid;
+		grid-template-columns: 100px 1fr;
+		gap: 2rem;
+		padding: 1.25rem 0;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+		align-items: baseline;
+	}
+
+	.timeline-date {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.8rem;
+		color: #6366F1;
+		white-space: nowrap;
+	}
+
+	.timeline-entry {
+		font-size: 0.95rem;
+		color: rgba(255, 255, 255, 0.6);
+		margin: 0;
+		line-height: 1.6;
+	}
+
+	.blog-cta {
+		text-align: left;
+	}
+
+	/* ── PHILOSOPHY ── */
+	.philosophy {
+		font-size: clamp(1.3rem, 2.5vw, 1.9rem);
+		font-weight: 500;
+		color: rgba(255, 255, 255, 0.85);
+		line-height: 1.5;
+		border-left: 3px solid #6366F1;
+		padding: 0.5rem 0 0.5rem 2rem;
+		margin: 0;
+		max-width: 800px;
+		font-style: normal;
+		letter-spacing: -0.01em;
+	}
+
+	/* ── CONTACT ── */
+	.contact-sub {
+		font-size: 1.05rem;
+		color: rgba(255, 255, 255, 0.5);
+		margin: 0 0 2.5rem 0;
+		max-width: 500px;
+	}
+
+	.contact-links {
+		display: flex;
+		gap: 1rem;
+		flex-wrap: wrap;
+	}
+
+	.contact-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.75rem 1.5rem;
+		background: rgba(255, 255, 255, 0.04);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: 10px;
+		color: rgba(255, 255, 255, 0.7);
+		text-decoration: none;
+		font-weight: 500;
+		font-size: 0.95rem;
+		transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+	}
+
+	.contact-link:hover {
+		color: #FFFFFF;
+		border-color: rgba(99, 102, 241, 0.5);
+		background: rgba(99, 102, 241, 0.08);
+	}
+
+	.contact-arrow {
+		font-size: 0.85rem;
+		color: rgba(255, 255, 255, 0.3);
+		transition: color 0.2s ease;
+	}
+
+	.contact-link:hover .contact-arrow {
+		color: #6366F1;
+	}
+
+	/* ── Responsive ── */
 	@media (max-width: 768px) {
-		body {
-			padding-top: 7rem;
-		}
-
 		.hero {
-			padding: 6rem 1.5rem 4rem;
+			padding: 7rem 1.5rem 5rem;
+			min-height: 90vh;
 		}
 
-		.projects-grid {
+		.hero-br { display: none; }
+
+		.section-pad { padding: 5rem 0; }
+
+		.container { padding: 0 1.5rem; }
+
+		.timeline-item {
 			grid-template-columns: 1fr;
+			gap: 0.4rem;
 		}
 
-		.social-links {
-			flex-direction: column;
-			align-items: stretch;
-		}
-
-		.social-link {
-			text-align: center;
+		.lab-grid {
+			grid-template-columns: 1fr 1fr;
 		}
 	}
 
-	/* Reduced motion support */
+	@media (max-width: 480px) {
+		.lab-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.contact-links {
+			flex-direction: column;
+		}
+	}
+
+	/* ── Reduced motion ── */
 	@media (prefers-reduced-motion: reduce) {
-		.fade-in,
-		.scroll-reveal {
-			animation: none;
-			transition: none;
+		.reveal {
 			opacity: 1;
 			transform: none;
+			transition: none;
 		}
 	}
 </style>

@@ -3,21 +3,21 @@
 // ============================================================
 
 // ── Basic info ───────────────────────────────────────────────
-export const SITE_TITLE = 'Arthur3.com';
-export const SITE_DESCRIPTION = 'A modern platform for sharing ideas, stories, and insights.';
+export const SITE_TITLE = 'arthur3.com';
+export const SITE_DESCRIPTION = 'AI student & app builder exploring the intersection of artificial intelligence, cybersecurity, and software engineering.';
 
 // ── About section (landing page) ─────────────────────────────
-export const ABOUT_TEXT = 'Creator, builder, and storyteller. I specialize in crafting elegant solutions to complex problems through thoughtful design and engineering.';
+export const ABOUT_TEXT = '20-year-old AI undergraduate from the UK. I build applications, experiment with intelligent systems, and explore how to make software more secure.';
 
 // ── Contact section (landing page) ───────────────────────────
-export const CONTACT_HEADING = "Let's Connect";
-export const CONTACT_TEXT = 'Interested in collaborating? Let\'s start a conversation.';
+export const CONTACT_HEADING = "Let's Build Something";
+export const CONTACT_TEXT = "Open to collaborations, interesting projects, and conversations about AI and security.";
 
 // ── Social / contact links ────────────────────────────────────
-// Set href to undefined to hide a link entirely
+// Remove any entry to hide that link from the footer and contact section
 export const SOCIAL_LINKS = [
-	{ label: 'GitHub',   href: 'https://github.com/yourusername' },
-	{ label: 'Twitter',  href: 'https://twitter.com/yourusername' },
-	{ label: 'LinkedIn', href: 'https://linkedin.com/in/yourusername' },
-	{ label: 'Email',    href: 'mailto:hello@arthur3.com' },
+	{ label: 'GitHub',   href: 'https://github.com/Dr-Snatch' },
+	{ label: 'Twitter',  href: 'https://x.com/ExpoArturo' },
+	{ label: 'LinkedIn', href: 'https://www.linkedin.com/in/arthurwheildon/' },
+	{ label: 'Email',    href: 'mailto:arthurwheildon0@gmail.com' },
 ];

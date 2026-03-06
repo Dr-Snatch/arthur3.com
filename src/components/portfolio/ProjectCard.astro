@@ -23,57 +23,56 @@ const { title, description, link = '#', tags = [] } = Astro.props;
 
 <style>
 	.project-card {
-		background: #fdf5ea;
+		background: #111111;
 		padding: 2rem;
-		border-radius: 24px;
-		border: 1px solid #e6d7b9;
-		transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+		border-radius: 16px;
+		border: 1px solid rgba(255, 255, 255, 0.08);
+		transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 		height: 100%;
 		display: flex;
 		flex-direction: column;
-		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 	}
 
 	.project-card:hover {
-		transform: translateY(-8px) scale(1.02);
-		box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
-		border-color: #d4c5a5;
+		transform: translateY(-4px);
+		border-color: rgba(99, 102, 241, 0.4);
+		box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(99, 102, 241, 0.1);
 	}
 
 	.project-card h3 {
-		font-size: 1.5rem;
+		font-size: 1.25rem;
 		margin-bottom: 0.75rem;
-		color: rgb(var(--black));
+		color: #FFFFFF;
 		font-weight: 600;
 	}
 
 	.project-card p {
-		color: rgb(var(--gray-dark));
+		color: rgba(255, 255, 255, 0.55);
 		margin-bottom: auto;
 		line-height: 1.6;
-		font-size: 1rem;
+		font-size: 0.95rem;
 	}
 
 	.tags {
 		display: flex;
 		gap: 0.5rem;
 		flex-wrap: wrap;
-		margin: 1rem 0;
+		margin: 1.25rem 0;
 	}
 
 	.tag {
-		font-size: 0.85rem;
-		padding: 0.25rem 0.75rem;
-		background: #f2e2c4;
-		color: rgb(var(--gray-dark));
-		border-radius: 12px;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.75rem;
+		padding: 0.2rem 0.6rem;
+		background: rgba(99, 102, 241, 0.1);
+		color: rgba(165, 180, 252, 0.9);
+		border-radius: 6px;
+		border: 1px solid rgba(99, 102, 241, 0.2);
 		font-weight: 500;
-		transition: all 0.2s ease;
 	}
 
 	.tag:hover {
-		background: #e6d7b9;
-		transform: scale(1.05);
+		background: rgba(99, 102, 241, 0.2);
 	}
 
 	.project-link {
