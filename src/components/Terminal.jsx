@@ -86,16 +86,7 @@ const COMMANDS = {
   whoami: {
     output: [{ text: "arthur — AI student, builder, terminal enjoyer." }],
   },
-  ls: {
-    output: [
-      { text: "/" },
-      { text: "/projects" },
-      { text: "/swift" },
-      { text: "/blog" },
-      { text: "/lab" },
-      { text: "README.md" },
-    ],
-  },
+  // ls is handled dynamically in handleCommand
   sudo: {
     output: [
       { text: "sudo: permission denied.", color: "#f87171" },
@@ -105,9 +96,7 @@ const COMMANDS = {
   uname: {
     output: [{ text: "arthur3-os 1.0.0 #1 SMP x86_64 GNU/Linux" }],
   },
-  pwd: {
-    output: [{ text: "/home/arthur" }],
-  },
+  // pwd is handled dynamically in handleCommand
   exit: {
     output: [{ text: "there's no escape." }],
   },
@@ -209,38 +198,60 @@ export default function Terminal() {
 
     if (base === "cd") {
       const path = parts[1] || "~";
-      const normalised = path.startsWith("/") ? path : `/${path}`;
       const route = CD_ROUTES[path];
-      if (route) {
-        const dir = route === "/" ? "~" : route;
-        setCwd(dir);
-        setLines((prev) => [
-          ...prev,
-          { text: `${dir}`, color: "#34d399" },
-        ]);
+      if (path === "~" || path === "/") {
+        setCwd("~");
+        setLines((prev) => [...prev, { text: "~", color: "#34d399" }]);
+      } else if (route) {
+        const dir = route;
+        if (dir === cwd) {
+          setLines((prev) => [...prev, { text: `already in ${dir}`, color: "#475569" }]);
+        } else {
+          setCwd(dir);
+          setLines((prev) => [...prev, { text: dir, color: "#34d399" }]);
+        }
       } else {
-        setLines((prev) => [
-          ...prev,
-          { text: `cd: ${path}: no such directory`, color: "#f87171" },
-        ]);
+        setLines((prev) => [...prev, { text: `cd: ${path}: no such directory`, color: "#f87171" }]);
       }
       return;
     }
 
     if (base === "open") {
-      const route = CD_ROUTES[cwd] || CD_ROUTES[parts[1]];
-      if (route && route !== "/") {
-        setLines((prev) => [
-          ...prev,
-          { text: `opening ${route}...`, color: "#34d399" },
-        ]);
+      const target = parts[1];
+      // open README.md from ~
+      if (target === "README.md") {
+        setLines((prev) => [...prev, { text: "README.md: you're looking at it.", color: "#94a3b8" }]);
+        return;
+      }
+      // open a specific path e.g. open /projects
+      const explicitRoute = target ? CD_ROUTES[target] : null;
+      const cwdRoute = CD_ROUTES[cwd];
+      const route = explicitRoute || (cwdRoute && cwdRoute !== "/" ? cwdRoute : null);
+      if (route) {
+        setLines((prev) => [...prev, { text: `opening ${route}...`, color: "#34d399" }]);
         setTimeout(() => { window.location.href = route; }, 600);
       } else {
-        setLines((prev) => [
-          ...prev,
-          { text: `open: nothing to open`, color: "#f87171" },
-        ]);
+        setLines((prev) => [...prev, { text: `open: nothing to open here`, color: "#f87171" }]);
       }
+      return;
+    }
+
+    if (base === "pwd") {
+      const path = cwd === "~" ? "/home/arthur" : cwd;
+      setLines((prev) => [...prev, { text: path }]);
+      return;
+    }
+
+    if (base === "ls") {
+      const dirContents = {
+        "~": ["/projects", "/swift", "/blog", "/lab", "README.md"],
+        "/projects": ["beatmap/", "rptext/"],
+        "/swift": ["projects/", "blog/"],
+        "/blog": ["posts/"],
+        "/lab": ["experiments/"],
+      };
+      const contents = dirContents[cwd] || dirContents["~"];
+      setLines((prev) => [...prev, ...contents.map((t) => ({ text: t }))]);
       return;
     }
 
