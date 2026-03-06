@@ -25,7 +25,7 @@ const year = new Date().getFullYear();
 
 <style>
 	footer {
-		border-top: 1px solid rgba(0, 255, 65, 0.08);
+		border-top: 1px solid var(--border-sub);
 		padding: 2rem;
 	}
 
@@ -41,7 +41,7 @@ const year = new Date().getFullYear();
 
 	.copyright {
 		font-size: 0.875rem;
-		color: rgba(0, 255, 65, 0.35);
+		color: rgba(var(--fg-rgb), 0.35);
 		font-family: 'JetBrains Mono', monospace;
 	}
 
@@ -52,13 +52,13 @@ const year = new Date().getFullYear();
 
 	.links a {
 		font-size: 0.875rem;
-		color: rgba(0, 255, 65, 0.45);
+		color: rgba(var(--fg-rgb), 0.45);
 		text-decoration: none;
 		transition: color 0.2s ease;
 	}
 
 	.links a:hover {
-		color: #00FF41;
+		color: var(--fg);
 	}
 
 	@media (max-width: 600px) {

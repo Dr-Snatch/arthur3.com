@@ -76,10 +76,10 @@ const navLinks = [
 		top: 0;
 		left: 0;
 		right: 0;
-		background: rgba(8, 12, 8, 0.92);
+		background: var(--nav-bg);
 		backdrop-filter: blur(12px);
 		-webkit-backdrop-filter: blur(12px);
-		border-bottom: 1px solid rgba(0, 255, 65, 0.08);
+		border-bottom: 1px solid var(--border-sub);
 		z-index: 1000;
 		padding: 1rem 0;
 	}
@@ -122,7 +122,7 @@ const navLinks = [
 	}
 
 	.nav-links a {
-		color: rgba(0, 255, 65, 0.55);
+		color: rgba(var(--fg-rgb), 0.55);
 		text-decoration: none;
 		font-weight: 500;
 		font-size: 0.95rem;
@@ -132,8 +132,8 @@ const navLinks = [
 	}
 
 	.nav-links a:hover {
-		color: #00FF41;
-		background: rgba(0, 255, 65, 0.06);
+		color: var(--fg);
+		background: rgba(var(--fg-rgb), 0.06);
 	}
 
 	/* Mobile Menu Button */
@@ -155,7 +155,7 @@ const navLinks = [
 	.hamburger::after {
 		width: 24px;
 		height: 2px;
-		background: rgba(0, 255, 65, 0.7);
+		background: rgba(var(--fg-rgb), 0.7);
 		border-radius: 2px;
 		transition: all 0.3s ease;
 	}
@@ -193,10 +193,10 @@ const navLinks = [
 		position: fixed;
 		top: calc(107px + 2rem + 2px);
 		right: 1.5rem;
-		background: #0C110C;
-		border: 1px solid rgba(0, 255, 65, 0.1);
+		background: var(--bg-alt);
+		border: 1px solid var(--border);
 		border-radius: 14px;
-		box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
+		box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
 		opacity: 0;
 		visibility: hidden;
 		transform: translateY(-8px);
@@ -220,7 +220,7 @@ const navLinks = [
 	.mobile-nav-links li { margin: 0; }
 
 	.mobile-nav-links a {
-		color: rgba(0, 255, 65, 0.65);
+		color: rgba(var(--fg-rgb), 0.65);
 		text-decoration: none;
 		font-size: 1rem;
 		font-weight: 500;
@@ -231,8 +231,8 @@ const navLinks = [
 	}
 
 	.mobile-nav-links a:hover {
-		color: #00FF41;
-		background: rgba(0, 255, 65, 0.06);
+		color: var(--fg);
+		background: rgba(var(--fg-rgb), 0.06);
 	}
 
 	@media (max-width: 768px) {

@@ -1,14 +1,49 @@
+/* ── Dark (green hacker) — default ── */
 :root {
-	--accent: #00FF41;
-	--accent-dark: #00CC35;
-	--accent-glow: rgba(0, 255, 65, 0.12);
-	/* Legacy rgb vars used by blog layout */
+	--bg:         #080C08;
+	--bg-alt:     #0C110C;
+	--bg-card:    #0E140E;
+	--nav-bg:     rgba(8, 12, 8, 0.92);
+	--fg:         #DFFFED;
+	--fg-rgb:     200, 255, 220;
+	--accent:     #00FF41;
+	--accent-dark:#00CC35;
+	--accent-rgb: 0, 255, 65;
+	--border:     rgba(0, 255, 65, 0.1);
+	--border-sub: rgba(0, 255, 65, 0.08);
+	/* Legacy vars used by blog layout */
 	--black: 220, 255, 230;
 	--gray: 100, 140, 110;
 	--gray-light: 20, 30, 22;
 	--gray-dark: 160, 220, 180;
 	--gray-gradient: rgba(8, 12, 8, 50%), #080C08;
 	--box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 8px 24px rgba(0, 0, 0, 0.6);
+	--accent-glow: rgba(0, 255, 65, 0.12);
+}
+
+/* ── Light — when browser/OS is set to light ── */
+@media (prefers-color-scheme: light) {
+	:root {
+		--bg:         #FAFAFA;
+		--bg-alt:     #F2F2F6;
+		--bg-card:    #FFFFFF;
+		--nav-bg:     rgba(250, 250, 250, 0.92);
+		--fg:         #111118;
+		--fg-rgb:     17, 17, 24;
+		--accent:     #6366F1;
+		--accent-dark:#4F46E5;
+		--accent-rgb: 99, 102, 241;
+		--border:     rgba(0, 0, 0, 0.09);
+		--border-sub: rgba(0, 0, 0, 0.07);
+		/* Legacy vars */
+		--black: 17, 17, 24;
+		--gray: 100, 100, 120;
+		--gray-light: 230, 230, 235;
+		--gray-dark: 60, 60, 80;
+		--gray-gradient: rgba(250, 250, 250, 50%), #FAFAFA;
+		--box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.06);
+		--accent-glow: rgba(99, 102, 241, 0.12);
+	}
 }
 
 * {
@@ -24,8 +59,8 @@ body {
 	margin: 0;
 	padding: 0;
 	text-align: left;
-	background: #080C08;
-	color: #DFFFED;
+	background: var(--bg);
+	color: var(--fg);
 	word-wrap: break-word;
 	overflow-wrap: break-word;
 	font-size: 18px;
@@ -44,7 +79,7 @@ main {
 h1, h2, h3, h4, h5, h6 {
 	font-family: 'Syne', sans-serif;
 	margin: 0 0 0.5rem 0;
-	color: #DFFFED;
+	color: var(--fg);
 	line-height: 1.2;
 	letter-spacing: -0.02em;
 }
@@ -95,18 +130,18 @@ img {
 code {
 	font-family: 'JetBrains Mono', 'Fira Code', monospace;
 	padding: 2px 6px;
-	background: rgba(0, 255, 65, 0.08);
+	background: rgba(var(--accent-rgb), 0.08);
 	border-radius: 4px;
 	font-size: 0.9em;
-	color: #00FF41;
+	color: var(--accent);
 }
 
 pre {
 	font-family: 'JetBrains Mono', 'Fira Code', monospace;
 	padding: 1.5em;
 	border-radius: 12px;
-	background: #0C110C;
-	border: 1px solid rgba(0, 255, 65, 0.1);
+	background: var(--bg-alt);
+	border: 1px solid var(--border);
 	overflow-x: auto;
 }
 
@@ -120,12 +155,12 @@ blockquote {
 	padding: 0 0 0 20px;
 	margin: 0;
 	font-size: 1.2em;
-	color: rgba(200, 255, 220, 0.6);
+	color: rgba(var(--fg-rgb), 0.6);
 }
 
 hr {
 	border: none;
-	border-top: 1px solid rgba(0, 255, 65, 0.1);
+	border-top: 1px solid var(--border);
 }
 
 @media (max-width: 720px) {

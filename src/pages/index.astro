@@ -385,7 +385,7 @@ const writingPosts = [
 		font-size: 0.68rem;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
-		color: rgba(200,255,220,0.35);
+		color: rgba(var(--fg-rgb),0.35);
 		margin: 0 0 1.75rem 0;
 	}
 
@@ -393,8 +393,8 @@ const writingPosts = [
 	.btn-primary {
 		display: inline-block;
 		padding: 0.7rem 1.6rem;
-		background: #00FF41;
-		color: #080C08;
+		background: var(--accent);
+		color: var(--bg);
 		text-decoration: none;
 		border-radius: 8px;
 		font-family: 'Inter', sans-serif;
@@ -402,22 +402,22 @@ const writingPosts = [
 		font-size: 0.875rem;
 		transition: background 0.2s ease, transform 0.15s ease;
 	}
-	.btn-primary:hover { background: #00CC35; color: #080C08; transform: translateY(-1px); }
+	.btn-primary:hover { background: var(--accent-dark); color: var(--bg); transform: translateY(-1px); }
 
 	.btn-ghost {
 		display: inline-block;
 		padding: 0.7rem 1.6rem;
 		background: transparent;
-		color: rgba(200,255,220,0.55);
+		color: rgba(var(--fg-rgb),0.55);
 		text-decoration: none;
 		border-radius: 8px;
 		font-family: 'Inter', sans-serif;
 		font-weight: 500;
 		font-size: 0.875rem;
-		border: 1px solid rgba(0,255,65,0.14);
+		border: 1px solid rgba(var(--accent-rgb),0.14);
 		transition: color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
 	}
-	.btn-ghost:hover { color: #DFFFED; border-color: rgba(0,255,65,0.28); transform: translateY(-1px); }
+	.btn-ghost:hover { color: var(--fg); border-color: rgba(0,255,65,0.28); transform: translateY(-1px); }
 
 	/* ── HERO ── */
 	.hero {
@@ -438,7 +438,7 @@ const writingPosts = [
 		gap: 0.6rem;
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.7rem;
-		color: rgba(200,255,220,0.4);
+		color: rgba(var(--fg-rgb),0.4);
 		margin: 0 0 2rem 0;
 		letter-spacing: 0.05em;
 	}
@@ -464,7 +464,7 @@ const writingPosts = [
 		font-weight: 800;
 		line-height: 1.0;
 		letter-spacing: -0.04em;
-		color: #DFFFED;
+		color: var(--fg);
 		margin: 0 0 1.5rem 0;
 	}
 
@@ -472,7 +472,7 @@ const writingPosts = [
 		font-family: 'Inter', sans-serif;
 		font-size: 1rem;
 		line-height: 1.7;
-		color: rgba(200,255,220,0.55);
+		color: rgba(var(--fg-rgb),0.55);
 		max-width: 500px;
 		margin: 0 0 2rem 0;
 	}
@@ -486,10 +486,10 @@ const writingPosts = [
 		font-size: 0.82rem;
 	}
 
-	.t-prompt { color: #00FF41; user-select: none; }
+	.t-prompt { color: var(--accent); user-select: none; }
 
 	#cycling {
-		color: rgba(200,255,220,0.62);
+		color: rgba(var(--fg-rgb),0.62);
 	}
 
 	.t-cursor {
@@ -511,8 +511,8 @@ const writingPosts = [
 
 	/* ── MARQUEE ── */
 	.marquee-wrap {
-		border-top: 1px solid rgba(0,255,65,0.08);
-		border-bottom: 1px solid rgba(0,255,65,0.08);
+		border-top: 1px solid rgba(var(--accent-rgb),0.08);
+		border-bottom: 1px solid rgba(var(--accent-rgb),0.08);
 		overflow: hidden;
 		padding: 0.65rem 0;
 	}
@@ -526,13 +526,13 @@ const writingPosts = [
 	.marquee-item {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.68rem;
-		color: rgba(200,255,220,0.3);
+		color: rgba(var(--fg-rgb),0.3);
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
 		white-space: nowrap;
 	}
 
-	.msep { color: rgba(0,255,65,0.25); margin: 0 0.3rem; }
+	.msep { color: rgba(var(--accent-rgb),0.25); margin: 0 0.3rem; }
 
 	@keyframes scroll {
 		from { transform: translateX(0); }
@@ -541,18 +541,18 @@ const writingPosts = [
 
 	/* ── SECTIONS ── */
 	.section { padding: 6rem 0; }
-	.section-dark { background: #0C110C; }
+	.section-dark { background: var(--bg-alt); }
 
 	/* ── WHAT I BUILD ── */
 	.build-grid {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
-		border-top: 1px solid rgba(0,255,65,0.1);
+		border-top: 1px solid rgba(var(--accent-rgb),0.1);
 	}
 
 	.build-col {
 		padding: 2rem 2rem 2rem 0;
-		border-right: 1px solid rgba(0,255,65,0.1);
+		border-right: 1px solid rgba(var(--accent-rgb),0.1);
 	}
 	.build-col:last-child { border-right: none; padding-right: 0; }
 	.build-col:not(:first-child) { padding-left: 2rem; }
@@ -561,14 +561,14 @@ const writingPosts = [
 		font-family: 'Syne', sans-serif;
 		font-size: 1rem;
 		font-weight: 700;
-		color: #DFFFED;
+		color: var(--fg);
 		margin: 0 0 0.6rem 0;
 	}
 
 	.build-desc {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.77rem;
-		color: rgba(200,255,220,0.45);
+		color: rgba(var(--fg-rgb),0.45);
 		line-height: 1.7;
 		margin: 0;
 	}
@@ -581,9 +581,9 @@ const writingPosts = [
 	}
 
 	.feat-card {
-		background: #0E140E;
-		border: 1px solid rgba(0,255,65,0.1);
-		border-top: 2px solid rgba(0,255,65,0.4);
+		background: var(--bg-card);
+		border: 1px solid rgba(var(--accent-rgb),0.1);
+		border-top: 2px solid rgba(var(--accent-rgb),0.4);
 		border-radius: 14px;
 		padding: 2rem;
 		display: flex;
@@ -593,9 +593,9 @@ const writingPosts = [
 	}
 
 	.feat-card:hover {
-		border-color: rgba(0,255,65,0.25);
-		border-top-color: #00FF41;
-		box-shadow: 0 12px 40px rgba(0,255,65,0.12);
+		border-color: rgba(var(--accent-rgb),0.25);
+		border-top-color: var(--accent);
+		box-shadow: 0 12px 40px rgba(var(--accent-rgb),0.12);
 	}
 
 	.feat-header {
@@ -610,7 +610,7 @@ const writingPosts = [
 		font-family: 'Syne', sans-serif;
 		font-size: 1.5rem;
 		font-weight: 800;
-		color: #DFFFED;
+		color: var(--fg);
 		letter-spacing: -0.03em;
 		display: block;
 		margin-bottom: 0.3rem;
@@ -619,7 +619,7 @@ const writingPosts = [
 	.feat-tagline {
 		font-family: 'Inter', sans-serif;
 		font-size: 0.88rem;
-		color: rgba(200,255,220,0.5);
+		color: rgba(var(--fg-rgb),0.5);
 		margin: 0;
 		line-height: 1.5;
 	}
@@ -637,7 +637,7 @@ const writingPosts = [
 	.feat-desc {
 		font-family: 'Inter', sans-serif;
 		font-size: 0.9rem;
-		color: rgba(200,255,220,0.62);
+		color: rgba(var(--fg-rgb),0.62);
 		line-height: 1.7;
 		margin: 0;
 	}
@@ -645,10 +645,10 @@ const writingPosts = [
 	.feat-callout {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.75rem;
-		color: rgba(200,255,220,0.45);
+		color: rgba(var(--fg-rgb),0.45);
 		line-height: 1.65;
-		background: rgba(0,255,65,0.04);
-		border-left: 2px solid rgba(0,255,65,0.3);
+		background: rgba(var(--accent-rgb),0.04);
+		border-left: 2px solid rgba(var(--accent-rgb),0.3);
 		padding: 0.75rem 1rem;
 		border-radius: 0 6px 6px 0;
 	}
@@ -666,22 +666,22 @@ const writingPosts = [
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.68rem;
 		padding: 0.2rem 0.55rem;
-		background: rgba(0,255,65,0.07);
-		color: #00FF41;
-		border: 1px solid rgba(0,255,65,0.18);
+		background: rgba(var(--accent-rgb),0.07);
+		color: var(--accent);
+		border: 1px solid rgba(var(--accent-rgb),0.18);
 		border-radius: 5px;
 	}
 
 	.feat-link {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.75rem;
-		color: rgba(200,255,220,0.32);
+		color: rgba(var(--fg-rgb),0.32);
 		text-decoration: none;
 		letter-spacing: 0.03em;
 		transition: color 0.2s ease;
 		margin-top: 0.25rem;
 	}
-	.feat-link:hover { color: rgba(200,255,220,0.7); }
+	.feat-link:hover { color: rgba(var(--fg-rgb),0.7); }
 
 	/* ── OTHER PROJECTS ── */
 	.other-grid {
@@ -701,14 +701,14 @@ const writingPosts = [
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.78rem;
 		padding: 0.35rem 0.85rem;
-		border: 1px solid rgba(0,255,65,0.12);
+		border: 1px solid rgba(var(--accent-rgb),0.12);
 		border-radius: 6px;
-		color: rgba(200,255,220,0.55);
-		background: rgba(0,255,65,0.02);
+		color: rgba(var(--fg-rgb),0.55);
+		background: rgba(var(--accent-rgb),0.02);
 		transition: color 0.2s ease, border-color 0.2s ease;
 		cursor: default;
 	}
-	.stack-item:hover { color: #DFFFED; border-color: rgba(0,255,65,0.35); }
+	.stack-item:hover { color: var(--fg); border-color: rgba(var(--accent-rgb),0.35); }
 
 	/* ── CURRENTLY EXPLORING ── */
 	.explore-list { list-style: none; margin: 0; padding: 0; }
@@ -718,14 +718,14 @@ const writingPosts = [
 		align-items: baseline;
 		gap: 0.9rem;
 		padding: 0.9rem 0;
-		border-bottom: 1px solid rgba(0,255,65,0.06);
+		border-bottom: 1px solid rgba(var(--accent-rgb),0.06);
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.83rem;
-		color: rgba(200,255,220,0.62);
+		color: rgba(var(--fg-rgb),0.62);
 		line-height: 1.5;
 	}
 
-	.explore-arr { color: #00FF41; font-size: 0.78rem; flex-shrink: 0; }
+	.explore-arr { color: var(--accent); font-size: 0.78rem; flex-shrink: 0; }
 
 	/* ── BUILD LOG ── */
 	.gitlog { display: flex; flex-direction: column; }
@@ -735,7 +735,7 @@ const writingPosts = [
 		grid-template-columns: 160px 1fr;
 		gap: 2.5rem;
 		padding: 1.1rem 0;
-		border-bottom: 1px solid rgba(0,255,65,0.08);
+		border-bottom: 1px solid rgba(var(--accent-rgb),0.08);
 		align-items: start;
 	}
 
@@ -744,7 +744,7 @@ const writingPosts = [
 	.c-hash {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.7rem;
-		color: #00FF41;
+		color: var(--accent);
 		letter-spacing: 0.06em;
 		background: none;
 		padding: 0;
@@ -753,13 +753,13 @@ const writingPosts = [
 	.c-date {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.66rem;
-		color: rgba(200,255,220,0.3);
+		color: rgba(var(--fg-rgb),0.3);
 	}
 
 	.c-msg {
 		font-family: 'Inter', sans-serif;
 		font-size: 0.875rem;
-		color: rgba(200,255,220,0.62);
+		color: rgba(var(--fg-rgb),0.62);
 		line-height: 1.65;
 		margin: 0;
 	}
@@ -778,18 +778,18 @@ const writingPosts = [
 	.subtle-link {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.7rem;
-		color: rgba(200,255,220,0.32);
+		color: rgba(var(--fg-rgb),0.32);
 		text-decoration: none;
 		letter-spacing: 0.05em;
 		transition: color 0.2s ease;
 		margin-bottom: 1.75rem;
 	}
-	.subtle-link:hover { color: rgba(200,255,220,0.7); }
+	.subtle-link:hover { color: rgba(var(--fg-rgb),0.7); }
 
 	.writing-sub {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.78rem;
-		color: rgba(200,255,220,0.35);
+		color: rgba(var(--fg-rgb),0.35);
 		margin: 0 0 2rem 0;
 		letter-spacing: 0.02em;
 	}
@@ -805,22 +805,22 @@ const writingPosts = [
 		flex-direction: column;
 		gap: 0.5rem;
 		padding: 1.5rem;
-		background: #0E140E;
-		border: 1px solid rgba(0,255,65,0.1);
+		background: var(--bg-card);
+		border: 1px solid rgba(var(--accent-rgb),0.1);
 		border-radius: 12px;
 		text-decoration: none;
 		transition: border-color 0.22s ease, box-shadow 0.22s ease;
 	}
 
 	.post-card:hover {
-		border-color: rgba(0,255,65,0.25);
-		box-shadow: 0 4px 16px rgba(0,255,65,0.08);
+		border-color: rgba(var(--accent-rgb),0.25);
+		box-shadow: 0 4px 16px rgba(var(--accent-rgb),0.08);
 	}
 
 	.post-date {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.65rem;
-		color: rgba(200,255,220,0.3);
+		color: rgba(var(--fg-rgb),0.3);
 		letter-spacing: 0.05em;
 	}
 
@@ -828,7 +828,7 @@ const writingPosts = [
 		font-family: 'Syne', sans-serif;
 		font-size: 0.95rem;
 		font-weight: 700;
-		color: #DFFFED;
+		color: var(--fg);
 		line-height: 1.35;
 		margin: 0.1rem 0 0.1rem 0;
 		letter-spacing: -0.01em;
@@ -837,7 +837,7 @@ const writingPosts = [
 	.post-desc {
 		font-family: 'Inter', sans-serif;
 		font-size: 0.8rem;
-		color: rgba(200,255,220,0.45);
+		color: rgba(var(--fg-rgb),0.45);
 		line-height: 1.55;
 		margin: 0 0 auto 0;
 	}
@@ -845,7 +845,7 @@ const writingPosts = [
 	.post-read {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.72rem;
-		color: #00FF41;
+		color: var(--accent);
 		margin-top: 0.75rem;
 	}
 
@@ -854,7 +854,7 @@ const writingPosts = [
 		font-family: 'Syne', sans-serif;
 		font-size: clamp(1.4rem, 3vw, 2.2rem);
 		font-weight: 700;
-		color: rgba(200,255,220,0.8);
+		color: rgba(var(--fg-rgb),0.8);
 		letter-spacing: -0.02em;
 		line-height: 1.25;
 		margin: 0;
@@ -866,14 +866,14 @@ const writingPosts = [
 		font-size: clamp(2rem, 5vw, 3.5rem);
 		font-weight: 800;
 		letter-spacing: -0.04em;
-		color: #DFFFED;
+		color: var(--fg);
 		margin: 0 0 0.5rem 0;
 	}
 
 	.contact-sub {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.75rem;
-		color: rgba(200,255,220,0.35);
+		color: rgba(var(--fg-rgb),0.35);
 		margin: 0 0 2rem 0;
 	}
 
@@ -884,10 +884,10 @@ const writingPosts = [
 		align-items: center;
 		gap: 0.3rem;
 		padding: 0.6rem 1.25rem;
-		background: #0E140E;
-		border: 1px solid rgba(0,255,65,0.12);
+		background: var(--bg-card);
+		border: 1px solid rgba(var(--accent-rgb),0.12);
 		border-radius: 8px;
-		color: rgba(200,255,220,0.65);
+		color: rgba(var(--fg-rgb),0.65);
 		text-decoration: none;
 		font-family: 'Inter', sans-serif;
 		font-size: 0.875rem;
@@ -895,13 +895,13 @@ const writingPosts = [
 		transition: color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 	}
 	.contact-link:hover {
-		color: #DFFFED;
-		border-color: rgba(0,255,65,0.35);
-		box-shadow: 0 2px 10px rgba(0,255,65,0.08);
+		color: var(--fg);
+		border-color: rgba(var(--accent-rgb),0.35);
+		box-shadow: 0 2px 10px rgba(var(--accent-rgb),0.08);
 	}
 
-	.c-arr { font-size: 0.7rem; color: rgba(200,255,220,0.22); margin-left: 0.1rem; }
-	.contact-link:hover .c-arr { color: #00FF41; }
+	.c-arr { font-size: 0.7rem; color: rgba(var(--fg-rgb),0.22); margin-left: 0.1rem; }
+	.contact-link:hover .c-arr { color: var(--accent); }
 
 	/* ── Responsive ── */
 	@media (max-width: 900px) {
@@ -913,7 +913,7 @@ const writingPosts = [
 		.build-grid { grid-template-columns: 1fr; }
 		.build-col {
 			border-right: none;
-			border-bottom: 1px solid rgba(0,255,65,0.1);
+			border-bottom: 1px solid rgba(var(--accent-rgb),0.1);
 			padding: 1.75rem 0;
 		}
 		.build-col:last-child { border-bottom: none; }
