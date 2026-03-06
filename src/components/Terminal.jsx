@@ -107,9 +107,6 @@ const COMMANDS = {
   pwd: {
     output: [{ text: "/home/arthur" }],
   },
-  date: {
-    output: [{ text: new Date().toString() }],
-  },
   exit: {
     output: [{ text: "there's no escape." }],
   },
@@ -148,12 +145,14 @@ const CD_ROUTES = {
   lab: "/lab",
 };
 
+// state: "normal" | "minimized" | "maximized" | "closed"
 export default function Terminal() {
   const [lines, setLines] = useState([]);
   const [input, setInput] = useState("");
   const [history, setHistory] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [booted, setBooted] = useState(false);
+  const [windowState, setWindowState] = useState("normal");
   const inputRef = useRef(null);
   const bottomRef = useRef(null);
 
@@ -171,8 +170,16 @@ export default function Terminal() {
   }, []);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [lines]);
+    if (windowState === "normal" || windowState === "maximized") {
+      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [lines, windowState]);
+
+  useEffect(() => {
+    if (windowState === "normal" || windowState === "maximized") {
+      setTimeout(() => inputRef.current?.focus(), 50);
+    }
+  }, [windowState]);
 
   const handleCommand = (raw) => {
     const trimmed = raw.trim();
@@ -204,9 +211,7 @@ export default function Terminal() {
           { text: `navigating to ${route}...`, color: "#34d399" },
           { text: "redirecting...", color: "#475569" },
         ]);
-        setTimeout(() => {
-          window.location.href = route;
-        }, 800);
+        setTimeout(() => { window.location.href = route; }, 800);
         return;
       } else {
         setLines((prev) => [
@@ -249,9 +254,64 @@ export default function Terminal() {
     }
   };
 
+  const isMaximized = windowState === "maximized";
+  const isMinimized = windowState === "minimized";
+  const isClosed = windowState === "closed";
+
   return (
     <>
       <style>{`
+        /* ── Minimised tab ── */
+        .term-tab {
+          position: fixed;
+          bottom: 0;
+          right: 32px;
+          z-index: 9999;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 18px 8px 14px;
+          background: #111118;
+          border: 1px solid #1e1e2e;
+          border-bottom: none;
+          border-radius: 8px 8px 0 0;
+          cursor: pointer;
+          transition: background 0.15s ease;
+          box-shadow: 0 -4px 20px rgba(99,102,241,0.08);
+          user-select: none;
+        }
+        .term-tab:hover { background: #16161f; }
+        .term-tab-dot {
+          width: 7px; height: 7px; border-radius: 50%;
+          background: #6366f1;
+          box-shadow: 0 0 6px rgba(99,102,241,0.7);
+          animation: tabpulse 2s ease-in-out infinite;
+        }
+        @keyframes tabpulse {
+          0%,100% { opacity: 1; } 50% { opacity: 0.35; }
+        }
+        .term-tab-label {
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 11px;
+          color: #64748b;
+          letter-spacing: 0.05em;
+        }
+        .term-tab-open {
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 10px;
+          color: #334155;
+        }
+
+        /* ── Maximised overlay ── */
+        .term-overlay {
+          position: fixed;
+          inset: 0;
+          z-index: 9998;
+          background: rgba(0,0,0,0.6);
+          backdrop-filter: blur(2px);
+        }
+
+        /* ── Window ── */
         .term-window {
           background: #0f0f0f;
           border: 1px solid #1e1e2e;
@@ -261,9 +321,24 @@ export default function Terminal() {
             0 0 0 1px rgba(99,102,241,0.08),
             0 25px 60px rgba(0,0,0,0.6),
             0 0 80px rgba(99,102,241,0.05);
-          cursor: text;
           width: 100%;
+          display: flex;
+          flex-direction: column;
+          transition: box-shadow 0.2s ease;
         }
+        .term-window.maximized {
+          position: fixed;
+          inset: 40px;
+          z-index: 9999;
+          border-radius: 14px;
+          width: auto;
+          box-shadow:
+            0 0 0 1px rgba(99,102,241,0.15),
+            0 40px 100px rgba(0,0,0,0.9),
+            0 0 120px rgba(99,102,241,0.1);
+        }
+
+        /* ── Titlebar ── */
         .term-titlebar {
           display: flex;
           align-items: center;
@@ -272,8 +347,32 @@ export default function Terminal() {
           background: #111118;
           border-bottom: 1px solid #1a1a2e;
           position: relative;
+          flex-shrink: 0;
+          user-select: none;
         }
-        .term-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+        .term-btn {
+          width: 12px; height: 12px; border-radius: 50%;
+          flex-shrink: 0;
+          border: none;
+          cursor: pointer;
+          padding: 0;
+          position: relative;
+          transition: filter 0.15s ease;
+        }
+        .term-btn:hover { filter: brightness(1.25); }
+        .term-btn::after {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: 50%;
+          opacity: 0;
+          transition: opacity 0.15s;
+        }
+        .term-btn-close { background: #ff5f57; }
+        .term-btn-min   { background: #febc2e; }
+        .term-btn-max   { background: #28c840; }
+        .term-btn-group { display: flex; gap: 7px; align-items: center; }
+
         .term-titlebar-label {
           position: absolute;
           left: 50%;
@@ -283,28 +382,43 @@ export default function Terminal() {
           color: #334155;
           letter-spacing: 0.05em;
           pointer-events: none;
+          white-space: nowrap;
         }
+
+        /* ── Body ── */
         .term-body {
           padding: 18px 20px 4px;
           height: 320px;
           overflow-y: auto;
           scrollbar-width: thin;
           scrollbar-color: #1e293b transparent;
+          flex-shrink: 0;
+        }
+        .term-window.maximized .term-body {
+          flex: 1;
+          height: auto;
         }
         .term-body::-webkit-scrollbar { width: 4px; }
         .term-body::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 2px; }
+
         .term-line {
           font-family: 'JetBrains Mono', monospace;
           font-size: 12.5px;
           line-height: 1.65;
           white-space: pre;
         }
+        .term-window.maximized .term-line {
+          font-size: 14px;
+        }
+
+        /* ── Input row ── */
         .term-input-row {
           display: flex;
           align-items: center;
           gap: 8px;
           padding: 10px 20px 14px;
           border-top: 1px solid #111;
+          flex-shrink: 0;
         }
         .term-prompt {
           font-family: 'JetBrains Mono', monospace;
@@ -314,6 +428,7 @@ export default function Terminal() {
           user-select: none;
           flex-shrink: 0;
         }
+        .term-window.maximized .term-prompt { font-size: 14px; }
         .term-input {
           flex: 1;
           background: transparent;
@@ -325,53 +440,124 @@ export default function Terminal() {
           caret-color: #6366f1;
           min-width: 0;
         }
+        .term-window.maximized .term-input { font-size: 14px; }
+
+        .term-hint {
+          font-family: 'JetBrains Mono', monospace;
+          font-size: 10px;
+          color: #1e293b;
+          text-align: right;
+          margin-top: 6px;
+          padding-right: 4px;
+        }
       `}</style>
 
-      <div className="term-window" onClick={() => inputRef.current?.focus()}>
-        <div className="term-titlebar">
-          <div className="term-dot" style={{ background: "#ff5f57" }} />
-          <div className="term-dot" style={{ background: "#febc2e" }} />
-          <div className="term-dot" style={{ background: "#28c840" }} />
-          <span className="term-titlebar-label">user@arthur3 ~ zsh</span>
-        </div>
+      {/* Minimised tab */}
+      {isMinimized && (
+        <button
+          className="term-tab"
+          onClick={() => setWindowState("normal")}
+          aria-label="Restore terminal"
+        >
+          <span className="term-tab-dot" />
+          <span className="term-tab-label">user@arthur3</span>
+          <span className="term-tab-open">↑</span>
+        </button>
+      )}
 
-        <div className="term-body">
-          {lines.map((line, i) => (
-            <div
-              key={i}
-              className="term-line"
-              style={{ color: line.color || "#94a3b8" }}
-            >
-              {line.text}
+      {/* Overlay behind maximised window */}
+      {isMaximized && (
+        <div
+          className="term-overlay"
+          onClick={() => setWindowState("normal")}
+        />
+      )}
+
+      {/* Main window — hidden when closed or minimised */}
+      {!isClosed && !isMinimized && (
+        <>
+          <div
+            className={`term-window${isMaximized ? " maximized" : ""}`}
+            onClick={() => inputRef.current?.focus()}
+          >
+            {/* Titlebar */}
+            <div className="term-titlebar">
+              <div className="term-btn-group">
+                <button
+                  className="term-btn term-btn-close"
+                  onClick={(e) => { e.stopPropagation(); setWindowState("closed"); }}
+                  title="Close"
+                  aria-label="Close terminal"
+                />
+                <button
+                  className="term-btn term-btn-min"
+                  onClick={(e) => { e.stopPropagation(); setWindowState("minimized"); }}
+                  title="Minimise"
+                  aria-label="Minimise terminal"
+                />
+                <button
+                  className="term-btn term-btn-max"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setWindowState((s) => s === "maximized" ? "normal" : "maximized");
+                  }}
+                  title={isMaximized ? "Restore" : "Maximise"}
+                  aria-label={isMaximized ? "Restore terminal" : "Maximise terminal"}
+                />
+              </div>
+              <span className="term-titlebar-label">user@arthur3 ~ zsh</span>
             </div>
-          ))}
-          <div ref={bottomRef} />
-        </div>
 
-        <div className="term-input-row">
-          <span className="term-prompt">user@arthur3 ~ %</span>
-          <input
-            ref={inputRef}
-            className="term-input"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            autoFocus
-            spellCheck={false}
-            autoComplete="off"
-            autoCapitalize="off"
-            disabled={!booted}
-          />
-        </div>
-      </div>
-      <p style={{
-        fontFamily: "'JetBrains Mono', monospace",
-        fontSize: "10px",
-        color: "#1e293b",
-        textAlign: "right",
-        marginTop: "6px",
-        paddingRight: "4px"
-      }}>↑↓ history · ctrl+l clear</p>
+            {/* Output */}
+            <div className="term-body">
+              {lines.map((line, i) => (
+                <div
+                  key={i}
+                  className="term-line"
+                  style={{ color: line.color || "#94a3b8" }}
+                >
+                  {line.text}
+                </div>
+              ))}
+              <div ref={bottomRef} />
+            </div>
+
+            {/* Input */}
+            <div className="term-input-row">
+              <span className="term-prompt">user@arthur3 ~ %</span>
+              <input
+                ref={inputRef}
+                className="term-input"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyDown={handleKeyDown}
+                autoFocus
+                spellCheck={false}
+                autoComplete="off"
+                autoCapitalize="off"
+                disabled={!booted}
+              />
+            </div>
+          </div>
+
+          {!isMaximized && (
+            <p className="term-hint">↑↓ history · ctrl+l clear</p>
+          )}
+        </>
+      )}
+
+      {/* Re-open button if closed */}
+      {isClosed && (
+        <button
+          className="term-tab"
+          onClick={() => setWindowState("normal")}
+          aria-label="Open terminal"
+        >
+          <span className="term-tab-dot" />
+          <span className="term-tab-label">terminal</span>
+          <span className="term-tab-open">↑</span>
+        </button>
+      )}
     </>
   );
 }
