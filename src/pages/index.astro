@@ -279,7 +279,7 @@ const buildLog = [
 		gap: 0.5rem;
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.78rem;
-		color: rgba(255,255,255,0.45);
+		color: rgba(255,255,255,0.6);
 		margin: 0 0 2rem 0;
 		letter-spacing: 0.04em;
 	}
@@ -323,7 +323,7 @@ const buildLog = [
 	}
 
 	.cycling {
-		color: rgba(255,255,255,0.65);
+		color: rgba(255,255,255,0.8);
 		transition: opacity 0.25s ease;
 	}
 
@@ -350,8 +350,8 @@ const buildLog = [
 
 	/* ── MARQUEE ── */
 	.marquee-wrap {
-		border-top: 1px solid rgba(255,255,255,0.06);
-		border-bottom: 1px solid rgba(255,255,255,0.06);
+		border-top: 1px solid rgba(255,255,255,0.1);
+		border-bottom: 1px solid rgba(255,255,255,0.1);
 		overflow: hidden;
 		padding: 0.75rem 0;
 	}
@@ -365,7 +365,7 @@ const buildLog = [
 	.marquee-item {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.78rem;
-		color: rgba(255,255,255,0.3);
+		color: rgba(255,255,255,0.45);
 		padding: 0 0.25rem;
 		letter-spacing: 0.04em;
 		text-transform: uppercase;
@@ -388,7 +388,7 @@ const buildLog = [
 	}
 
 	.section-dark {
-		background: #111111;
+		background: #16161C;
 	}
 
 	.section-row {
@@ -401,14 +401,13 @@ const buildLog = [
 	}
 
 	.section-h2 {
-		font-size: 1.1rem;
+		font-size: 0.8rem;
 		font-weight: 600;
-		color: rgba(255,255,255,0.5);
-		letter-spacing: 0.01em;
+		color: rgba(255,255,255,0.65);
+		letter-spacing: 0.06em;
 		margin: 0 0 2.5rem 0;
 		text-transform: uppercase;
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.8rem;
 	}
 
 	.section-row .section-h2 {
@@ -418,11 +417,11 @@ const buildLog = [
 	.section-link {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.78rem;
-		color: rgba(255,255,255,0.3);
+		color: rgba(255,255,255,0.45);
 		text-decoration: none;
 		transition: color 0.2s ease;
 	}
-	.section-link:hover { color: rgba(255,255,255,0.7); }
+	.section-link:hover { color: rgba(255,255,255,0.85); }
 
 	/* ── PROJECTS ── */
 	.projects-grid {
@@ -442,7 +441,7 @@ const buildLog = [
 	.about-text p {
 		font-size: 1.05rem;
 		line-height: 1.75;
-		color: rgba(255,255,255,0.65);
+		color: rgba(255,255,255,0.8);
 		margin-bottom: 1.25rem;
 	}
 
@@ -451,7 +450,7 @@ const buildLog = [
 	.about-interests {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.82rem !important;
-		color: rgba(255,255,255,0.35) !important;
+		color: rgba(255,255,255,0.5) !important;
 		letter-spacing: 0.02em;
 	}
 
@@ -466,20 +465,20 @@ const buildLog = [
 		display: flex;
 		justify-content: space-between;
 		padding: 0.65rem 0;
-		border-bottom: 1px solid rgba(255,255,255,0.06);
+		border-bottom: 1px solid rgba(255,255,255,0.1);
 		gap: 1rem;
 	}
 
 	.meta-key {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.75rem;
-		color: rgba(255,255,255,0.3);
+		color: rgba(255,255,255,0.45);
 		letter-spacing: 0.04em;
 	}
 
 	.meta-val {
 		font-size: 0.85rem;
-		color: rgba(255,255,255,0.7);
+		color: rgba(255,255,255,0.85);
 		text-align: right;
 	}
 
@@ -494,7 +493,7 @@ const buildLog = [
 		grid-template-columns: 220px 1fr;
 		gap: 2rem;
 		padding: 1.25rem 0;
-		border-bottom: 1px solid rgba(255,255,255,0.05);
+		border-bottom: 1px solid rgba(255,255,255,0.09);
 		align-items: start;
 	}
 
@@ -514,12 +513,12 @@ const buildLog = [
 	.commit-date {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.72rem;
-		color: rgba(255,255,255,0.25);
+		color: rgba(255,255,255,0.4);
 	}
 
 	.commit-msg {
 		font-size: 0.92rem;
-		color: rgba(255,255,255,0.6);
+		color: rgba(255,255,255,0.75);
 		line-height: 1.6;
 		margin: 0;
 	}
@@ -535,7 +534,7 @@ const buildLog = [
 
 	.contact-sub {
 		font-size: 1rem;
-		color: rgba(255,255,255,0.4);
+		color: rgba(255,255,255,0.6);
 		margin: 0 0 2rem 0;
 	}
 
@@ -550,10 +549,10 @@ const buildLog = [
 		align-items: center;
 		gap: 0.3rem;
 		padding: 0.6rem 1.25rem;
-		background: transparent;
-		border: 1px solid rgba(255,255,255,0.1);
+		background: rgba(255,255,255,0.04);
+		border: 1px solid rgba(255,255,255,0.12);
 		border-radius: 8px;
-		color: rgba(255,255,255,0.6);
+		color: rgba(255,255,255,0.75);
 		text-decoration: none;
 		font-size: 0.9rem;
 		font-weight: 500;
