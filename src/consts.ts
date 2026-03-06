@@ -2,7 +2,7 @@
 // SITE CONFIGURATION — edit this file to customise your site
 // ============================================================
 
-export const SITE_TITLE = 'arthur3.com';
+export const SITE_TITLE = 'arthur3';
 export const SITE_DESCRIPTION = 'BSc Artificial Intelligence, Northumbria University. Building iOS apps, Python tools, and AI-powered software. Newcastle, UK.';
 
 export const CONTACT_HEADING = "Get in touch.";
