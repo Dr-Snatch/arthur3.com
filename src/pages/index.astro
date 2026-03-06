@@ -319,17 +319,36 @@ const writingPosts = [
 		'writing JavaScript when I have to',
 		'learning in public',
 	];
-	let i = 0;
 	const el = document.getElementById('cycling');
 	if (el) {
-		setInterval(() => {
-			el.style.opacity = '0';
-			setTimeout(() => {
-				i = (i + 1) % phrases.length;
-				el.textContent = phrases[i];
-				el.style.opacity = '1';
-			}, 220);
-		}, 3200);
+		let phraseIdx = 0;
+		let charIdx = 0;
+		let deleting = false;
+
+		function tick() {
+			const phrase = phrases[phraseIdx];
+			if (!deleting) {
+				charIdx++;
+				el.textContent = phrase.slice(0, charIdx);
+				if (charIdx === phrase.length) {
+					deleting = true;
+					setTimeout(tick, 2000);
+					return;
+				}
+				setTimeout(tick, 48);
+			} else {
+				charIdx--;
+				el.textContent = phrase.slice(0, charIdx);
+				if (charIdx === 0) {
+					deleting = false;
+					phraseIdx = (phraseIdx + 1) % phrases.length;
+					setTimeout(tick, 400);
+					return;
+				}
+				setTimeout(tick, 28);
+			}
+		}
+		setTimeout(tick, 600);
 	}
 
 	const obs = new IntersectionObserver(
@@ -402,10 +421,9 @@ const writingPosts = [
 
 	/* ── HERO ── */
 	.hero {
-		min-height: 100vh;
 		display: flex;
 		align-items: center;
-		padding: 9rem 2rem 6rem;
+		padding: 6rem 2rem 4rem;
 	}
 
 	.hero-inner {
@@ -442,12 +460,12 @@ const writingPosts = [
 
 	.hero-heading {
 		font-family: 'Syne', sans-serif;
-		font-size: clamp(3rem, 8.5vw, 7rem);
+		font-size: clamp(2.2rem, 5.5vw, 4rem);
 		font-weight: 800;
 		line-height: 1.0;
 		letter-spacing: -0.04em;
 		color: #fff;
-		margin: 0 0 2rem 0;
+		margin: 0 0 1.5rem 0;
 	}
 
 	.hero-body {
@@ -472,7 +490,6 @@ const writingPosts = [
 
 	#cycling {
 		color: rgba(255,255,255,0.62);
-		transition: opacity 0.22s ease;
 	}
 
 	.t-cursor {
