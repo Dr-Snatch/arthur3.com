@@ -88,12 +88,12 @@ const COMMANDS = {
   },
   ls: {
     output: [
-      { text: "/            home" },
-      { text: "/projects    things I've built" },
-      { text: "/swift       iOS & macOS development" },
-      { text: "/blog        writing" },
-      { text: "/lab         experiments" },
-      { text: "README.md    you're looking at it" },
+      { text: "/" },
+      { text: "/projects" },
+      { text: "/swift" },
+      { text: "/blog" },
+      { text: "/lab" },
+      { text: "README.md" },
     ],
   },
   sudo: {
