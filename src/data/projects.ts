@@ -7,27 +7,27 @@ export interface Project {
 
 export const projects: Project[] = [
 	{
-		title: 'AI Security Scanner',
-		description: 'Tool that analyses web applications for common vulnerabilities using LLM-powered reasoning. Identifies OWASP Top 10 issues and suggests mitigations.',
+		title: 'FocusKit',
+		description: 'Minimal iOS productivity app. Focus sessions, task tracking, no notifications. Built to see how far SwiftUI gets you without reaching for UIKit.',
 		link: 'https://github.com/Dr-Snatch',
-		tags: ['Python', 'LLM', 'FastAPI', 'Security'],
+		tags: ['Swift', 'SwiftUI', 'iOS'],
 	},
 	{
-		title: 'Autonomous Research Agent',
-		description: 'Multi-step AI agent that autonomously researches topics, synthesises information from multiple sources, and generates structured reports.',
+		title: 'inbox-zero',
+		description: 'Python script that sorts, labels, and archives emails by rules. Runs on a schedule. Reduced my inbox management to zero manual effort.',
 		link: 'https://github.com/Dr-Snatch',
-		tags: ['Python', 'LangChain', 'OpenAI', 'RAG'],
+		tags: ['Python', 'Automation'],
 	},
 	{
-		title: 'CTF Toolkit',
-		description: 'Collection of scripts and utilities for Capture The Flag competitions — cryptography helpers, binary analysis, and web exploitation aids.',
+		title: 'devboard',
+		description: 'Small personal dashboard that aggregates GitHub activity, tasks, and notes. Built in TypeScript and React. Deployed on Cloudflare.',
 		link: 'https://github.com/Dr-Snatch',
-		tags: ['Python', 'Bash', 'Security', 'Linux'],
+		tags: ['TypeScript', 'React', 'Cloudflare'],
 	},
 	{
-		title: 'arthur3.com',
-		description: 'This site — a personal lab and build log. Built with Astro, deployed on Cloudflare. Fast, minimal, and easy to update.',
-		link: 'https://github.com/Dr-Snatch/arthur3.com',
-		tags: ['Astro', 'TypeScript', 'Cloudflare'],
+		title: 'promptkit',
+		description: 'Tool for experimenting with LLM prompts. Store, version, and compare outputs across different models. Ongoing project.',
+		link: 'https://github.com/Dr-Snatch',
+		tags: ['Python', 'LLMs', 'FastAPI'],
 	},
 ];
