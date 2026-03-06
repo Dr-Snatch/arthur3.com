@@ -1,62 +1,61 @@
-# Astro Starter Kit: Blog
+# arthur3.com
 
-```sh
-npm create astro@latest -- --template blog
+Personal portfolio and blog. Built with Astro, deployed on Cloudflare Pages.
+
+## Stack
+
+- [Astro](https://astro.build) — static site framework
+- [Cloudflare Pages](https://pages.cloudflare.com) — hosting, auto-deploys on push to `main`
+- Fonts: Syne (headings), Inter (body), JetBrains Mono (code/labels) via Google Fonts
+- No JS frameworks — plain Astro components
+
+## Theme
+
+Adapts automatically to the OS/browser preference:
+- **Dark** — green hacker (`#080C08` bg, `#00FF41` accent)
+- **Light** — clean indigo (`#FAFAFA` bg, `#6366F1` accent)
+
+All colours are CSS custom properties defined in `src/styles/global.css`.
+
+## Customising
+
+Most editable content lives in two files:
+
+**`src/consts.ts`** — site title, description, social links
+
+**`src/data/projects.ts`** — the "other projects" cards below the featured section
+
+Featured projects (BeatMap, RPtext) are defined inline in `src/pages/index.astro`.
+
+## Commands
+
+| Command           | Action                              |
+| :---------------- | :---------------------------------- |
+| `npm install`     | Install dependencies                |
+| `npm run dev`     | Start dev server at localhost:4321  |
+| `npm run build`   | Build to `./dist/`                  |
+| `npm run preview` | Preview build locally               |
+
+## Structure
+
 ```
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
-
-Features:
-
-- ✅ Minimal styling (make it your own!)
-- ✅ 100/100 Lighthouse performance
-- ✅ SEO-friendly with canonical URLs and OpenGraph data
-- ✅ Sitemap support
-- ✅ RSS Feed support
-- ✅ Markdown & MDX support
-
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-├── public/
-├── src/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   └── pages/
-├── astro.config.mjs
-├── README.md
-├── package.json
-└── tsconfig.json
+src/
+  components/
+    Nav.astro
+    Footer.astro
+    portfolio/
+      ProjectCard.astro
+  consts.ts          — site-wide config
+  data/
+    projects.ts      — other projects list
+  pages/
+    index.astro      — main portfolio page
+    blog/            — blog index and posts
+  styles/
+    global.css       — CSS variables + base styles
+  layouts/
+    BlogPost.astro
+public/
+  favicon.png
+  logo.png
 ```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-The `src/content/` directory contains "collections" of related Markdown and MDX documents. Use `getCollection()` to retrieve posts from `src/content/blog/`, and type-check your frontmatter using an optional schema. See [Astro's Content Collections docs](https://docs.astro.build/en/guides/content-collections/) to learn more.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Check out [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
-
-## Credit
-
-This theme is based off of the lovely [Bear Blog](https://github.com/HermanMartinus/bearblog/).
