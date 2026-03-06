@@ -6,20 +6,44 @@ import ProjectCard from '../components/portfolio/ProjectCard.astro';
 import { SITE_DESCRIPTION, SITE_TITLE, SOCIAL_LINKS } from '../consts';
 import { projects } from '../data/projects';
 
-const stack = ['Swift', 'SwiftUI', 'Python', 'JavaScript', 'TypeScript', 'Xcode', 'Node.js', 'Git'];
+const stack = [
+	'Swift', 'SwiftUI', 'Xcode', 'Core Data', 'Python',
+	'JavaScript', 'TypeScript', 'Git', 'Node.js', 'iOS SDK', 'Claude API', 'Ollama',
+];
 
 const exploring = [
-	'Building AI-powered tools',
-	'LLM APIs and how to build on top of them',
-	'Improving as a SwiftUI developer',
-	'Shipping things faster',
+	'Building AI-powered tools on top of LLM APIs',
+	'Improving as a SwiftUI developer — persistence, auth, background tasks',
+	'Structured data extraction from unstructured AI output',
+	'Learning how to ship faster and more consistently',
+	'Reading about how modern AI systems are actually built',
 ];
 
 const buildLog = [
-	{ hash: 'a3f2d91', date: 'Mar 2026', message: 'Experimenting with AI tool ideas. Mostly building prototypes, scrapping them, and starting again.' },
-	{ hash: 'c8e1b04', date: 'Feb 2026', message: 'Working on a SwiftUI iOS app. Learning a lot about state management and navigation.' },
-	{ hash: '5d9f3a7', date: 'Jan 2026', message: 'Started BSc Artificial Intelligence at Northumbria University.' },
-	{ hash: 'b2a7e58', date: 'Late 2025', message: 'Learning JavaScript and TypeScript. Built a few small web projects to get the reps in.' },
+	{ hash: 'f3a91cc', date: 'Mar 2026', message: 'RPtext: character creation, combat, stats, inventory, NPC memory, and faction standings all functional.' },
+	{ hash: 'b7e24d1', date: 'Mar 2026', message: 'BeatMap v1.1.0: Core Data migration, AirDrop sharing, and Spotify integration shipped.' },
+	{ hash: '9c1f8a3', date: 'Feb 2026', message: 'BeatMap: ShazamKit integration and OAuth 2.0 PKCE auth — the hard parts are done.' },
+	{ hash: '5d3b70e', date: 'Jan 2026', message: 'First semester of BSc Artificial Intelligence at Northumbria underway.' },
+	{ hash: 'a2e95f4', date: 'Late 2025', message: 'Building with JavaScript and TypeScript. First proper web projects.' },
+	{ hash: 'c8d1240', date: 'Mid 2025', message: 'Started learning SwiftUI. BeatMap concept begins.' },
+];
+
+const writingPosts = [
+	{
+		title: 'What I learned migrating BeatMap from UserDefaults to Core Data',
+		date: 'Coming soon',
+		desc: 'Why the migration was harder than expected and what I\'d do differently.',
+	},
+	{
+		title: 'Why I chose SwiftUI over UIKit as a beginner',
+		date: 'Coming soon',
+		desc: 'The tradeoffs I didn\'t fully understand until I was deep in both.',
+	},
+	{
+		title: 'Getting structured JSON out of streaming AI responses without breaking immersion',
+		date: 'Coming soon',
+		desc: 'The XML sandwich architecture I use in RPtext and why it works.',
+	},
 ];
 ---
 
@@ -36,24 +60,23 @@ const buildLog = [
 			<!-- ── HERO ── -->
 			<section class="hero">
 				<div class="hero-inner">
-
 					<p class="hero-label">
 						<span class="dot" aria-hidden="true"></span>
-						BSc Artificial Intelligence · Northumbria University
+						BSc Artificial Intelligence · Northumbria University · Newcastle, UK
 					</p>
 
 					<h1 class="hero-heading">Arthur —<br />AI Student &<br />App Builder.</h1>
 
 					<p class="hero-body">
-						I build iOS apps in SwiftUI, automate things in Python, and write
-						JavaScript when I have to. Currently exploring how to build useful
-						tools with AI. Based in the UK.
+						I build iOS and macOS apps in SwiftUI, automate things in Python,
+						and write JavaScript when I have to. Currently working on BeatMap
+						and RPtext. Learning in public.
 					</p>
 
 					<div class="terminal-line" aria-live="polite">
-						<span class="prompt">~$</span>
-						<span id="cycling">building iOS apps in SwiftUI</span>
-						<span class="cursor" aria-hidden="true"></span>
+						<span class="t-prompt">~$</span>
+						<span id="cycling">building BeatMap — music journaling for iOS</span>
+						<span class="t-cursor" aria-hidden="true"></span>
 					</div>
 
 					<div class="hero-ctas">
@@ -67,7 +90,7 @@ const buildLog = [
 			<div class="marquee-wrap" aria-hidden="true">
 				<div class="marquee-track">
 					{[...stack, ...stack, ...stack].map((t) => (
-						<span class="marquee-item">{t}<span class="marquee-sep"> / </span></span>
+						<span class="marquee-item">{t}<span class="msep"> / </span></span>
 					))}
 				</div>
 			</div>
@@ -79,30 +102,103 @@ const buildLog = [
 					<div class="build-grid">
 						<div class="build-col">
 							<h3 class="build-title">iOS &amp; macOS Apps</h3>
-							<p class="build-desc">Native apps built with SwiftUI. Mostly for myself — tools I want to exist.</p>
+							<p class="build-desc">Native apps built with SwiftUI. Currently deep in Core Data, MapKit, third-party API auth, and AI integration.</p>
 						</div>
 						<div class="build-col">
-							<h3 class="build-title">Automation Scripts</h3>
-							<p class="build-desc">Python scripts that do repetitive things so I don't have to.</p>
+							<h3 class="build-title">Automation &amp; Scripts</h3>
+							<p class="build-desc">Python scripts that handle repetitive tasks. Usually built to solve something annoying.</p>
 						</div>
 						<div class="build-col">
 							<h3 class="build-title">Web Projects</h3>
-							<p class="build-desc">JavaScript/TypeScript frontends and small web tools. Nothing fancy.</p>
+							<p class="build-desc">JavaScript and TypeScript. Frontends, small tools, experiments.</p>
 						</div>
 					</div>
 				</div>
 			</section>
 
-			<!-- ── PROJECTS ── -->
+			<!-- ── FEATURED PROJECTS ── -->
 			<section id="projects" class="section section-dark">
 				<div class="container">
-					<div class="section-row">
-						<p class="eyebrow">projects</p>
-						<a href="https://github.com/Dr-Snatch" target="_blank" rel="noopener noreferrer" class="subtle-link">
-							github.com/Dr-Snatch ↗
-						</a>
+					<p class="eyebrow">featured projects</p>
+
+					<div class="featured-grid">
+
+						<!-- BeatMap -->
+						<article class="feat-card reveal">
+							<div class="feat-header">
+								<div>
+									<span class="feat-name">BeatMap</span>
+									<p class="feat-tagline">Music journaling for iOS. Tied to songs, places, and how you actually felt.</p>
+								</div>
+								<span class="feat-status">● In Progress — v1.1.0</span>
+							</div>
+
+							<p class="feat-desc">
+								BeatMap lets you create diary entries linked to songs, your location,
+								and personal metrics — mood, nostalgia, energy. It pulls live data from
+								Spotify, identifies songs via ShazamKit, and builds an insights dashboard
+								that surfaces patterns in your listening history over time.
+							</p>
+
+							<div class="feat-callout">
+								<span class="callout-prefix">// </span>The hardest part: managing competing audio sessions between ShazamKit
+								and AVFoundation while keeping OAuth token refresh completely invisible to the user.
+							</div>
+
+							<div class="feat-tags">
+								{['Swift', 'SwiftUI', 'Core Data', 'MapKit', 'ShazamKit', 'Spotify API', 'OAuth 2.0 PKCE', 'AVFoundation', 'CryptoKit', 'iOS Keychain'].map((t) => (
+									<span class="feat-tag">{t}</span>
+								))}
+							</div>
+
+							<a href="https://github.com/Dr-Snatch" target="_blank" rel="noopener noreferrer" class="feat-link">
+								GitHub (coming soon) ↗
+							</a>
+						</article>
+
+						<!-- RPtext -->
+						<article class="feat-card reveal" style="transition-delay: 0.08s">
+							<div class="feat-header">
+								<div>
+									<span class="feat-name">RPtext</span>
+									<p class="feat-tagline">An AI-powered text RPG. Living world, real consequences, no scripted content.</p>
+								</div>
+								<span class="feat-status">● In Progress — Core systems functional</span>
+							</div>
+
+							<p class="feat-desc">
+								RPtext is a native macOS app where AI generates the entire narrative in
+								real time. No scripted content — the world reacts to what you do and how
+								you say it. Vague or lazy input gets punished. Thoughtful play gets rewarded.
+								NPCs remember you. Factions track your reputation.
+							</p>
+
+							<div class="feat-callout">
+								<span class="callout-prefix">// </span>Reliable structured data exchange via hidden JSON blocks inside AI narrative
+								responses — XML sandwich architecture for better model attention, with multi-fallback
+								parsing so the game never breaks mid-session.
+							</div>
+
+							<div class="feat-tags">
+								{['Swift', 'SwiftUI', 'Claude API', 'Ollama', 'llama3.2:3b', 'JSON parsing', 'Streaming responses', 'macOS'].map((t) => (
+									<span class="feat-tag">{t}</span>
+								))}
+							</div>
+
+							<a href="https://github.com/Dr-Snatch" target="_blank" rel="noopener noreferrer" class="feat-link">
+								GitHub (coming soon) ↗
+							</a>
+						</article>
+
 					</div>
-					<div class="projects-grid">
+				</div>
+			</section>
+
+			<!-- ── OTHER PROJECTS ── -->
+			<section class="section">
+				<div class="container">
+					<p class="eyebrow">other projects</p>
+					<div class="other-grid">
 						{projects.map((p, i) => (
 							<div class="reveal" style={`transition-delay:${i*0.07}s`}>
 								<ProjectCard {...p} />
@@ -113,7 +209,7 @@ const buildLog = [
 			</section>
 
 			<!-- ── TECH STACK ── -->
-			<section class="section">
+			<section class="section section-dark">
 				<div class="container">
 					<p class="eyebrow">tech stack</p>
 					<div class="stack-list reveal">
@@ -123,13 +219,13 @@ const buildLog = [
 			</section>
 
 			<!-- ── CURRENTLY EXPLORING ── -->
-			<section class="section section-dark">
+			<section class="section">
 				<div class="container">
 					<p class="eyebrow">currently exploring</p>
 					<ul class="explore-list">
 						{exploring.map((item, i) => (
-							<li class="explore-item reveal" style={`transition-delay:${i*0.07}s`}>
-								<span class="explore-arrow" aria-hidden="true">→</span>
+							<li class="explore-item reveal" style={`transition-delay:${i*0.06}s`}>
+								<span class="explore-arr" aria-hidden="true">→</span>
 								{item}
 							</li>
 						))}
@@ -138,18 +234,41 @@ const buildLog = [
 			</section>
 
 			<!-- ── BUILD LOG ── -->
-			<section class="section" id="log">
+			<section class="section section-dark" id="log">
 				<div class="container">
 					<p class="eyebrow">build log</p>
 					<div class="gitlog">
 						{buildLog.map((entry, i) => (
-							<div class="commit reveal" style={`transition-delay:${i*0.07}s`}>
+							<div class="commit reveal" style={`transition-delay:${i*0.06}s`}>
 								<div class="commit-left">
-									<code class="commit-hash">{entry.hash}</code>
-									<span class="commit-date">{entry.date}</span>
+									<code class="c-hash">{entry.hash}</code>
+									<span class="c-date">{entry.date}</span>
 								</div>
-								<p class="commit-msg">{entry.message}</p>
+								<p class="c-msg">{entry.message}</p>
 							</div>
+						))}
+					</div>
+				</div>
+			</section>
+
+			<!-- ── WRITING ── -->
+			<section class="section">
+				<div class="container">
+					<div class="writing-header">
+						<p class="eyebrow">writing</p>
+						<a href="/blog" class="subtle-link">All posts ↗</a>
+					</div>
+					<p class="writing-sub">
+						Short notes, tool opinions, and devlogs. Just getting started.
+					</p>
+					<div class="writing-grid">
+						{writingPosts.map((post, i) => (
+							<a href="/blog" class="post-card reveal" style={`transition-delay:${i*0.07}s`}>
+								<span class="post-date">{post.date}</span>
+								<h3 class="post-title">{post.title}</h3>
+								<p class="post-desc">{post.desc}</p>
+								<span class="post-read">Read →</span>
+							</a>
 						))}
 					</div>
 				</div>
@@ -177,8 +296,7 @@ const buildLog = [
 									rel={isEmail ? undefined : 'noopener noreferrer'}
 									class="contact-link"
 								>
-									{link.label}
-									<span class="contact-arrow" aria-hidden="true">↗</span>
+									{link.label}<span class="c-arr" aria-hidden="true">↗</span>
 								</a>
 							);
 						})}
@@ -194,12 +312,12 @@ const buildLog = [
 
 <script>
 	const phrases = [
-		'building iOS apps in SwiftUI',
+		'building BeatMap — music journaling for iOS',
+		'building RPtext — an AI text RPG for macOS',
 		'automating things in Python',
-		'experimenting with LLM APIs',
-		'studying AI at Northumbria',
+		'studying AI at Northumbria University',
 		'writing JavaScript when I have to',
-		'shipping something new',
+		'learning in public',
 	];
 	let i = 0;
 	const el = document.getElementById('cycling');
@@ -211,14 +329,14 @@ const buildLog = [
 				el.textContent = phrases[i];
 				el.style.opacity = '1';
 			}, 220);
-		}, 3000);
+		}, 3200);
 	}
 
 	const obs = new IntersectionObserver(
 		(entries) => entries.forEach((e) => {
 			if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
 		}),
-		{ threshold: 0.08, rootMargin: '0px 0px -30px 0px' }
+		{ threshold: 0.06, rootMargin: '0px 0px -20px 0px' }
 	);
 	document.addEventListener('DOMContentLoaded', () => {
 		document.querySelectorAll('.reveal').forEach((el) => obs.observe(el));
@@ -237,7 +355,7 @@ const buildLog = [
 
 	.reveal {
 		opacity: 0;
-		transform: translateY(18px);
+		transform: translateY(16px);
 		transition: opacity 0.5s ease, transform 0.5s ease;
 	}
 	.reveal.visible { opacity: 1; transform: translateY(0); }
@@ -245,10 +363,10 @@ const buildLog = [
 	/* ── Eyebrow ── */
 	.eyebrow {
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.7rem;
-		letter-spacing: 0.12em;
+		font-size: 0.68rem;
+		letter-spacing: 0.14em;
 		text-transform: uppercase;
-		color: rgba(255,255,255,0.3);
+		color: rgba(255,255,255,0.28);
 		margin: 0 0 1.75rem 0;
 	}
 
@@ -271,7 +389,7 @@ const buildLog = [
 		display: inline-block;
 		padding: 0.7rem 1.6rem;
 		background: transparent;
-		color: rgba(255,255,255,0.6);
+		color: rgba(255,255,255,0.55);
 		text-decoration: none;
 		border-radius: 8px;
 		font-family: 'Inter', sans-serif;
@@ -280,7 +398,7 @@ const buildLog = [
 		border: 1px solid rgba(255,255,255,0.12);
 		transition: color 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
 	}
-	.btn-ghost:hover { color: #fff; border-color: rgba(255,255,255,0.3); transform: translateY(-1px); }
+	.btn-ghost:hover { color: #fff; border-color: rgba(255,255,255,0.28); transform: translateY(-1px); }
 
 	/* ── HERO ── */
 	.hero {
@@ -301,8 +419,8 @@ const buildLog = [
 		align-items: center;
 		gap: 0.6rem;
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.72rem;
-		color: rgba(255,255,255,0.38);
+		font-size: 0.7rem;
+		color: rgba(255,255,255,0.35);
 		margin: 0 0 2rem 0;
 		letter-spacing: 0.05em;
 	}
@@ -312,14 +430,14 @@ const buildLog = [
 		height: 6px;
 		border-radius: 50%;
 		background: #4ade80;
-		box-shadow: 0 0 7px rgba(74,222,128,0.7);
+		box-shadow: 0 0 7px rgba(74,222,128,0.65);
 		animation: pulse 2.5s ease-in-out infinite;
 		flex-shrink: 0;
 	}
 
 	@keyframes pulse {
 		0%, 100% { opacity: 1; }
-		50% { opacity: 0.25; }
+		50%       { opacity: 0.25; }
 	}
 
 	.hero-heading {
@@ -336,7 +454,7 @@ const buildLog = [
 		font-family: 'Inter', sans-serif;
 		font-size: 1rem;
 		line-height: 1.7;
-		color: rgba(255,255,255,0.55);
+		color: rgba(255,255,255,0.52);
 		max-width: 500px;
 		margin: 0 0 2rem 0;
 	}
@@ -350,18 +468,18 @@ const buildLog = [
 		font-size: 0.82rem;
 	}
 
-	.prompt { color: #6366F1; user-select: none; }
+	.t-prompt { color: #6366F1; user-select: none; }
 
 	#cycling {
-		color: rgba(255,255,255,0.65);
+		color: rgba(255,255,255,0.62);
 		transition: opacity 0.22s ease;
 	}
 
-	.cursor {
+	.t-cursor {
 		display: inline-block;
 		width: 8px;
 		height: 1em;
-		background: rgba(99,102,241,0.75);
+		background: rgba(99,102,241,0.7);
 		border-radius: 1px;
 		animation: blink 1.1s step-end infinite;
 		vertical-align: text-bottom;
@@ -369,7 +487,7 @@ const buildLog = [
 
 	@keyframes blink {
 		0%, 100% { opacity: 1; }
-		50% { opacity: 0; }
+		50%       { opacity: 0; }
 	}
 
 	.hero-ctas { display: flex; gap: 0.75rem; flex-wrap: wrap; }
@@ -385,22 +503,19 @@ const buildLog = [
 	.marquee-track {
 		display: flex;
 		width: max-content;
-		animation: scroll 45s linear infinite;
+		animation: scroll 50s linear infinite;
 	}
 
 	.marquee-item {
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.7rem;
-		color: rgba(255,255,255,0.28);
+		font-size: 0.68rem;
+		color: rgba(255,255,255,0.25);
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
 		white-space: nowrap;
 	}
 
-	.marquee-sep {
-		color: rgba(99,102,241,0.35);
-		margin: 0 0.3rem;
-	}
+	.msep { color: rgba(99,102,241,0.3); margin: 0 0.3rem; }
 
 	@keyframes scroll {
 		from { transform: translateX(0); }
@@ -411,35 +526,16 @@ const buildLog = [
 	.section { padding: 6rem 0; }
 	.section-dark { background: #111118; }
 
-	.section-row {
-		display: flex;
-		align-items: baseline;
-		justify-content: space-between;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-	}
-	.section-row .eyebrow { margin-bottom: 1.75rem; }
-
-	.subtle-link {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.7rem;
-		color: rgba(255,255,255,0.28);
-		text-decoration: none;
-		letter-spacing: 0.05em;
-		transition: color 0.2s ease;
-	}
-	.subtle-link:hover { color: rgba(255,255,255,0.65); }
-
 	/* ── WHAT I BUILD ── */
 	.build-grid {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);
-		border-top: 1px solid rgba(255,255,255,0.08);
+		border-top: 1px solid rgba(255,255,255,0.07);
 	}
 
 	.build-col {
 		padding: 2rem 2rem 2rem 0;
-		border-right: 1px solid rgba(255,255,255,0.08);
+		border-right: 1px solid rgba(255,255,255,0.07);
 	}
 	.build-col:last-child { border-right: none; padding-right: 0; }
 	.build-col:not(:first-child) { padding-left: 2rem; }
@@ -454,18 +550,127 @@ const buildLog = [
 
 	.build-desc {
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.78rem;
-		color: rgba(255,255,255,0.45);
-		line-height: 1.65;
+		font-size: 0.77rem;
+		color: rgba(255,255,255,0.42);
+		line-height: 1.7;
 		margin: 0;
 	}
 
-	/* ── PROJECTS ── */
-	.projects-grid {
+	/* ── FEATURED PROJECTS ── */
+	.featured-grid {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+		grid-template-columns: 1fr 1fr;
+		gap: 1.25rem;
+	}
+
+	.feat-card {
+		background: #0F0F14;
+		border: 1px solid rgba(255,255,255,0.08);
+		border-top: 2px solid rgba(99,102,241,0.5);
+		border-radius: 14px;
+		padding: 2rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+		transition: border-color 0.25s ease, box-shadow 0.25s ease;
+	}
+
+	.feat-card:hover {
+		border-color: rgba(99,102,241,0.35);
+		border-top-color: #6366F1;
+		box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+	}
+
+	.feat-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
 		gap: 1rem;
-		margin-top: 0;
+		flex-wrap: wrap;
+	}
+
+	.feat-name {
+		font-family: 'Syne', sans-serif;
+		font-size: 1.5rem;
+		font-weight: 800;
+		color: #fff;
+		letter-spacing: -0.03em;
+		display: block;
+		margin-bottom: 0.3rem;
+	}
+
+	.feat-tagline {
+		font-family: 'Inter', sans-serif;
+		font-size: 0.88rem;
+		color: rgba(255,255,255,0.5);
+		margin: 0;
+		line-height: 1.5;
+	}
+
+	.feat-status {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.67rem;
+		color: #4ade80;
+		white-space: nowrap;
+		letter-spacing: 0.02em;
+		padding-top: 0.2rem;
+		flex-shrink: 0;
+	}
+
+	.feat-desc {
+		font-family: 'Inter', sans-serif;
+		font-size: 0.9rem;
+		color: rgba(255,255,255,0.62);
+		line-height: 1.7;
+		margin: 0;
+	}
+
+	.feat-callout {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.75rem;
+		color: rgba(255,255,255,0.35);
+		line-height: 1.65;
+		background: rgba(255,255,255,0.03);
+		border-left: 2px solid rgba(99,102,241,0.35);
+		padding: 0.75rem 1rem;
+		border-radius: 0 6px 6px 0;
+	}
+
+	.callout-prefix { color: rgba(99,102,241,0.6); }
+
+	.feat-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin-top: auto;
+	}
+
+	.feat-tag {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.68rem;
+		padding: 0.2rem 0.55rem;
+		background: rgba(99,102,241,0.08);
+		color: rgba(165,180,252,0.85);
+		border: 1px solid rgba(99,102,241,0.18);
+		border-radius: 5px;
+	}
+
+	.feat-link {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.75rem;
+		color: rgba(255,255,255,0.3);
+		text-decoration: none;
+		letter-spacing: 0.03em;
+		transition: color 0.2s ease;
+		margin-top: 0.25rem;
+	}
+	.feat-link:hover { color: rgba(255,255,255,0.7); }
+
+	/* ── OTHER PROJECTS ── */
+	.other-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		gap: 1rem;
 	}
 
 	/* ── TECH STACK ── */
@@ -477,11 +682,11 @@ const buildLog = [
 
 	.stack-item {
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.8rem;
-		padding: 0.35rem 0.9rem;
+		font-size: 0.78rem;
+		padding: 0.35rem 0.85rem;
 		border: 1px solid rgba(255,255,255,0.09);
 		border-radius: 6px;
-		color: rgba(255,255,255,0.6);
+		color: rgba(255,255,255,0.55);
 		background: rgba(255,255,255,0.02);
 		transition: color 0.2s ease, border-color 0.2s ease;
 		cursor: default;
@@ -493,52 +698,138 @@ const buildLog = [
 
 	.explore-item {
 		display: flex;
-		align-items: center;
-		gap: 1rem;
-		padding: 1rem 0;
-		border-bottom: 1px solid rgba(255,255,255,0.06);
+		align-items: baseline;
+		gap: 0.9rem;
+		padding: 0.9rem 0;
+		border-bottom: 1px solid rgba(255,255,255,0.05);
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.85rem;
-		color: rgba(255,255,255,0.65);
+		font-size: 0.83rem;
+		color: rgba(255,255,255,0.62);
+		line-height: 1.5;
 	}
 
-	.explore-arrow { color: #6366F1; font-size: 0.8rem; flex-shrink: 0; }
+	.explore-arr { color: #6366F1; font-size: 0.78rem; flex-shrink: 0; }
 
 	/* ── BUILD LOG ── */
 	.gitlog { display: flex; flex-direction: column; }
 
 	.commit {
 		display: grid;
-		grid-template-columns: 170px 1fr;
+		grid-template-columns: 160px 1fr;
 		gap: 2.5rem;
-		padding: 1.2rem 0;
+		padding: 1.1rem 0;
 		border-bottom: 1px solid rgba(255,255,255,0.06);
 		align-items: start;
 	}
 
-	.commit-left { display: flex; flex-direction: column; gap: 0.25rem; }
+	.commit-left { display: flex; flex-direction: column; gap: 0.2rem; }
 
-	.commit-hash {
+	.c-hash {
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.73rem;
+		font-size: 0.7rem;
 		color: #6366F1;
 		letter-spacing: 0.06em;
 		background: none;
 		padding: 0;
 	}
 
-	.commit-date {
+	.c-date {
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.68rem;
-		color: rgba(255,255,255,0.28);
+		font-size: 0.66rem;
+		color: rgba(255,255,255,0.25);
 	}
 
-	.commit-msg {
+	.c-msg {
 		font-family: 'Inter', sans-serif;
-		font-size: 0.88rem;
-		color: rgba(255,255,255,0.65);
+		font-size: 0.875rem;
+		color: rgba(255,255,255,0.62);
 		line-height: 1.65;
 		margin: 0;
+	}
+
+	/* ── WRITING ── */
+	.writing-header {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 1rem;
+		flex-wrap: wrap;
+	}
+
+	.writing-header .eyebrow { margin-bottom: 0; }
+
+	.subtle-link {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.7rem;
+		color: rgba(255,255,255,0.28);
+		text-decoration: none;
+		letter-spacing: 0.05em;
+		transition: color 0.2s ease;
+		margin-bottom: 1.75rem;
+	}
+	.subtle-link:hover { color: rgba(255,255,255,0.65); }
+
+	.writing-sub {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.78rem;
+		color: rgba(255,255,255,0.3);
+		margin: 0 0 2rem 0;
+		letter-spacing: 0.02em;
+	}
+
+	.writing-grid {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 1rem;
+	}
+
+	.post-card {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+		padding: 1.5rem;
+		background: rgba(255,255,255,0.02);
+		border: 1px solid rgba(255,255,255,0.07);
+		border-radius: 12px;
+		text-decoration: none;
+		transition: border-color 0.22s ease, background 0.22s ease;
+	}
+
+	.post-card:hover {
+		border-color: rgba(99,102,241,0.35);
+		background: rgba(99,102,241,0.04);
+	}
+
+	.post-date {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.65rem;
+		color: rgba(255,255,255,0.25);
+		letter-spacing: 0.05em;
+	}
+
+	.post-title {
+		font-family: 'Syne', sans-serif;
+		font-size: 0.95rem;
+		font-weight: 700;
+		color: rgba(255,255,255,0.88);
+		line-height: 1.35;
+		margin: 0.1rem 0 0.1rem 0;
+		letter-spacing: -0.01em;
+	}
+
+	.post-desc {
+		font-family: 'Inter', sans-serif;
+		font-size: 0.8rem;
+		color: rgba(255,255,255,0.4);
+		line-height: 1.55;
+		margin: 0 0 auto 0;
+	}
+
+	.post-read {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.72rem;
+		color: #6366F1;
+		margin-top: 0.75rem;
 	}
 
 	/* ── PHILOSOPHY ── */
@@ -564,10 +855,9 @@ const buildLog = [
 
 	.contact-sub {
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.78rem;
-		color: rgba(255,255,255,0.3);
+		font-size: 0.75rem;
+		color: rgba(255,255,255,0.28);
 		margin: 0 0 2rem 0;
-		letter-spacing: 0.02em;
 	}
 
 	.contact-links { display: flex; gap: 0.75rem; flex-wrap: wrap; }
@@ -575,12 +865,12 @@ const buildLog = [
 	.contact-link {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.35rem;
+		gap: 0.3rem;
 		padding: 0.6rem 1.25rem;
 		background: rgba(255,255,255,0.03);
-		border: 1px solid rgba(255,255,255,0.1);
+		border: 1px solid rgba(255,255,255,0.09);
 		border-radius: 8px;
-		color: rgba(255,255,255,0.65);
+		color: rgba(255,255,255,0.62);
 		text-decoration: none;
 		font-family: 'Inter', sans-serif;
 		font-size: 0.875rem;
@@ -593,15 +883,20 @@ const buildLog = [
 		background: rgba(99,102,241,0.06);
 	}
 
-	.contact-arrow { font-size: 0.72rem; color: rgba(255,255,255,0.22); transition: color 0.2s ease; }
-	.contact-link:hover .contact-arrow { color: #6366F1; }
+	.c-arr { font-size: 0.7rem; color: rgba(255,255,255,0.2); margin-left: 0.1rem; }
+	.contact-link:hover .c-arr { color: #6366F1; }
 
 	/* ── Responsive ── */
+	@media (max-width: 900px) {
+		.featured-grid { grid-template-columns: 1fr; }
+		.writing-grid  { grid-template-columns: 1fr; }
+	}
+
 	@media (max-width: 860px) {
 		.build-grid { grid-template-columns: 1fr; }
 		.build-col {
 			border-right: none;
-			border-bottom: 1px solid rgba(255,255,255,0.08);
+			border-bottom: 1px solid rgba(255,255,255,0.07);
 			padding: 1.75rem 0;
 		}
 		.build-col:last-child { border-bottom: none; }
@@ -614,11 +909,12 @@ const buildLog = [
 		.section { padding: 4.5rem 0; }
 		.commit { grid-template-columns: 1fr; gap: 0.3rem; }
 		.contact-links { flex-direction: column; }
+		.feat-header { flex-direction: column; }
 	}
 
 	@media (prefers-reduced-motion: reduce) {
 		.reveal { opacity: 1; transform: none; transition: none; }
-		.cursor { animation: none; opacity: 1; }
+		.t-cursor { animation: none; opacity: 1; }
 		.dot { animation: none; }
 		.marquee-track { animation: none; }
 	}

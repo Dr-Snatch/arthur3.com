@@ -3,16 +3,11 @@
 // ============================================================
 
 export const SITE_TITLE = 'arthur3.com';
-export const SITE_DESCRIPTION = 'BSc Artificial Intelligence student at Northumbria University. Builds iOS apps, Python scripts, and web tools.';
+export const SITE_DESCRIPTION = 'BSc Artificial Intelligence, Northumbria University. Building iOS apps, Python tools, and AI-powered software. Newcastle, UK.';
 
-// ── About section ─────────────────────────────────────────────
-export const ABOUT_TEXT = 'I study AI at Northumbria. I build things to understand them.';
-
-// ── Contact section ───────────────────────────────────────────
 export const CONTACT_HEADING = "Get in touch.";
-export const CONTACT_TEXT = 'Open to projects, collaborations, and conversations.';
+export const CONTACT_TEXT = 'GitHub, LinkedIn, or email. No fluff.';
 
-// ── Social / contact links ─────────────────────────────────────
 export const SOCIAL_LINKS = [
 	{ label: 'GitHub',   href: 'https://github.com/Dr-Snatch' },
 	{ label: 'Twitter',  href: 'https://x.com/ExpoArturo' },
