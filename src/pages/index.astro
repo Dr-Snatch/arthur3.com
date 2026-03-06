@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import ProjectCard from '../components/portfolio/ProjectCard.astro';
 import { SITE_DESCRIPTION, SITE_TITLE, SOCIAL_LINKS } from '../consts';
 import { projects } from '../data/projects';
+import Terminal from '../components/Terminal.jsx';
 
 const stack = [
 	'Swift', 'SwiftUI', 'Python', 'JavaScript',
@@ -74,15 +75,8 @@ const writingPosts = [
 						and RPtext. Learning in public.
 					</p>
 
-					<div class="terminal-line" aria-live="polite">
-						<span class="t-prompt">~$</span>
-						<span id="cycling">building BeatMap — music journaling for iOS</span>
-						<span class="t-cursor" aria-hidden="true"></span>
-					</div>
-
-					<div class="hero-ctas">
-						<a href="#projects" class="btn-primary">View Projects</a>
-						<a href="#contact" class="btn-ghost">Get in Touch</a>
+					<div class="hero-terminal">
+					<Terminal client:load />
 					</div>
 				</div>
 			</section>
@@ -506,6 +500,11 @@ const writingPosts = [
 	@keyframes blink {
 		0%, 100% { opacity: 1; }
 		50%       { opacity: 0; }
+	}
+
+	.hero-terminal {
+		margin-top: 2.5rem;
+		max-width: 620px;
 	}
 
 	.hero-ctas { display: flex; gap: 0.75rem; flex-wrap: wrap; }
