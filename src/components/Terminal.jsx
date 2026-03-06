@@ -157,6 +157,7 @@ export default function Terminal() {
   const [windowState, setWindowState] = useState("normal");
   const inputRef = useRef(null);
   const bottomRef = useRef(null);
+  const bodyRef = useRef(null);
 
   useEffect(() => {
     const timers = BOOT_SEQUENCE.map(({ text, delay, color }) =>
@@ -173,7 +174,9 @@ export default function Terminal() {
 
   useEffect(() => {
     if (windowState === "normal" || windowState === "maximized") {
-      bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      if (bodyRef.current) {
+        bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
+      }
     }
   }, [lines, windowState]);
 
@@ -473,7 +476,7 @@ export default function Terminal() {
           aria-label="Restore terminal"
         >
           <span className="term-tab-dot" />
-          <span className="term-tab-label">user@arthur3</span>
+          <span className="term-tab-label">user@arthur3 {cwd}</span>
           <span className="term-tab-open">↑</span>
         </button>
       )}
@@ -518,11 +521,11 @@ export default function Terminal() {
                   aria-label={isMaximized ? "Restore terminal" : "Maximise terminal"}
                 />
               </div>
-              <span className="term-titlebar-label">user@arthur3 ~ zsh</span>
+              <span className="term-titlebar-label">user@arthur3 {cwd} — zsh</span>
             </div>
 
             {/* Output */}
-            <div className="term-body">
+            <div className="term-body" ref={bodyRef}>
               {lines.map((line, i) => (
                 <div
                   key={i}
