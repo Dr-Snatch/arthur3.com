@@ -8,6 +8,15 @@ const sorted = swiftProjects.sort((a, b) => {
 	const db = b.data.pubDate ? new Date(b.data.pubDate).getTime() : 0;
 	return db - da;
 });
+
+function getTags(tagString) {
+	return tagString ? tagString.split(',').map(t => t.trim()) : [];
+}
+
+function getPlatformLabel(platform) {
+	const labels = { ios: 'iOS', macos: 'macOS', both: 'iOS & macOS' };
+	return labels[platform] || platform;
+}
 ---
 
 <SectionPage title="Swift Projects" description="iOS and macOS apps built with SwiftUI.">
@@ -24,8 +33,8 @@ const sorted = swiftProjects.sort((a, b) => {
 			) : (
 				<div class="project-grid">
 					{sorted.map((project) => {
-						const tags = project.data.tags ? project.data.tags.split(',').map((t: string) => t.trim()) : [];
-						const platformLabel = { ios: 'iOS', macos: 'macOS', both: 'iOS & macOS' }[project.data.platform] || project.data.platform;
+						const tags = getTags(project.data.tags);
+						const platformLabel = getPlatformLabel(project.data.platform);
 						return (
 							<article class="project-card">
 								<div class="card-top">
@@ -38,7 +47,7 @@ const sorted = swiftProjects.sort((a, b) => {
 								<p class="card-desc">{project.data.description}</p>
 								{tags.length > 0 && (
 									<div class="card-tags">
-										{tags.map((tag: string) => <span class="card-tag">{tag}</span>)}
+										{tags.map((tag) => <span class="card-tag">{tag}</span>)}
 									</div>
 								)}
 								<div class="card-links">
@@ -57,35 +66,13 @@ const sorted = swiftProjects.sort((a, b) => {
 <style>
 	.container { max-width: 1060px; margin: 0 auto; padding: 0 2rem; }
 	.section { padding: 2rem 0 6rem; }
-
 	.empty-state { padding: 3rem 0; }
 	.empty-msg { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: rgba(var(--fg-rgb),0.35); }
 	.ks-link { color: var(--accent); text-decoration: none; }
 	.ks-link:hover { text-decoration: underline; }
-
-	.project-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-		gap: 1.25rem;
-	}
-
-	.project-card {
-		display: flex;
-		flex-direction: column;
-		gap: 0.85rem;
-		padding: 2rem;
-		background: var(--bg-card);
-		border: 1px solid rgba(var(--accent-rgb),0.1);
-		border-top: 2px solid rgba(var(--accent-rgb),0.35);
-		border-radius: 14px;
-		transition: border-color 0.25s ease, box-shadow 0.25s ease;
-	}
-	.project-card:hover {
-		border-color: rgba(var(--accent-rgb),0.25);
-		border-top-color: var(--accent);
-		box-shadow: 0 8px 32px rgba(var(--accent-rgb),0.1);
-	}
-
+	.project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1.25rem; }
+	.project-card { display: flex; flex-direction: column; gap: 0.85rem; padding: 2rem; background: var(--bg-card); border: 1px solid rgba(var(--accent-rgb),0.1); border-top: 2px solid rgba(var(--accent-rgb),0.35); border-radius: 14px; transition: border-color 0.25s ease, box-shadow 0.25s ease; }
+	.project-card:hover { border-color: rgba(var(--accent-rgb),0.25); border-top-color: var(--accent); box-shadow: 0 8px 32px rgba(var(--accent-rgb),0.1); }
 	.card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
 	.card-name { font-family: 'Syne', sans-serif; font-size: 1.35rem; font-weight: 800; color: var(--fg); letter-spacing: -0.02em; display: block; }
 	.card-platform { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: rgba(var(--fg-rgb),0.3); letter-spacing: 0.06em; }
@@ -96,9 +83,5 @@ const sorted = swiftProjects.sort((a, b) => {
 	.card-links { display: flex; gap: 0.6rem; }
 	.clink { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: rgba(var(--fg-rgb),0.35); text-decoration: none; transition: color 0.2s ease; }
 	.clink:hover { color: var(--accent); }
-
-	@media (max-width: 640px) {
-		.container { padding: 0 1.5rem; }
-		.project-grid { grid-template-columns: 1fr; }
-	}
+	@media (max-width: 640px) { .container { padding: 0 1.5rem; } .project-grid { grid-template-columns: 1fr; } }
 </style>

@@ -8,6 +8,21 @@ const sorted = allProjects.sort((a, b) => {
 	const db = b.data.pubDate ? new Date(b.data.pubDate).getTime() : 0;
 	return db - da;
 });
+
+const statusColors = {
+	'in-progress': '#4ade80',
+	'released': '#60a5fa',
+	'on-hold': '#fbbf24',
+	'archived': 'rgba(var(--fg-rgb),0.3)',
+};
+
+function getStatusColor(status) {
+	return statusColors[status] || '#4ade80';
+}
+
+function getTags(tagString) {
+	return tagString ? tagString.split(',').map(t => t.trim()) : [];
+}
 ---
 
 <SectionPage title="Projects" description="Things I've built, am building, or broke trying.">
@@ -24,14 +39,8 @@ const sorted = allProjects.sort((a, b) => {
 			) : (
 				<div class="project-grid">
 					{sorted.map((project) => {
-						const tags = project.data.tags ? project.data.tags.split(',').map((t: string) => t.trim()) : [];
-						const statusColors: Record<string, string> = {
-							'in-progress': '#4ade80',
-							'released': '#60a5fa',
-							'on-hold': '#fbbf24',
-							'archived': 'rgba(var(--fg-rgb),0.3)',
-						};
-						const dotColor = statusColors[project.data.status] || '#4ade80';
+						const tags = getTags(project.data.tags);
+						const dotColor = getStatusColor(project.data.status);
 						return (
 							<a href={`/projects/${project.id}`} class="project-card">
 								<div class="card-top">
@@ -43,7 +52,7 @@ const sorted = allProjects.sort((a, b) => {
 								<p class="card-desc">{project.data.description}</p>
 								{tags.length > 0 && (
 									<div class="card-tags">
-										{tags.map((tag: string) => <span class="card-tag">{tag}</span>)}
+										{tags.map((tag) => <span class="card-tag">{tag}</span>)}
 									</div>
 								)}
 							</a>

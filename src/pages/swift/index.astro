@@ -9,6 +9,12 @@ const frameworks = [
 	'SwiftUI', 'UIKit', 'Core Data', 'MapKit', 'ShazamKit',
 	'AVFoundation', 'CryptoKit', 'Combine', 'Xcode', 'SPM',
 ];
+
+function getTags(tagString, limit) {
+	if (!tagString) return [];
+	const tags = tagString.split(',').map(t => t.trim());
+	return limit ? tags.slice(0, limit) : tags;
+}
 ---
 
 <SectionPage title="Swift" description="iOS and macOS development with SwiftUI.">
@@ -16,7 +22,6 @@ const frameworks = [
 	<Fragment slot="heading">Swift Development.</Fragment>
 	<Fragment slot="description">Native iOS and macOS apps built with SwiftUI. Focused on real functionality — persistence, auth, audio, maps, and AI integration.</Fragment>
 
-	<!-- Skills overview -->
 	<section class="section">
 		<div class="container">
 			<p class="eyebrow">frameworks & tools</p>
@@ -26,7 +31,6 @@ const frameworks = [
 		</div>
 	</section>
 
-	<!-- Swift Projects preview -->
 	<section class="section section-dark">
 		<div class="container">
 			<div class="section-header">
@@ -38,9 +42,9 @@ const frameworks = [
 			) : (
 				<div class="preview-grid">
 					{swiftProjects.slice(0, 4).map((project) => {
-						const tags = project.data.tags ? project.data.tags.split(',').map((t: string) => t.trim()).slice(0, 4) : [];
+						const tags = getTags(project.data.tags, 4);
 						return (
-							<a href={`/swift/projects`} class="preview-card">
+							<a href="/swift/projects" class="preview-card">
 								<div class="preview-top">
 									<span class="preview-name">{project.data.title}</span>
 									<span class="preview-platform">{project.data.platform.toUpperCase()}</span>
@@ -48,7 +52,7 @@ const frameworks = [
 								<p class="preview-desc">{project.data.description}</p>
 								{tags.length > 0 && (
 									<div class="preview-tags">
-										{tags.map((t: string) => <span class="ptag">{t}</span>)}
+										{tags.map((t) => <span class="ptag">{t}</span>)}
 									</div>
 								)}
 							</a>
@@ -59,7 +63,6 @@ const frameworks = [
 		</div>
 	</section>
 
-	<!-- Swift Blog preview -->
 	<section class="section">
 		<div class="container">
 			<div class="section-header">
@@ -71,7 +74,7 @@ const frameworks = [
 			) : (
 				<div class="posts-list">
 					{swiftPosts.sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()).slice(0, 5).map((post) => (
-						<a href={`/swift/blog`} class="post-row">
+						<a href="/swift/blog" class="post-row">
 							<span class="post-date">{new Date(post.data.pubDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
 							<span class="post-title">{post.data.title}</span>
 							<span class="post-arrow">→</span>
@@ -87,163 +90,33 @@ const frameworks = [
 	.container { max-width: 1060px; margin: 0 auto; padding: 0 2rem; }
 	.section { padding: 4.5rem 0; }
 	.section-dark { background: var(--bg-alt); }
-
-	.eyebrow {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.68rem;
-		letter-spacing: 0.14em;
-		text-transform: uppercase;
-		color: rgba(var(--fg-rgb),0.35);
-		margin: 0 0 1.75rem 0;
-	}
-
-	.section-header {
-		display: flex;
-		align-items: baseline;
-		justify-content: space-between;
-		gap: 1rem;
-		flex-wrap: wrap;
-	}
+	.eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(var(--fg-rgb),0.35); margin: 0 0 1.75rem 0; }
+	.section-header { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
 	.section-header .eyebrow { margin-bottom: 0; }
-
-	.subtle-link {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.7rem;
-		color: rgba(var(--fg-rgb),0.32);
-		text-decoration: none;
-		letter-spacing: 0.05em;
-		transition: color 0.2s ease;
-		margin-bottom: 1.75rem;
-	}
+	.subtle-link { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: rgba(var(--fg-rgb),0.32); text-decoration: none; letter-spacing: 0.05em; transition: color 0.2s ease; margin-bottom: 1.75rem; }
 	.subtle-link:hover { color: rgba(var(--fg-rgb),0.7); }
-
-	.empty-msg {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.82rem;
-		color: rgba(var(--fg-rgb),0.35);
-	}
+	.empty-msg { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: rgba(var(--fg-rgb),0.35); }
 	.ks-link { color: var(--accent); text-decoration: none; }
 	.ks-link:hover { text-decoration: underline; }
-
 	.stack-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-	.stack-item {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.78rem;
-		padding: 0.35rem 0.85rem;
-		border: 1px solid rgba(var(--accent-rgb),0.12);
-		border-radius: 6px;
-		color: rgba(var(--fg-rgb),0.55);
-		background: rgba(var(--accent-rgb),0.02);
-		transition: color 0.2s ease, border-color 0.2s ease;
-		cursor: default;
-	}
+	.stack-item { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; padding: 0.35rem 0.85rem; border: 1px solid rgba(var(--accent-rgb),0.12); border-radius: 6px; color: rgba(var(--fg-rgb),0.55); background: rgba(var(--accent-rgb),0.02); transition: color 0.2s ease, border-color 0.2s ease; cursor: default; }
 	.stack-item:hover { color: var(--fg); border-color: rgba(var(--accent-rgb),0.35); }
-
-	.preview-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-		gap: 1.25rem;
-		margin-top: 1.75rem;
-	}
-
-	.preview-card {
-		display: flex;
-		flex-direction: column;
-		gap: 0.65rem;
-		padding: 1.5rem;
-		background: var(--bg-card);
-		border: 1px solid rgba(var(--accent-rgb),0.1);
-		border-radius: 12px;
-		text-decoration: none;
-		transition: border-color 0.22s ease, box-shadow 0.22s ease;
-	}
-	.preview-card:hover {
-		border-color: rgba(var(--accent-rgb),0.25);
-		box-shadow: 0 4px 16px rgba(var(--accent-rgb),0.08);
-	}
-
-	.preview-top {
-		display: flex;
-		justify-content: space-between;
-		align-items: baseline;
-		gap: 0.75rem;
-	}
-
-	.preview-name {
-		font-family: 'Syne', sans-serif;
-		font-size: 1.15rem;
-		font-weight: 700;
-		color: var(--fg);
-	}
-
-	.preview-platform {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.6rem;
-		color: rgba(var(--fg-rgb),0.3);
-		letter-spacing: 0.1em;
-	}
-
-	.preview-desc {
-		font-family: 'Inter', sans-serif;
-		font-size: 0.85rem;
-		color: rgba(var(--fg-rgb),0.5);
-		line-height: 1.6;
-		margin: 0;
-	}
-
+	.preview-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem; margin-top: 1.75rem; }
+	.preview-card { display: flex; flex-direction: column; gap: 0.65rem; padding: 1.5rem; background: var(--bg-card); border: 1px solid rgba(var(--accent-rgb),0.1); border-radius: 12px; text-decoration: none; transition: border-color 0.22s ease, box-shadow 0.22s ease; }
+	.preview-card:hover { border-color: rgba(var(--accent-rgb),0.25); box-shadow: 0 4px 16px rgba(var(--accent-rgb),0.08); }
+	.preview-top { display: flex; justify-content: space-between; align-items: baseline; gap: 0.75rem; }
+	.preview-name { font-family: 'Syne', sans-serif; font-size: 1.15rem; font-weight: 700; color: var(--fg); }
+	.preview-platform { font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; color: rgba(var(--fg-rgb),0.3); letter-spacing: 0.1em; }
+	.preview-desc { font-family: 'Inter', sans-serif; font-size: 0.85rem; color: rgba(var(--fg-rgb),0.5); line-height: 1.6; margin: 0; }
 	.preview-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: auto; }
-	.ptag {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.62rem;
-		padding: 0.15rem 0.45rem;
-		background: rgba(var(--accent-rgb),0.07);
-		color: var(--accent);
-		border: 1px solid rgba(var(--accent-rgb),0.18);
-		border-radius: 4px;
-	}
-
-	.posts-list {
-		display: flex;
-		flex-direction: column;
-		margin-top: 1.75rem;
-	}
-
-	.post-row {
-		display: grid;
-		grid-template-columns: 120px 1fr auto;
-		gap: 1.5rem;
-		padding: 1rem 0;
-		border-bottom: 1px solid rgba(var(--accent-rgb),0.06);
-		text-decoration: none;
-		align-items: baseline;
-		transition: background 0.15s ease;
-	}
+	.ptag { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; padding: 0.15rem 0.45rem; background: rgba(var(--accent-rgb),0.07); color: var(--accent); border: 1px solid rgba(var(--accent-rgb),0.18); border-radius: 4px; }
+	.posts-list { display: flex; flex-direction: column; margin-top: 1.75rem; }
+	.post-row { display: grid; grid-template-columns: 120px 1fr auto; gap: 1.5rem; padding: 1rem 0; border-bottom: 1px solid rgba(var(--accent-rgb),0.06); text-decoration: none; align-items: baseline; transition: background 0.15s ease; }
 	.post-row:hover { background: rgba(var(--accent-rgb),0.02); }
-
-	.post-date {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.7rem;
-		color: rgba(var(--fg-rgb),0.3);
-	}
-
-	.post-title {
-		font-family: 'Inter', sans-serif;
-		font-size: 0.9rem;
-		color: rgba(var(--fg-rgb),0.7);
-		font-weight: 500;
-	}
+	.post-date { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: rgba(var(--fg-rgb),0.3); }
+	.post-title { font-family: 'Inter', sans-serif; font-size: 0.9rem; color: rgba(var(--fg-rgb),0.7); font-weight: 500; }
 	.post-row:hover .post-title { color: var(--fg); }
-
-	.post-arrow {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.75rem;
-		color: rgba(var(--accent-rgb),0.4);
-	}
+	.post-arrow { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: rgba(var(--accent-rgb),0.4); }
 	.post-row:hover .post-arrow { color: var(--accent); }
-
-	@media (max-width: 640px) {
-		.container { padding: 0 1.5rem; }
-		.post-row { grid-template-columns: 1fr auto; }
-		.post-date { display: none; }
-	}
+	@media (max-width: 640px) { .container { padding: 0 1.5rem; } .post-row { grid-template-columns: 1fr auto; } .post-date { display: none; } }
 </style>

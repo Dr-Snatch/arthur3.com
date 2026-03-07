@@ -1,4 +1,6 @@
 ---
+export const prerender = true;
+
 import { getCollection, render } from 'astro:content';
 import BaseHead from '../../components/BaseHead.astro';
 import Nav from '../../components/Nav.astro';
@@ -14,7 +16,7 @@ export async function getStaticPaths() {
 
 const { project } = Astro.props;
 const { Content } = await render(project);
-const tags = project.data.tags ? project.data.tags.split(',').map((t: string) => t.trim()) : [];
+const tags = project.data.tags ? project.data.tags.split(',').map(t => t.trim()) : [];
 ---
 
 <!doctype html>
@@ -35,7 +37,7 @@ const tags = project.data.tags ? project.data.tags.split(',').map((t: string) =>
 					<p class="project-desc">{project.data.description}</p>
 					{tags.length > 0 && (
 						<div class="project-tags">
-							{tags.map((tag: string) => <span class="ptag">{tag}</span>)}
+							{tags.map((tag) => <span class="ptag">{tag}</span>)}
 						</div>
 					)}
 					<div class="project-links">
