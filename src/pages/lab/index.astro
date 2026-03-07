@@ -1,0 +1,149 @@
+---
+import SectionPage from '../../layouts/SectionPage.astro';
+import { getCollection } from 'astro:content';
+
+const experiments = await getCollection('lab');
+const sorted = experiments.sort((a, b) => {
+	const da = a.data.pubDate ? new Date(a.data.pubDate).getTime() : 0;
+	const db = b.data.pubDate ? new Date(b.data.pubDate).getTime() : 0;
+	return db - da;
+});
+
+const statusEmoji: Record<string, string> = {
+	'experiment': '🧪',
+	'prototype': '🔧',
+	'shipped': '🚀',
+	'abandoned': '💀',
+};
+---
+
+<SectionPage title="Lab" description="Experiments, prototypes, and things that might not work.">
+	<Fragment slot="eyebrow">~/lab</Fragment>
+	<Fragment slot="heading">Lab.</Fragment>
+	<Fragment slot="description">Rough experiments, half-baked ideas, and prototypes. Some of these might become real projects. Most won't. That's the point.</Fragment>
+
+	<section class="section">
+		<div class="container">
+			{sorted.length === 0 ? (
+				<div class="empty-state">
+					<p class="empty-msg">No experiments yet. Add them via <a href="/keystatic" class="ks-link">/keystatic</a> → Lab Experiments.</p>
+				</div>
+			) : (
+				<div class="lab-grid">
+					{sorted.map((exp) => {
+						const tags = exp.data.tags ? exp.data.tags.split(',').map((t: string) => t.trim()) : [];
+						const emoji = statusEmoji[exp.data.status] || '🧪';
+						return (
+							<article class="lab-card">
+								<div class="lab-top">
+									<span class="lab-emoji" aria-hidden="true">{emoji}</span>
+									<span class="lab-status">{exp.data.status}</span>
+								</div>
+								<h3 class="lab-name">{exp.data.title}</h3>
+								<p class="lab-desc">{exp.data.description}</p>
+								{tags.length > 0 && (
+									<div class="lab-tags">
+										{tags.map((t: string) => <span class="ltag">{t}</span>)}
+									</div>
+								)}
+								<div class="lab-links">
+									{exp.data.liveUrl && <a href={exp.data.liveUrl} target="_blank" rel="noopener noreferrer" class="llink">Demo ↗</a>}
+									{exp.data.repoUrl && <a href={exp.data.repoUrl} target="_blank" rel="noopener noreferrer" class="llink">Source ↗</a>}
+								</div>
+							</article>
+						);
+					})}
+				</div>
+			)}
+		</div>
+	</section>
+</SectionPage>
+
+<style>
+	.container { max-width: 1060px; margin: 0 auto; padding: 0 2rem; }
+	.section { padding: 2rem 0 6rem; }
+
+	.empty-state { padding: 3rem 0; }
+	.empty-msg { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: rgba(var(--fg-rgb),0.35); }
+	.ks-link { color: var(--accent); text-decoration: none; }
+	.ks-link:hover { text-decoration: underline; }
+
+	.lab-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		gap: 1.25rem;
+	}
+
+	.lab-card {
+		display: flex;
+		flex-direction: column;
+		gap: 0.6rem;
+		padding: 1.5rem;
+		background: var(--bg-card);
+		border: 1px dashed rgba(var(--accent-rgb),0.15);
+		border-radius: 12px;
+		transition: border-color 0.22s ease, box-shadow 0.22s ease;
+	}
+	.lab-card:hover {
+		border-color: rgba(var(--accent-rgb),0.35);
+		box-shadow: 0 4px 16px rgba(var(--accent-rgb),0.06);
+	}
+
+	.lab-top {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.lab-emoji { font-size: 1.1rem; }
+
+	.lab-status {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.62rem;
+		color: rgba(var(--fg-rgb),0.3);
+		text-transform: uppercase;
+		letter-spacing: 0.1em;
+	}
+
+	.lab-name {
+		font-family: 'Syne', sans-serif;
+		font-size: 1.1rem;
+		font-weight: 700;
+		color: var(--fg);
+		margin: 0.15rem 0 0;
+	}
+
+	.lab-desc {
+		font-family: 'Inter', sans-serif;
+		font-size: 0.85rem;
+		color: rgba(var(--fg-rgb),0.5);
+		line-height: 1.6;
+		margin: 0;
+	}
+
+	.lab-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: auto; }
+	.ltag {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.62rem;
+		padding: 0.15rem 0.45rem;
+		background: rgba(var(--accent-rgb),0.05);
+		color: rgba(var(--accent-rgb),0.7);
+		border: 1px solid rgba(var(--accent-rgb),0.12);
+		border-radius: 4px;
+	}
+
+	.lab-links { display: flex; gap: 0.6rem; margin-top: 0.25rem; }
+	.llink {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.7rem;
+		color: rgba(var(--fg-rgb),0.35);
+		text-decoration: none;
+		transition: color 0.2s ease;
+	}
+	.llink:hover { color: var(--accent); }
+
+	@media (max-width: 640px) {
+		.container { padding: 0 1.5rem; }
+		.lab-grid { grid-template-columns: 1fr; }
+	}
+</style>

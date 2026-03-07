@@ -1,0 +1,156 @@
+---
+import SectionPage from '../../layouts/SectionPage.astro';
+import { getCollection } from 'astro:content';
+
+const allProjects = await getCollection('projects');
+const sorted = allProjects.sort((a, b) => {
+	const da = a.data.pubDate ? new Date(a.data.pubDate).getTime() : 0;
+	const db = b.data.pubDate ? new Date(b.data.pubDate).getTime() : 0;
+	return db - da;
+});
+---
+
+<SectionPage title="Projects" description="Things I've built, am building, or broke trying.">
+	<Fragment slot="eyebrow">~/projects</Fragment>
+	<Fragment slot="heading">Projects.</Fragment>
+	<Fragment slot="description">Everything I'm working on — apps, scripts, tools, experiments. Managed through Keystatic, updated as things ship.</Fragment>
+
+	<section class="section">
+		<div class="container">
+			{sorted.length === 0 ? (
+				<div class="empty-state">
+					<p class="empty-msg">No projects yet. Add them via <a href="/keystatic" class="ks-link">/keystatic</a>.</p>
+				</div>
+			) : (
+				<div class="project-grid">
+					{sorted.map((project) => {
+						const tags = project.data.tags ? project.data.tags.split(',').map((t: string) => t.trim()) : [];
+						const statusColors: Record<string, string> = {
+							'in-progress': '#4ade80',
+							'released': '#60a5fa',
+							'on-hold': '#fbbf24',
+							'archived': 'rgba(var(--fg-rgb),0.3)',
+						};
+						const dotColor = statusColors[project.data.status] || '#4ade80';
+						return (
+							<a href={`/projects/${project.id}`} class="project-card">
+								<div class="card-top">
+									<span class="card-name">{project.data.title}</span>
+									<span class="card-status" style={`color: ${dotColor}`}>
+										● {project.data.status.replace('-', ' ')}
+									</span>
+								</div>
+								<p class="card-desc">{project.data.description}</p>
+								{tags.length > 0 && (
+									<div class="card-tags">
+										{tags.map((tag: string) => <span class="card-tag">{tag}</span>)}
+									</div>
+								)}
+							</a>
+						);
+					})}
+				</div>
+			)}
+		</div>
+	</section>
+</SectionPage>
+
+<style>
+	.container {
+		max-width: 1060px;
+		margin: 0 auto;
+		padding: 0 2rem;
+	}
+	.section { padding: 2rem 0 6rem; }
+
+	.empty-state { padding: 3rem 0; }
+	.empty-msg {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.82rem;
+		color: rgba(var(--fg-rgb),0.35);
+	}
+	.ks-link {
+		color: var(--accent);
+		text-decoration: none;
+	}
+	.ks-link:hover { text-decoration: underline; }
+
+	.project-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+		gap: 1.25rem;
+	}
+
+	.project-card {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		padding: 1.75rem;
+		background: var(--bg-card);
+		border: 1px solid rgba(var(--accent-rgb),0.1);
+		border-top: 2px solid rgba(var(--accent-rgb),0.35);
+		border-radius: 14px;
+		text-decoration: none;
+		transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
+	}
+	.project-card:hover {
+		border-color: rgba(var(--accent-rgb),0.25);
+		border-top-color: var(--accent);
+		box-shadow: 0 8px 32px rgba(var(--accent-rgb),0.1);
+		transform: translateY(-2px);
+	}
+
+	.card-top {
+		display: flex;
+		justify-content: space-between;
+		align-items: flex-start;
+		gap: 1rem;
+	}
+
+	.card-name {
+		font-family: 'Syne', sans-serif;
+		font-size: 1.25rem;
+		font-weight: 800;
+		color: var(--fg);
+		letter-spacing: -0.02em;
+	}
+
+	.card-status {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.65rem;
+		white-space: nowrap;
+		text-transform: capitalize;
+		flex-shrink: 0;
+		padding-top: 0.25rem;
+	}
+
+	.card-desc {
+		font-family: 'Inter', sans-serif;
+		font-size: 0.88rem;
+		color: rgba(var(--fg-rgb),0.55);
+		line-height: 1.65;
+		margin: 0;
+	}
+
+	.card-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.35rem;
+		margin-top: auto;
+	}
+
+	.card-tag {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.65rem;
+		padding: 0.18rem 0.5rem;
+		background: rgba(var(--accent-rgb),0.07);
+		color: var(--accent);
+		border: 1px solid rgba(var(--accent-rgb),0.18);
+		border-radius: 5px;
+	}
+
+	@media (max-width: 640px) {
+		.container { padding: 0 1.5rem; }
+		.project-grid { grid-template-columns: 1fr; }
+	}
+</style>

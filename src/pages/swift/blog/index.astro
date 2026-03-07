@@ -1,0 +1,106 @@
+---
+import SectionPage from '../../../layouts/SectionPage.astro';
+import { getCollection } from 'astro:content';
+
+const swiftPosts = await getCollection('swiftBlog');
+const sorted = swiftPosts.sort((a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime());
+---
+
+<SectionPage title="Swift Blog" description="Articles about Swift, SwiftUI, and building iOS/macOS apps.">
+	<Fragment slot="eyebrow">~/swift/blog</Fragment>
+	<Fragment slot="heading">Swift Articles.</Fragment>
+	<Fragment slot="description">Technical posts about Swift development — things I've learned building real apps, mistakes I've made, and patterns that actually work.</Fragment>
+
+	<section class="section">
+		<div class="container">
+			{sorted.length === 0 ? (
+				<div class="empty-state">
+					<p class="empty-msg">No articles yet. Add them via <a href="/keystatic" class="ks-link">/keystatic</a> → Swift Blog.</p>
+				</div>
+			) : (
+				<div class="posts-list">
+					{sorted.map((post) => {
+						const tags = post.data.tags ? post.data.tags.split(',').map((t: string) => t.trim()) : [];
+						return (
+							<article class="post-card">
+								<span class="post-date">{new Date(post.data.pubDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}</span>
+								<h2 class="post-title">{post.data.title}</h2>
+								<p class="post-desc">{post.data.description}</p>
+								{tags.length > 0 && (
+									<div class="post-tags">
+										{tags.map((t: string) => <span class="ptag">{t}</span>)}
+									</div>
+								)}
+							</article>
+						);
+					})}
+				</div>
+			)}
+		</div>
+	</section>
+</SectionPage>
+
+<style>
+	.container { max-width: 1060px; margin: 0 auto; padding: 0 2rem; }
+	.section { padding: 2rem 0 6rem; }
+
+	.empty-state { padding: 3rem 0; }
+	.empty-msg { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: rgba(var(--fg-rgb),0.35); }
+	.ks-link { color: var(--accent); text-decoration: none; }
+	.ks-link:hover { text-decoration: underline; }
+
+	.posts-list { display: flex; flex-direction: column; gap: 1.5rem; }
+
+	.post-card {
+		padding: 2rem;
+		background: var(--bg-card);
+		border: 1px solid rgba(var(--accent-rgb),0.1);
+		border-left: 3px solid rgba(var(--accent-rgb),0.3);
+		border-radius: 0 12px 12px 0;
+		transition: border-color 0.2s ease, box-shadow 0.2s ease;
+	}
+	.post-card:hover {
+		border-left-color: var(--accent);
+		box-shadow: 0 4px 16px rgba(var(--accent-rgb),0.06);
+	}
+
+	.post-date {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.68rem;
+		color: rgba(var(--fg-rgb),0.3);
+		letter-spacing: 0.04em;
+	}
+
+	.post-title {
+		font-family: 'Syne', sans-serif;
+		font-size: 1.25rem;
+		font-weight: 700;
+		color: var(--fg);
+		margin: 0.5rem 0 0.6rem;
+		letter-spacing: -0.02em;
+	}
+
+	.post-desc {
+		font-family: 'Inter', sans-serif;
+		font-size: 0.88rem;
+		color: rgba(var(--fg-rgb),0.5);
+		line-height: 1.65;
+		margin: 0 0 0.75rem;
+		max-width: 600px;
+	}
+
+	.post-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+	.ptag {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.62rem;
+		padding: 0.15rem 0.45rem;
+		background: rgba(var(--accent-rgb),0.07);
+		color: var(--accent);
+		border: 1px solid rgba(var(--accent-rgb),0.18);
+		border-radius: 4px;
+	}
+
+	@media (max-width: 640px) {
+		.container { padding: 0 1.5rem; }
+	}
+</style>

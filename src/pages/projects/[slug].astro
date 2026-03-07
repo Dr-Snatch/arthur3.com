@@ -1,0 +1,193 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Nav from '../../components/Nav.astro';
+import Footer from '../../components/Footer.astro';
+
+export async function getStaticPaths() {
+	const projects = await getCollection('projects');
+	return projects.map((project) => ({
+		params: { slug: project.id },
+		props: { project },
+	}));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+const tags = project.data.tags ? project.data.tags.split(',').map((t: string) => t.trim()) : [];
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`${project.data.title} — arthur3`} description={project.data.description} />
+	</head>
+	<body>
+		<Nav />
+		<main>
+			<section class="project-hero">
+				<div class="container">
+					<a href="/projects" class="back-link">← All Projects</a>
+					<div class="hero-top">
+						<h1 class="project-title">{project.data.title}</h1>
+						<span class="project-status">● {project.data.status.replace('-', ' ')}</span>
+					</div>
+					<p class="project-desc">{project.data.description}</p>
+					{tags.length > 0 && (
+						<div class="project-tags">
+							{tags.map((tag: string) => <span class="ptag">{tag}</span>)}
+						</div>
+					)}
+					<div class="project-links">
+						{project.data.repoUrl && (
+							<a href={project.data.repoUrl} target="_blank" rel="noopener noreferrer" class="plink">GitHub ↗</a>
+						)}
+						{project.data.liveUrl && (
+							<a href={project.data.liveUrl} target="_blank" rel="noopener noreferrer" class="plink">Live ↗</a>
+						)}
+					</div>
+				</div>
+			</section>
+			<section class="project-content">
+				<div class="container prose">
+					<Content />
+				</div>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	body { padding-top: 0; }
+	main { width: 100%; max-width: 100%; margin: 0; padding: 0; }
+	.container { max-width: 1060px; margin: 0 auto; padding: 0 2rem; }
+
+	.project-hero { padding: 10rem 0 3rem; }
+
+	.back-link {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.72rem;
+		color: rgba(var(--fg-rgb),0.35);
+		text-decoration: none;
+		letter-spacing: 0.03em;
+		transition: color 0.2s ease;
+		display: inline-block;
+		margin-bottom: 2rem;
+	}
+	.back-link:hover { color: var(--accent); }
+
+	.hero-top {
+		display: flex;
+		align-items: baseline;
+		gap: 1.5rem;
+		flex-wrap: wrap;
+		margin-bottom: 1rem;
+	}
+
+	.project-title {
+		font-family: 'Syne', sans-serif;
+		font-size: clamp(2rem, 5vw, 3rem);
+		font-weight: 800;
+		letter-spacing: -0.04em;
+		color: var(--fg);
+		margin: 0;
+	}
+
+	.project-status {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.7rem;
+		color: #4ade80;
+		text-transform: capitalize;
+		white-space: nowrap;
+	}
+
+	.project-desc {
+		font-family: 'Inter', sans-serif;
+		font-size: 1.05rem;
+		color: rgba(var(--fg-rgb),0.55);
+		line-height: 1.7;
+		max-width: 600px;
+		margin: 0 0 1.5rem 0;
+	}
+
+	.project-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin-bottom: 1.5rem;
+	}
+
+	.ptag {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.68rem;
+		padding: 0.2rem 0.55rem;
+		background: rgba(var(--accent-rgb),0.07);
+		color: var(--accent);
+		border: 1px solid rgba(var(--accent-rgb),0.18);
+		border-radius: 5px;
+	}
+
+	.project-links { display: flex; gap: 0.75rem; }
+
+	.plink {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.75rem;
+		color: rgba(var(--fg-rgb),0.4);
+		text-decoration: none;
+		padding: 0.5rem 1rem;
+		border: 1px solid rgba(var(--accent-rgb),0.12);
+		border-radius: 8px;
+		transition: color 0.2s ease, border-color 0.2s ease;
+	}
+	.plink:hover { color: var(--fg); border-color: rgba(var(--accent-rgb),0.35); }
+
+	.project-content {
+		padding: 3rem 0 6rem;
+		border-top: 1px solid rgba(var(--accent-rgb),0.08);
+	}
+
+	.prose {
+		max-width: 720px;
+		font-family: 'Inter', sans-serif;
+		font-size: 0.95rem;
+		color: rgba(var(--fg-rgb),0.7);
+		line-height: 1.8;
+	}
+
+	.prose :global(h2) {
+		font-family: 'Syne', sans-serif;
+		font-size: 1.4rem;
+		font-weight: 700;
+		color: var(--fg);
+		margin: 2.5rem 0 1rem;
+	}
+
+	.prose :global(h3) {
+		font-family: 'Syne', sans-serif;
+		font-size: 1.1rem;
+		font-weight: 700;
+		color: var(--fg);
+		margin: 2rem 0 0.75rem;
+	}
+
+	.prose :global(code) {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.85em;
+		background: rgba(var(--accent-rgb),0.06);
+		padding: 0.15em 0.4em;
+		border-radius: 4px;
+		color: var(--accent);
+	}
+
+	.prose :global(a) {
+		color: var(--accent);
+		text-decoration: none;
+	}
+	.prose :global(a:hover) { text-decoration: underline; }
+
+	@media (max-width: 640px) {
+		.project-hero { padding: 8rem 0 2rem; }
+		.container { padding: 0 1.5rem; }
+	}
+</style>

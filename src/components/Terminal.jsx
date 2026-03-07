@@ -86,7 +86,6 @@ const COMMANDS = {
   whoami: {
     output: [{ text: "arthur — AI student, builder, terminal enjoyer." }],
   },
-  // ls is handled dynamically in handleCommand
   sudo: {
     output: [
       { text: "sudo: permission denied.", color: "#f87171" },
@@ -96,7 +95,6 @@ const COMMANDS = {
   uname: {
     output: [{ text: "arthur3-os 1.0.0 #1 SMP x86_64 GNU/Linux" }],
   },
-  // pwd is handled dynamically in handleCommand
   exit: {
     output: [{ text: "there's no escape." }],
   },
@@ -133,6 +131,19 @@ const CD_ROUTES = {
   swift: "/swift",
   blog: "/blog",
   lab: "/lab",
+};
+
+// Context-aware open targets: when inside a directory,
+// you can `open <item>` to navigate to a sub-page
+const OPEN_TARGETS = {
+  "/projects": {
+    "beatmap": "/projects/beatmap",
+    "rptext": "/projects/rptext",
+  },
+  "/swift": {
+    "projects": "/swift/projects",
+    "blog": "/swift/blog",
+  },
 };
 
 // state: "normal" | "minimized" | "maximized" | "closed"
@@ -221,6 +232,14 @@ export default function Terminal() {
       // open README.md from ~
       if (target === "README.md") {
         setLines((prev) => [...prev, { text: "README.md: you're looking at it.", color: "#94a3b8" }]);
+        return;
+      }
+      // Check context-aware targets first (e.g. `open beatmap` from /projects)
+      const cwdTargets = OPEN_TARGETS[cwd];
+      if (target && cwdTargets && cwdTargets[target.replace(/\/$/, "")]) {
+        const route = cwdTargets[target.replace(/\/$/, "")];
+        setLines((prev) => [...prev, { text: `opening ${route}...`, color: "#34d399" }]);
+        setTimeout(() => { window.location.href = route; }, 600);
         return;
       }
       // open a specific path e.g. open /projects

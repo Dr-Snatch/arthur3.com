@@ -1,8 +1,10 @@
 ---
 const navLinks = [
 	{ href: '/', label: 'Home' },
+	{ href: '/projects', label: 'Projects' },
+	{ href: '/swift', label: 'Swift' },
 	{ href: '/blog', label: 'Blog' },
-	{ href: '/#projects', label: 'Projects' },
+	{ href: '/lab', label: 'Lab' },
 	{ href: '/#contact', label: 'Contact' },
 ];
 ---
@@ -136,7 +138,6 @@ const navLinks = [
 		background: rgba(var(--fg-rgb), 0.06);
 	}
 
-	/* Mobile Menu Button */
 	.mobile-menu-btn {
 		display: none;
 		flex-direction: column;
@@ -188,7 +189,6 @@ const navLinks = [
 		top: 0;
 	}
 
-	/* Mobile Dropdown */
 	.mobile-dropdown {
 		position: fixed;
 		top: calc(107px + 2rem + 2px);
