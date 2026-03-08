@@ -187,13 +187,27 @@ function toDisplayPath(absPath) {
 
 const BOOT = [
   { text: "arthur3-os 1.0.0 (tty1)", delay: 0, color: "#6366f1" },
-  { text: "", delay: 100 },
-  { text: "loading kernel modules...", delay: 200, color: "#475569" },
-  { text: "mounting filesystems...", delay: 400, color: "#475569" },
-  { text: "starting network: cloudflare edge (LHR) ✓", delay: 600, color: "#34d399" },
-  { text: "loading profile: arthur", delay: 800, color: "#475569" },
-  { text: "", delay: 900 },
-  { text: 'type "help" for commands, or just explore.', delay: 1000, color: "#64748b" },
+  { text: "", delay: 80 },
+  { text: "loading kernel modules...", delay: 160, color: "#475569" },
+  { text: "mounting filesystems...", delay: 320, color: "#475569" },
+  { text: "starting network: cloudflare edge (LHR) ✓", delay: 480, color: "#34d399" },
+  { text: "loading profile: arthur", delay: 640, color: "#475569" },
+  { text: "", delay: 800 },
+  { text: "┌──────────────────────────────────────────────────────────┐", delay: 900 },
+  { text: "│                                                          │", delay: 900 },
+  { text: "│  Arthur — AI Student & App Builder.                      │", delay: 900, color: "#e2e8f0" },
+  { text: "│                                                          │", delay: 900 },
+  { text: "│  I build iOS and macOS apps in SwiftUI, automate things  │", delay: 900, color: "#94a3b8" },
+  { text: "│  in Python, and write JavaScript when I have to.         │", delay: 900, color: "#94a3b8" },
+  { text: "│  Currently working on BeatMap and RPtext.                │", delay: 900, color: "#94a3b8" },
+  { text: "│  Learning in public.                                     │", delay: 900, color: "#94a3b8" },
+  { text: "│                                                          │", delay: 900 },
+  { text: "│  BSc Artificial Intelligence · Northumbria University    │", delay: 900, color: "#475569" },
+  { text: "│  Newcastle, UK                                           │", delay: 900, color: "#475569" },
+  { text: "│                                                          │", delay: 900 },
+  { text: "└──────────────────────────────────────────────────────────┘", delay: 900 },
+  { text: "", delay: 1050 },
+  { text: 'type "help" for commands, or just explore.', delay: 1150, color: "#64748b" },
 ];
 
 const NEOFETCH = [
@@ -265,11 +279,8 @@ export default function Terminal() {
   const linesRef = useRef([]);
   const histRef = useRef([]);
 
-  // Keep refs in sync for navigation saves
   useEffect(() => { linesRef.current = lines; }, [lines]);
   useEffect(() => { histRef.current = history; }, [history]);
-
-  // Save state on every change (so nav-link navigation preserves it too)
   useEffect(() => { if (booted) saveState(lines, history); }, [lines, history, booted]);
 
   // ── MOUNT: restore state or boot ──
@@ -286,19 +297,17 @@ export default function Terminal() {
       const timers = BOOT.map(({ text, delay, color }) =>
         setTimeout(() => setLines((p) => [...p, { text, color }]), delay)
       );
-      const bt = setTimeout(() => setBooted(true), 1200);
+      const bt = setTimeout(() => setBooted(true), 1350);
       return () => { timers.forEach(clearTimeout); clearTimeout(bt); };
     }
   }, []);
 
-  // ── AUTO-SCROLL ──
   useEffect(() => {
     if ((windowState === "normal" || windowState === "maximized") && bodyRef.current) {
       bodyRef.current.scrollTop = bodyRef.current.scrollHeight;
     }
   }, [lines, windowState]);
 
-  // ── FOCUS ──
   useEffect(() => {
     if (windowState === "normal" || windowState === "maximized") {
       setTimeout(() => inputRef.current?.focus(), 50);
@@ -325,7 +334,6 @@ export default function Terminal() {
     const args = parts.slice(1);
     const rawArgs = trimmed.slice(base.length).trim();
 
-    // ── CLEAR ──
     if (base === "clear") { setLines([]); return; }
 
     // ── CD — with page navigation ──
@@ -337,23 +345,19 @@ export default function Terminal() {
       if (!node) { out([{ text: `cd: ${target}: no such file or directory`, color: "#f87171" }]); return; }
       if (node.type !== "dir") { out([{ text: `cd: ${target}: not a directory`, color: "#f87171" }]); return; }
 
-      // Check if we need to navigate to a different page
       if (node.url) {
         const currentPage = (window.location.pathname.replace(/\/+$/, "") || "/");
         if (node.url !== currentPage) {
-          // Save state including this command, then navigate
           const newLines = [...linesRef.current, prompt];
           saveState(newLines, [raw, ...histRef.current]);
           window.location.href = node.url;
           return;
         }
       }
-      // Same page or no URL — just update cwd
       setCwd(resolved);
       return;
     }
 
-    // ── PWD ──
     if (base === "pwd") { out([{ text: cwd }]); return; }
 
     // ── LS ──
@@ -371,8 +375,7 @@ export default function Terminal() {
         if (showHidden) out([{ text: "total " + items.length }, { text: "drwxr-xr-x  .   ", color: "#60a5fa" }, { text: "drwxr-xr-x  ..  ", color: "#60a5fa" }]);
         items.forEach((item) => {
           const cp = target === "/" ? "/" + item : target + "/" + item;
-          const cn = FS[cp];
-          const isDir = cn && cn.type === "dir";
+          const cn = FS[cp]; const isDir = cn && cn.type === "dir";
           const perms = isDir ? "drwxr-xr-x" : "-rw-r--r--";
           const sz = cn && cn.content ? String(cn.content.length * 42).padStart(5) : "  4096";
           const c = isDir ? "#60a5fa" : item.startsWith(".") ? "#475569" : item.endsWith(".py") || item.endsWith(".sh") ? "#4ade80" : "#94a3b8";
@@ -381,8 +384,7 @@ export default function Terminal() {
       } else {
         const result = items.map((item) => {
           const cp = target === "/" ? "/" + item : target + "/" + item;
-          const cn = FS[cp];
-          const isDir = cn && cn.type === "dir";
+          const cn = FS[cp]; const isDir = cn && cn.type === "dir";
           return { text: isDir ? item + "/" : item, color: isDir ? "#60a5fa" : "#94a3b8" };
         });
         out(result.length > 0 ? result : [{ text: "(empty)", color: "#475569" }]);
@@ -390,27 +392,23 @@ export default function Terminal() {
       return;
     }
 
-    // ── CAT ──
     if (base === "cat") {
       if (!args[0]) { out([{ text: "cat: missing operand", color: "#f87171" }]); return; }
-      const t = resolvePath(cwd, args[0]);
-      const n = FS[t];
+      const t = resolvePath(cwd, args[0]); const n = FS[t];
       if (!n) out([{ text: `cat: ${args[0]}: no such file or directory`, color: "#f87171" }]);
       else if (n.type === "dir") out([{ text: `cat: ${args[0]}: is a directory`, color: "#f87171" }]);
       else out(n.content.map((l) => ({ text: l })));
       return;
     }
 
-    // ── HEAD ──
     if (base === "head") {
-      const t = resolvePath(cwd, args[0] || "");
-      const n = FS[t];
+      const t = resolvePath(cwd, args[0] || ""); const n = FS[t];
       if (!n || n.type !== "file") out([{ text: `head: cannot read`, color: "#f87171" }]);
       else out(n.content.slice(0, 5).map((l) => ({ text: l })));
       return;
     }
 
-    // ── OPEN — navigate to page ──
+    // ── OPEN ──
     if (base === "open") {
       const target = args[0];
       if (!target) {
@@ -424,8 +422,7 @@ export default function Terminal() {
         } else out([{ text: "open: no page for this directory", color: "#f87171" }]);
         return;
       }
-      const resolved = resolvePath(cwd, target);
-      const node = FS[resolved];
+      const resolved = resolvePath(cwd, target); const node = FS[resolved];
       if (node && node.url) {
         const newLines = [...linesRef.current, prompt, { text: `opening ${node.url}...`, color: "#34d399" }];
         saveState(newLines, [raw, ...histRef.current]);
@@ -459,7 +456,6 @@ export default function Terminal() {
       return;
     }
 
-    // ── ECHO / DATE / WHOAMI / HOSTNAME / UNAME / UPTIME / HISTORY / WHICH ──
     if (base === "echo") { out([{ text: rawArgs.replace(/^["']|["']$/g, "") || "" }]); return; }
     if (base === "date") { out([{ text: new Date().toString() }]); return; }
     if (base === "whoami") { out([{ text: "arthur" }]); return; }
@@ -469,7 +465,6 @@ export default function Terminal() {
     if (base === "history") { out([...history].reverse().map((c, i) => ({ text: `  ${String(i + 1).padStart(4)}  ${c}`, color: "#64748b" }))); return; }
     if (base === "which" || base === "type") { out([{ text: `${args[0] || "?"}: shell built-in command` }]); return; }
 
-    // ── HELP ──
     if (base === "help") {
       out([
         { text: "┌────────────────────────────────────────────────────┐" },
@@ -496,47 +491,27 @@ export default function Terminal() {
       return;
     }
 
-    // ── ABOUT / SKILLS / CONTACT / PROJECTS ──
     if (base === "about") { out([{ text: "arthur@arthur3.com", color: "#6366f1" }, { text: "──────────────────" }, { text: "AI undergraduate @ Northumbria University" }, { text: "Building at the intersection of AI, security," }, { text: "and software engineering." }, { text: "" }, { text: "Currently shipping:" }, { text: "  → BeatMap  — iOS music tagging app (SwiftUI)" }, { text: "  → RPtext   — text-based RPG with AI NPCs" }, { text: "" }, { text: "When I'm not in lectures, I'm in the terminal." }]); return; }
     if (base === "skills") { out([{ text: "TECH STACK", color: "#6366f1" }, { text: "──────────" }, { text: "Languages   Swift · Python · TypeScript · JS" }, { text: "Mobile      SwiftUI · Core Data · ShazamKit" }, { text: "AI          Claude API · Ollama · LLM tooling" }, { text: "Web         Astro · React · Cloudflare Pages" }, { text: "Tools       Git · Docker · Linux · Vim" }]); return; }
     if (base === "contact") { out([{ text: "CONTACT", color: "#6366f1" }, { text: "───────" }, { text: "GitHub    github.com/Dr-Snatch" }, { text: "Email     arthurwheildon0@gmail.com" }, { text: "Twitter   x.com/ExpoArturo" }, { text: "LinkedIn  linkedin.com/in/arthurwheildon" }]); return; }
     if (base === "projects") { out([{ text: "PROJECTS", color: "#6366f1" }, { text: "────────" }, { text: "BeatMap    iOS music journaling — v1.1.0" }, { text: "RPtext     AI text RPG — core systems functional" }, { text: "" }, { text: "cd ~/projects to explore, or 'open' to visit the page", color: "#475569" }]); return; }
 
-    // ═══════════════════════════════════════
-    // EASTER EGGS
-    // ═══════════════════════════════════════
+    // ═══════ EASTER EGGS ═══════
     if (base === "neofetch") { out(NEOFETCH); return; }
     if (base === "cowsay") { out(cowsay(rawArgs || COWMSGS[Math.floor(Math.random() * COWMSGS.length)])); return; }
     if (base === "fortune") { const q = FS["/usr/share/fortune/quotes.txt"].content; out([{ text: q[Math.floor(Math.random() * q.length)], color: "#fbbf24" }]); return; }
-
-    if (base === "sudo") {
-      if (rawArgs.startsWith("rm -rf")) out([{ text: "[sudo] password for arthur: ********", color: "#f87171" }, { text: "nice try. this is a portfolio, not a sandbox." }, { text: "incident reported to /dev/null." }]);
-      else if (rawArgs === "make me a sandwich") out([{ text: "okay.", color: "#4ade80" }]);
-      else out([{ text: "[sudo] password for arthur: ********", color: "#f87171" }, { text: "arthur is not in the sudoers file. this incident will be reported." }]);
-      return;
-    }
-
+    if (base === "sudo") { if (rawArgs.startsWith("rm -rf")) out([{ text: "[sudo] password for arthur: ********", color: "#f87171" }, { text: "nice try. this is a portfolio, not a sandbox." }, { text: "incident reported to /dev/null." }]); else if (rawArgs === "make me a sandwich") out([{ text: "okay.", color: "#4ade80" }]); else out([{ text: "[sudo] password for arthur: ********", color: "#f87171" }, { text: "arthur is not in the sudoers file. this incident will be reported." }]); return; }
     if (base === "rm") { out([{ text: rawArgs.includes("-rf") ? "rm: nice try. refusing to destroy everything." : "rm: read-only filesystem", color: "#f87171" }]); return; }
     if (base === "touch") { out([{ text: args[0] === "grass" ? "good advice. going outside..." : "touch: read-only filesystem", color: args[0] === "grass" ? "#4ade80" : "#f87171" }]); return; }
     if (base === "mkdir" || base === "mv" || base === "cp") { out([{ text: `${base}: read-only filesystem`, color: "#f87171" }]); return; }
-
     if (base === "vim" || base === "vi") { out([{ text: "~" }, { text: "~" }, { text: "~                    VIM - Vi IMproved" }, { text: "~" }, { text: "~             you're stuck now. there's no escape." }, { text: "~                    (just kidding, type :q)" }, { text: "~" }]); return; }
     if (base === "emacs") { out([{ text: "emacs: great operating system, terrible text editor.", color: "#fbbf24" }, { text: "(this terminal is a vim household.)" }]); return; }
     if (base === "nano") { out([{ text: "nano is valid and I respect your choice.", color: "#4ade80" }]); return; }
     if (base === "code" || base === "code.") { out([{ text: "VS Code... the Switzerland of editors.", color: "#60a5fa" }]); return; }
-
     if (base === "python" || base === "python3") { out([{ text: "Python 3.12.0 (totally real)", color: "#fbbf24" }, { text: ">>> import antigravity" }, { text: "    (you are now floating)" }, { text: ">>> exit()" }]); return; }
     if (base === "node") { out([{ text: "Welcome to Node.js v24.12.0." }, { text: "> require('happiness')" }, { text: "Error: Cannot find module 'happiness'", color: "#f87171" }]); return; }
     if (base === "npm") { out(args[0] === "install" ? [{ text: "added 847 packages in 2s", color: "#4ade80" }, { text: "37 vulnerabilities (12 moderate, 25 high)", color: "#fbbf24" }, { text: "  good luck." }] : [{ text: `npm: '${args[0] || ""}' — sure, whatever.` }]); return; }
-
-    if (base === "git") {
-      if (args[0] === "status") out([{ text: "On branch main" }, { text: "nothing to commit, working tree clean", color: "#4ade80" }]);
-      else if (args[0] === "log") out([{ text: "commit 2b07eed (HEAD -> main)", color: "#fbbf24" }, { text: "Author: arthur <arthurwheildon0@gmail.com>" }, { text: "" }, { text: "    Add projects, swift, lab section pages" }]);
-      else if (args[0] === "blame") out([{ text: "it was you. it's always you." }]);
-      else out([{ text: `git: '${args[0] || ""}' is not a git command.` }]);
-      return;
-    }
-
+    if (base === "git") { if (args[0] === "status") out([{ text: "On branch main" }, { text: "nothing to commit, working tree clean", color: "#4ade80" }]); else if (args[0] === "log") out([{ text: "commit 2b07eed (HEAD -> main)", color: "#fbbf24" }, { text: "Author: arthur <arthurwheildon0@gmail.com>" }, { text: "" }, { text: "    Add projects, swift, lab section pages" }]); else if (args[0] === "blame") out([{ text: "it was you. it's always you." }]); else out([{ text: `git: '${args[0] || ""}' is not a git command.` }]); return; }
     if (base === "ping") { const h = args[0] || "localhost"; out([{ text: `PING ${h}: 56 data bytes` }, { text: `64 bytes from ${h}: icmp_seq=0 time=0.042 ms` }, { text: `64 bytes from ${h}: icmp_seq=1 time=0.069 ms` }, { text: "" }, { text: "3 packets transmitted, 3 received, 0% loss", color: "#4ade80" }]); return; }
     if (base === "curl") { out([{ text: '{"status":"alive","mood":"caffeinated","shipping":true}', color: "#4ade80" }]); return; }
     if (base === "make") { out([{ text: args[0] === "coffee" ? "☕ brewing..." : `make: *** No rule to make target '${args[0] || ""}'. Stop.`, color: args[0] === "coffee" ? "#fbbf24" : "#f87171" }]); return; }
@@ -554,13 +529,9 @@ export default function Terminal() {
     if (base === "xkcd") { out([{ text: "there's always a relevant xkcd. always." }]); return; }
     if (base === "rickroll" || trimmed === "never gonna") { out([{ text: "Never gonna give you up", color: "#f87171" }, { text: "Never gonna let you down", color: "#fbbf24" }, { text: "Never gonna run around and desert you", color: "#4ade80" }]); return; }
 
-    // ── FALLBACK ──
     out([{ text: `zsh: command not found: ${base}`, color: "#f87171" }, { text: 'type "help" for available commands', color: "#475569" }]);
   };
 
-  // ═════════════════════════════════════════
-  // KEY HANDLER
-  // ═════════════════════════════════════════
   const handleKeyDown = (e) => {
     if (e.key === "Enter") { e.preventDefault(); handleCommand(input); setInput(""); }
     else if (e.key === "ArrowUp") { e.preventDefault(); const n = Math.min(historyIndex + 1, history.length - 1); setHistoryIndex(n); setInput(history[n] || ""); }
