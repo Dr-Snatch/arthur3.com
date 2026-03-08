@@ -54,81 +54,30 @@ const FS = {
       'echo "☕ $(date +%A). time to build."',
     ],
   },
-
-  // ── PROJECTS ──
   "/home/arthur/projects": { type: "dir", url: "/projects", children: ["beatmap", "rptext", "arthur3-com"] },
   "/home/arthur/projects/beatmap": { type: "dir", url: "/projects/beatmap", children: ["README.md", "Package.swift", "BeatMap.xcodeproj"] },
-  "/home/arthur/projects/beatmap/README.md": {
-    type: "file",
-    content: [
-      "# BeatMap", "Music journaling for iOS. Tied to songs, places, and how you actually felt.", "",
-      "## Status: In Progress — v1.1.0", "",
-      "Diary entries linked to songs, location, mood, nostalgia, energy.",
-      "Pulls live data from Spotify, identifies songs via ShazamKit.", "",
-      "## Tech", "Swift · SwiftUI · Core Data · MapKit · ShazamKit",
-      "Spotify API · OAuth 2.0 PKCE · AVFoundation · CryptoKit",
-    ],
-  },
-  "/home/arthur/projects/beatmap/Package.swift": {
-    type: "file",
-    content: ['// swift-tools-version: 5.9', 'import PackageDescription', '', 'let package = Package(', '    name: "BeatMap",', '    platforms: [.iOS(.v17)],', ')'],
-  },
+  "/home/arthur/projects/beatmap/README.md": { type: "file", content: ["# BeatMap", "Music journaling for iOS. Tied to songs, places, and how you actually felt.", "", "## Status: In Progress — v1.1.0", "", "Diary entries linked to songs, location, mood, nostalgia, energy.", "Pulls live data from Spotify, identifies songs via ShazamKit.", "", "## Tech", "Swift · SwiftUI · Core Data · MapKit · ShazamKit", "Spotify API · OAuth 2.0 PKCE · AVFoundation · CryptoKit"] },
+  "/home/arthur/projects/beatmap/Package.swift": { type: "file", content: ['// swift-tools-version: 5.9', 'import PackageDescription', '', 'let package = Package(', '    name: "BeatMap",', '    platforms: [.iOS(.v17)],', ')'] },
   "/home/arthur/projects/beatmap/BeatMap.xcodeproj": { type: "file", content: ["[binary — Xcode project file]"] },
   "/home/arthur/projects/rptext": { type: "dir", url: "/projects/rptext", children: ["README.md", "Package.swift"] },
-  "/home/arthur/projects/rptext/README.md": {
-    type: "file",
-    content: [
-      "# RPtext", "An AI-powered text RPG. Living world, real consequences, no scripted content.", "",
-      "## Status: In Progress — Core systems functional", "",
-      "Native macOS app. AI generates the entire narrative in real time.",
-      "NPCs remember you. Factions track your reputation.", "",
-      "## Tech", "Swift · SwiftUI · Claude API · Ollama · llama3.2:3b",
-      "JSON parsing · Streaming responses · macOS",
-    ],
-  },
-  "/home/arthur/projects/rptext/Package.swift": {
-    type: "file",
-    content: ['// swift-tools-version: 5.9', 'import PackageDescription', '', 'let package = Package(', '    name: "RPtext",', '    platforms: [.macOS(.v14)],', ')'],
-  },
+  "/home/arthur/projects/rptext/README.md": { type: "file", content: ["# RPtext", "An AI-powered text RPG. Living world, real consequences, no scripted content.", "", "## Status: In Progress — Core systems functional", "", "Native macOS app. AI generates the entire narrative in real time.", "NPCs remember you. Factions track your reputation.", "", "## Tech", "Swift · SwiftUI · Claude API · Ollama · llama3.2:3b", "JSON parsing · Streaming responses · macOS"] },
+  "/home/arthur/projects/rptext/Package.swift": { type: "file", content: ['// swift-tools-version: 5.9', 'import PackageDescription', '', 'let package = Package(', '    name: "RPtext",', '    platforms: [.macOS(.v14)],', ')'] },
   "/home/arthur/projects/arthur3-com": { type: "dir", children: ["README.md"] },
-  "/home/arthur/projects/arthur3-com/README.md": {
-    type: "file",
-    content: ["# arthur3.com", "This website. Astro + Keystatic + Cloudflare Pages.", "The terminal you're using right now is part of it."],
-  },
-
-  // ── LAB ──
+  "/home/arthur/projects/arthur3-com/README.md": { type: "file", content: ["# arthur3.com", "This website. Astro + Keystatic + Cloudflare Pages.", "The terminal you're using right now is part of it."] },
   "/home/arthur/lab": { type: "dir", url: "/lab", children: ["experiments"] },
   "/home/arthur/lab/experiments": { type: "dir", children: [] },
-
-  // ── SYSTEM ──
   "/etc": { type: "dir", children: ["hostname", "motd"] },
   "/etc/hostname": { type: "file", content: ["arthur3.com"] },
-  "/etc/motd": { type: "file", content: ["┌──────────────────────────────────────────┐", "│  Welcome to arthur3-os 1.0.0             │", "│  Built with Astro · Hosted on Cloudflare │", "└──────────────────────────────────────────┘"] },
+  "/etc/motd": { type: "file", content: ["Welcome to arthur3-os 1.0.0", "Built with Astro · Hosted on Cloudflare"] },
   "/usr": { type: "dir", children: ["bin", "share"] },
   "/usr/bin": { type: "dir", children: [] },
   "/usr/share": { type: "dir", children: ["fortune"] },
   "/usr/share/fortune": { type: "dir", children: ["quotes.txt"] },
-  "/usr/share/fortune/quotes.txt": {
-    type: "file",
-    content: [
-      '"Any sufficiently advanced technology is indistinguishable from magic." — Clarke',
-      '"First, solve the problem. Then, write the code." — John Johnson',
-      '"It works on my machine." — Every developer, ever',
-      '"Talk is cheap. Show me the code." — Linus Torvalds',
-    ],
-  },
+  "/usr/share/fortune/quotes.txt": { type: "file", content: ['"Any sufficiently advanced technology is indistinguishable from magic." — Clarke', '"First, solve the problem. Then, write the code." — John Johnson', '"It works on my machine." — Every developer, ever', '"Talk is cheap. Show me the code." — Linus Torvalds'] },
   "/tmp": { type: "dir", children: [] },
   "/var": { type: "dir", children: ["log"] },
   "/var/log": { type: "dir", children: ["syslog"] },
-  "/var/log/syslog": {
-    type: "file",
-    content: [
-      "[2026-03-07 00:00:01] system boot complete",
-      "[2026-03-07 00:00:02] loaded profile: arthur",
-      "[2026-03-07 00:00:03] network: cloudflare edge (LHR) connected",
-      "[2026-03-07 00:00:04] all systems nominal ✓",
-    ],
-  },
+  "/var/log/syslog": { type: "file", content: ["[2026-03-07 00:00:01] system boot complete", "[2026-03-07 00:00:02] loaded profile: arthur", "[2026-03-07 00:00:03] network: cloudflare edge (LHR) connected", "[2026-03-07 00:00:04] all systems nominal ✓"] },
 };
 
 const HOME = "/home/arthur";
@@ -151,33 +100,24 @@ function toDisplayPath(absPath) {
 }
 
 // ═══════════════════════════════════════════════════════════
-// BOOT + EASTER EGGS
+// BOOT
 // ═══════════════════════════════════════════════════════════
 
 const BOOT = [
-  { text: "arthur3-os 1.0.0 (tty1)", delay: 0, color: "#6366f1" },
-  { text: "", delay: 80 },
-  { text: "loading kernel modules...", delay: 160, color: "#475569" },
-  { text: "mounting filesystems...", delay: 320, color: "#475569" },
-  { text: "starting network: cloudflare edge (LHR) ✓", delay: 480, color: "#34d399" },
-  { text: "loading profile: arthur", delay: 640, color: "#475569" },
-  { text: "", delay: 800 },
-  { text: "┌──────────────────────────────────────────────────────────┐", delay: 900 },
-  { text: "│                                                          │", delay: 900 },
-  { text: "│  Arthur — AI Student & App Builder.                      │", delay: 900, color: "#e2e8f0" },
-  { text: "│                                                          │", delay: 900 },
-  { text: "│  I build iOS and macOS apps in SwiftUI, automate things  │", delay: 900, color: "#94a3b8" },
-  { text: "│  in Python, and write JavaScript when I have to.         │", delay: 900, color: "#94a3b8" },
-  { text: "│  Currently working on BeatMap and RPtext.                │", delay: 900, color: "#94a3b8" },
-  { text: "│  Learning in public.                                     │", delay: 900, color: "#94a3b8" },
-  { text: "│                                                          │", delay: 900 },
-  { text: "│  BSc Artificial Intelligence · Northumbria University    │", delay: 900, color: "#475569" },
-  { text: "│  Newcastle, UK                                           │", delay: 900, color: "#475569" },
-  { text: "│                                                          │", delay: 900 },
-  { text: "└──────────────────────────────────────────────────────────┘", delay: 900 },
-  { text: "", delay: 1050 },
-  { text: 'type "help" for commands, or just explore.', delay: 1150, color: "#64748b" },
+  { text: "Arthur Wheildon", delay: 0, color: "#e2e8f0" },
+  { text: "BSc Artificial Intelligence · Northumbria University · Newcastle, UK", delay: 0, color: "#475569" },
+  { text: "", delay: 0 },
+  { text: "iOS & macOS apps in SwiftUI. Python automation. AI integration.", delay: 100, color: "#94a3b8" },
+  { text: "Currently shipping BeatMap and RPtext.", delay: 100, color: "#94a3b8" },
+  { text: "", delay: 200 },
+  { text: "→ type help or start exploring with ls, cd, cat", delay: 300, color: "#64748b" },
 ];
+
+const BOOT_READY = 500;
+
+// ═══════════════════════════════════════════════════════════
+// EASTER EGGS
+// ═══════════════════════════════════════════════════════════
 
 const NEOFETCH = [
   { text: "        .--.         arthur@arthur3.com", color: "#6366f1" },
@@ -236,7 +176,7 @@ export default function Terminal() {
     const saved = loadState();
     setCwd(cwdFromUrl());
     if (saved && saved.lines.length > 0) { setLines(saved.lines); setHistory(saved.history); setBooted(true); }
-    else { const timers = BOOT.map(({ text, delay, color }) => setTimeout(() => setLines((p) => [...p, { text, color }]), delay)); const bt = setTimeout(() => setBooted(true), 1350); return () => { timers.forEach(clearTimeout); clearTimeout(bt); }; }
+    else { const timers = BOOT.map(({ text, delay, color }) => setTimeout(() => setLines((p) => [...p, { text, color }]), delay)); const bt = setTimeout(() => setBooted(true), BOOT_READY); return () => { timers.forEach(clearTimeout); clearTimeout(bt); }; }
   }, []);
 
   useEffect(() => { if ((windowState === "normal" || windowState === "maximized") && bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight; }, [lines, windowState]);
@@ -259,21 +199,16 @@ export default function Terminal() {
 
     if (base === "clear") { setLines([]); return; }
 
-    // ── RESET — clear everything, replay boot, go home ──
     if (base === "reset") {
-      clearState();
-      setLines([]);
-      setHistory([]);
-      setHistoryIndex(-1);
+      clearState(); setLines([]); setHistory([]); setHistoryIndex(-1);
       const currentPage = window.location.pathname.replace(/\/+$/, "") || "/";
       if (currentPage !== "/") { window.location.href = "/"; return; }
       setCwd(HOME);
-      const timers = BOOT.map(({ text, delay, color }) => setTimeout(() => setLines((p) => [...p, { text, color }]), delay));
-      setTimeout(() => setBooted(true), 1350);
+      BOOT.forEach(({ text, delay, color }) => setTimeout(() => setLines((p) => [...p, { text, color }]), delay));
+      setTimeout(() => setBooted(true), BOOT_READY);
       return;
     }
 
-    // ── HOME — navigate to landing page ──
     if (base === "home") {
       const currentPage = window.location.pathname.replace(/\/+$/, "") || "/";
       if (currentPage === "/") { setCwd(HOME); out([{ text: "already home.", color: "#475569" }]); return; }
@@ -283,7 +218,6 @@ export default function Terminal() {
       return;
     }
 
-    // ── CD ──
     if (base === "cd") {
       const target = args[0] || "~";
       if (target === "-") { out([{ text: "cd: OLDPWD not set", color: "#f87171" }]); return; }
@@ -291,17 +225,12 @@ export default function Terminal() {
       const node = FS[resolved];
       if (!node) { out([{ text: `cd: ${target}: no such file or directory`, color: "#f87171" }]); return; }
       if (node.type !== "dir") { out([{ text: `cd: ${target}: not a directory`, color: "#f87171" }]); return; }
-      if (node.url) {
-        const currentPage = (window.location.pathname.replace(/\/+$/, "") || "/");
-        if (node.url !== currentPage) { const newLines = [...linesRef.current, prompt]; saveState(newLines, [raw, ...histRef.current]); window.location.href = node.url; return; }
-      }
-      setCwd(resolved);
-      return;
+      if (node.url) { const currentPage = (window.location.pathname.replace(/\/+$/, "") || "/"); if (node.url !== currentPage) { saveState([...linesRef.current, prompt], [raw, ...histRef.current]); window.location.href = node.url; return; } }
+      setCwd(resolved); return;
     }
 
     if (base === "pwd") { out([{ text: cwd }]); return; }
 
-    // ── LS ──
     if (base === "ls") {
       const showHidden = args.includes("-a") || args.includes("-la") || args.includes("-al");
       const showLong = args.includes("-l") || args.includes("-la") || args.includes("-al");
@@ -325,18 +254,16 @@ export default function Terminal() {
     if (base === "cat") { if (!args[0]) { out([{ text: "cat: missing operand", color: "#f87171" }]); return; } const t = resolvePath(cwd, args[0]); const n = FS[t]; if (!n) out([{ text: `cat: ${args[0]}: no such file or directory`, color: "#f87171" }]); else if (n.type === "dir") out([{ text: `cat: ${args[0]}: is a directory`, color: "#f87171" }]); else out(n.content.map((l) => ({ text: l }))); return; }
     if (base === "head") { const t = resolvePath(cwd, args[0] || ""); const n = FS[t]; if (!n || n.type !== "file") out([{ text: `head: cannot read`, color: "#f87171" }]); else out(n.content.slice(0, 5).map((l) => ({ text: l }))); return; }
 
-    // ── OPEN ──
     if (base === "open") {
       const target = args[0];
-      if (!target) { const node = FS[cwd]; if (node && node.url) { const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (node.url === cp) { out([{ text: "you're already here.", color: "#475569" }]); return; } const nl = [...linesRef.current, prompt, { text: `opening ${node.url}...`, color: "#34d399" }]; saveState(nl, [raw, ...histRef.current]); setTimeout(() => { window.location.href = node.url; }, 400); } else out([{ text: "open: no page for this directory", color: "#f87171" }]); return; }
+      if (!target) { const node = FS[cwd]; if (node && node.url) { const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (node.url === cp) { out([{ text: "you're already here.", color: "#475569" }]); return; } saveState([...linesRef.current, prompt, { text: `opening ${node.url}...`, color: "#34d399" }], [raw, ...histRef.current]); setTimeout(() => { window.location.href = node.url; }, 400); } else out([{ text: "open: no page for this directory", color: "#f87171" }]); return; }
       const resolved = resolvePath(cwd, target); const node = FS[resolved];
-      if (node && node.url) { const nl = [...linesRef.current, prompt, { text: `opening ${node.url}...`, color: "#34d399" }]; saveState(nl, [raw, ...histRef.current]); setTimeout(() => { window.location.href = node.url; }, 400); }
+      if (node && node.url) { saveState([...linesRef.current, prompt, { text: `opening ${node.url}...`, color: "#34d399" }], [raw, ...histRef.current]); setTimeout(() => { window.location.href = node.url; }, 400); }
       else if (target.startsWith("http")) { out([{ text: `opening ${target}...`, color: "#34d399" }]); setTimeout(() => { window.open(target, "_blank"); }, 400); }
       else out([{ text: `open: ${target}: no page associated`, color: "#f87171" }]);
       return;
     }
 
-    // ── TREE ──
     if (base === "tree") {
       const target = args[0] ? resolvePath(cwd, args[0]) : cwd; const node = FS[target];
       if (!node || node.type !== "dir") { out([{ text: `tree: not a directory`, color: "#f87171" }]); return; }
@@ -387,7 +314,6 @@ export default function Terminal() {
     if (base === "contact") { out([{ text: "CONTACT", color: "#6366f1" }, { text: "───────" }, { text: "GitHub    github.com/Dr-Snatch" }, { text: "Email     arthurwheildon0@gmail.com" }, { text: "Twitter   x.com/ExpoArturo" }, { text: "LinkedIn  linkedin.com/in/arthurwheildon" }]); return; }
     if (base === "projects") { out([{ text: "PROJECTS", color: "#6366f1" }, { text: "────────" }, { text: "BeatMap    iOS music journaling — v1.1.0" }, { text: "RPtext     AI text RPG — core systems functional" }, { text: "" }, { text: "cd ~/projects to explore, or 'open' to visit the page", color: "#475569" }]); return; }
 
-    // ═══════ EASTER EGGS ═══════
     if (base === "neofetch") { out(NEOFETCH); return; }
     if (base === "cowsay") { out(cowsay(rawArgs || COWMSGS[Math.floor(Math.random() * COWMSGS.length)])); return; }
     if (base === "fortune") { const q = FS["/usr/share/fortune/quotes.txt"].content; out([{ text: q[Math.floor(Math.random() * q.length)], color: "#fbbf24" }]); return; }
