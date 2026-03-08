@@ -3,7 +3,7 @@
 // ============================================================
 
 export const SITE_TITLE = 'arthur3';
-export const SITE_DESCRIPTION = 'BSc Artificial Intelligence, Northumbria University. Building iOS apps, Python tools, and AI-powered software. Newcastle, UK.';
+export const SITE_DESCRIPTION = 'BSc Artificial Intelligence, Northumbria University. Building AI-powered tools, exploring cybersecurity, and shipping native apps. Newcastle, UK.';
 
 export const CONTACT_HEADING = "Get in touch.";
 export const CONTACT_TEXT = 'GitHub, LinkedIn, or email. No fluff.';

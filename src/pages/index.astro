@@ -6,26 +6,28 @@ import TerminalBar from '../components/TerminalBar.astro';
 import { SITE_DESCRIPTION, SITE_TITLE, SOCIAL_LINKS } from '../consts';
 
 const stack = [
-	'Swift', 'SwiftUI', 'Python', 'JavaScript',
-	'iOS', 'macOS', 'Xcode', 'Core Data',
-	'Claude API', 'Ollama', 'Git',
+	'Python', 'Claude API', 'Ollama', 'LLM Tooling',
+	'Prompt Engineering', 'JSON Extraction',
+	'Swift', 'SwiftUI', 'Linux', 'Networking',
+	'OAuth 2.0', 'Keychain', 'CryptoKit', 'Git',
 ];
 
 const exploring = [
-	'Building AI-powered tools on top of LLM APIs',
-	'Improving as a SwiftUI developer — persistence, auth, background tasks',
-	'Structured data extraction from unstructured AI output',
-	'Learning how to ship faster and more consistently',
-	'Reading about how modern AI systems are actually built',
+	'AI agent architectures and tool-use patterns',
+	'Structured data extraction from LLM outputs at scale',
+	'Network security fundamentals — packet analysis, protocols, attack surfaces',
+	'Offensive security basics — CTFs, OWASP Top 10, reconnaissance',
+	'Secure authentication flows — OAuth, PKCE, token management',
+	'How modern AI systems are actually built under the hood',
 ];
 
 const buildLog = [
-	{ hash: 'f3a91cc', date: 'Mar 2026', message: 'RPtext: character creation, combat, stats, inventory, NPC memory, and faction standings all functional.' },
-	{ hash: 'b7e24d1', date: 'Mar 2026', message: 'BeatMap v1.1.0: Core Data migration, AirDrop sharing, and Spotify integration shipped.' },
-	{ hash: '9c1f8a3', date: 'Feb 2026', message: 'BeatMap: ShazamKit integration and OAuth 2.0 PKCE auth — the hard parts are done.' },
+	{ hash: 'f3a91cc', date: 'Mar 2026', message: 'RPtext: AI narrative engine with NPC memory, faction reputation, and structured game state extraction.' },
+	{ hash: 'b7e24d1', date: 'Mar 2026', message: 'BeatMap v1.1.0: OAuth 2.0 PKCE auth, Keychain token storage, secure API integration.' },
+	{ hash: '9c1f8a3', date: 'Feb 2026', message: 'XML sandwich architecture — 98.7% reliable JSON extraction from streaming LLM responses.' },
 	{ hash: '5d3b70e', date: 'Jan 2026', message: 'First semester of BSc Artificial Intelligence at Northumbria underway.' },
-	{ hash: 'a2e95f4', date: 'Late 2025', message: 'Building with JavaScript and TypeScript. First proper web projects.' },
-	{ hash: 'c8d1240', date: 'Mid 2025', message: 'Started learning SwiftUI. BeatMap concept begins.' },
+	{ hash: 'a2e95f4', date: 'Late 2025', message: 'First experiments with Claude API and Ollama. Local LLM benchmarking.' },
+	{ hash: 'c8d1240', date: 'Mid 2025', message: 'Started learning SwiftUI. Building native apps from scratch.' },
 ];
 ---
 
@@ -62,16 +64,16 @@ const buildLog = [
 					<p class="eyebrow">what i build</p>
 					<div class="build-grid">
 						<div class="build-col">
-							<h3 class="build-title">iOS &amp; macOS Apps</h3>
-							<p class="build-desc">Native apps built with SwiftUI. Currently deep in Core Data, MapKit, third-party API auth, and AI integration.</p>
+							<h3 class="build-title">AI-Powered Software</h3>
+							<p class="build-desc">Tools built on top of LLMs — structured output extraction, streaming integrations, prompt architectures that actually work in production.</p>
 						</div>
 						<div class="build-col">
-							<h3 class="build-title">Automation &amp; Scripts</h3>
-							<p class="build-desc">Python scripts that handle repetitive tasks. Usually built to solve something annoying.</p>
+							<h3 class="build-title">Security-Conscious Apps</h3>
+							<p class="build-desc">Native iOS and macOS apps with secure auth flows, Keychain storage, cryptographic operations, and hardened API integrations.</p>
 						</div>
 						<div class="build-col">
-							<h3 class="build-title">Web Projects</h3>
-							<p class="build-desc">JavaScript and TypeScript. Frontends, small tools, experiments.</p>
+							<h3 class="build-title">Automation &amp; Tooling</h3>
+							<p class="build-desc">Python scripts, CLI tools, and infrastructure. If it can be automated or reverse-engineered, I'm interested.</p>
 						</div>
 					</div>
 				</div>
@@ -84,32 +86,32 @@ const buildLog = [
 						<article class="feat-card reveal">
 							<div class="feat-header">
 								<div>
-									<span class="feat-name">BeatMap</span>
-									<p class="feat-tagline">Music journaling for iOS. Tied to songs, places, and how you actually felt.</p>
+									<span class="feat-name">RPtext</span>
+									<p class="feat-tagline">AI narrative engine. Real-time world generation with structured state extraction.</p>
 								</div>
-								<span class="feat-status">● In Progress — v1.1.0</span>
+								<span class="feat-status">● In Progress — Core systems functional</span>
 							</div>
-							<p class="feat-desc">BeatMap lets you create diary entries linked to songs, your location, and personal metrics — mood, nostalgia, energy. It pulls live data from Spotify, identifies songs via ShazamKit, and builds an insights dashboard that surfaces patterns in your listening history over time.</p>
-							<div class="feat-callout"><span class="callout-prefix">// </span>The hardest part: managing competing audio sessions between ShazamKit and AVFoundation while keeping OAuth token refresh completely invisible to the user.</div>
+							<p class="feat-desc">A macOS app where AI generates an entire text RPG in real time. The engine extracts structured JSON game state from streaming LLM responses using a custom prompt architecture — reliable enough that the game never breaks mid-session, even with smaller local models.</p>
+							<div class="feat-callout"><span class="callout-prefix">// </span>XML sandwich architecture for structured data extraction from LLM output. Multi-fallback JSON parsing chain. Dual-model support: Claude API for quality, Ollama + llama3.2 for local/offline.</div>
 							<div class="feat-tags">
-								{['Swift', 'SwiftUI', 'Core Data', 'MapKit', 'ShazamKit', 'Spotify API', 'OAuth 2.0 PKCE', 'AVFoundation', 'CryptoKit', 'iOS Keychain'].map((t) => (<span class="feat-tag">{t}</span>))}
+								{['Claude API', 'Ollama', 'llama3.2:3b', 'Prompt Engineering', 'JSON Extraction', 'Streaming', 'Swift', 'SwiftUI', 'macOS'].map((t) => (<span class="feat-tag">{t}</span>))}
 							</div>
-							<a href="/projects/beatmap" class="feat-link">Read more ↗</a>
+							<a href="/projects/rptext" class="feat-link">Read more ↗</a>
 						</article>
 						<article class="feat-card reveal" style="transition-delay: 0.08s">
 							<div class="feat-header">
 								<div>
-									<span class="feat-name">RPtext</span>
-									<p class="feat-tagline">An AI-powered text RPG. Living world, real consequences, no scripted content.</p>
+									<span class="feat-name">BeatMap</span>
+									<p class="feat-tagline">iOS app with secure OAuth, Keychain management, and third-party API integration.</p>
 								</div>
-								<span class="feat-status">● In Progress — Core systems functional</span>
+								<span class="feat-status">● In Progress — v1.1.0</span>
 							</div>
-							<p class="feat-desc">RPtext is a native macOS app where AI generates the entire narrative in real time. No scripted content — the world reacts to what you do and how you say it. Vague or lazy input gets punished. Thoughtful play gets rewarded. NPCs remember you. Factions track your reputation.</p>
-							<div class="feat-callout"><span class="callout-prefix">// </span>Reliable structured data exchange via hidden JSON blocks inside AI narrative responses — XML sandwich architecture for better model attention, with multi-fallback parsing so the game never breaks mid-session.</div>
+							<p class="feat-desc">Music journaling app that integrates Spotify and ShazamKit. The interesting part: OAuth 2.0 PKCE built from scratch — code verifier generation, SHA256 with CryptoKit, Keychain token storage, and silent background refresh. No third-party auth libraries.</p>
+							<div class="feat-callout"><span class="callout-prefix">// </span>Full OAuth 2.0 PKCE implementation with CryptoKit. Secure token lifecycle in iOS Keychain. Competing audio session management between ShazamKit and AVFoundation.</div>
 							<div class="feat-tags">
-								{['Swift', 'SwiftUI', 'Claude API', 'Ollama', 'llama3.2:3b', 'JSON parsing', 'Streaming responses', 'macOS'].map((t) => (<span class="feat-tag">{t}</span>))}
+								{['OAuth 2.0 PKCE', 'CryptoKit', 'iOS Keychain', 'Swift', 'SwiftUI', 'Core Data', 'ShazamKit', 'Spotify API', 'AVFoundation'].map((t) => (<span class="feat-tag">{t}</span>))}
 							</div>
-							<a href="/projects/rptext" class="feat-link">Read more ↗</a>
+							<a href="/projects/beatmap" class="feat-link">Read more ↗</a>
 						</article>
 					</div>
 				</div>
@@ -157,7 +159,7 @@ const buildLog = [
 
 			<section class="section section-dark">
 				<div class="container">
-					<p class="philosophy">"I build things to understand them."</p>
+					<p class="philosophy">"I build things to understand how they break."</p>
 				</div>
 			</section>
 

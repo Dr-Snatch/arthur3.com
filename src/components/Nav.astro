@@ -9,12 +9,12 @@ const navLinks = [
 
 <nav class="navbar">
 	<div class="nav-container">
-		<a href="/" class="logo">
+		<a href="/" class="logo" data-home-reset>
 			<img src="/logo.png" alt="arthur3" class="logo-image" />
 		</a>
 		<ul class="nav-links desktop-nav">
 			{navLinks.map((link) => (
-				<li><a href={link.href}>{link.label}</a></li>
+				<li><a href={link.href} data-nav-link={link.label === 'Home' ? 'home' : undefined}>{link.label}</a></li>
 			))}
 		</ul>
 		<button class="mobile-menu-btn" aria-label="Toggle menu">
@@ -24,7 +24,7 @@ const navLinks = [
 	<div class="mobile-dropdown">
 		<ul class="mobile-nav-links">
 			{navLinks.map((link) => (
-				<li><a href={link.href}>{link.label}</a></li>
+				<li><a href={link.href} data-nav-link={link.label === 'Home' ? 'home' : undefined}>{link.label}</a></li>
 			))}
 		</ul>
 	</div>
@@ -32,6 +32,16 @@ const navLinks = [
 
 <script is:inline>
 	document.addEventListener('DOMContentLoaded', () => {
+		// Clear terminal session on logo or Home link click
+		function resetTerminal() {
+			try { sessionStorage.removeItem('a3t-lines'); sessionStorage.removeItem('a3t-hist'); } catch {}
+		}
+
+		document.querySelectorAll('[data-home-reset], [data-nav-link="home"]').forEach(el => {
+			el.addEventListener('click', () => resetTerminal());
+		});
+
+		// Mobile menu
 		const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
 		const mobileDropdown = document.querySelector('.mobile-dropdown');
 		if (mobileMenuBtn && mobileDropdown) {
