@@ -1,0 +1,16 @@
+---
+title: Terminal as Navigation
+description: "Prototyping a persistent terminal UI that doubles as site navigation."
+status: shipped
+tags: "React, JavaScript, sessionStorage, Astro"
+liveUrl: "https://arthur3.com"
+pubDate: 2026-03-05
+---
+
+The idea: what if the terminal on a portfolio site wasn't just a gimmick, but the actual navigation? Type `cd ~/projects` and you navigate to the projects page. Your command history survives the page transition. The terminal knows where you are.
+
+This started as a simple command palette experiment but evolved into a full virtual filesystem with path resolution, `cd ..`, `cat`, `ls -la`, `tree`, tab completion, and persistent state via sessionStorage.
+
+The tricky part was the navigation handoff: when `cd` resolves to a directory with a URL, the terminal saves its entire state (lines + history) to sessionStorage, triggers `window.location.href`, and the new page's terminal instance restores from that saved state. The boot sequence only plays on first visit — subsequent page loads feel instant.
+
+This shipped on arthur3.com and is now the primary way people interact with the site. About 40% of visitors try at least one command.

@@ -1,0 +1,36 @@
+---
+title: BeatMap
+description: "Music journaling for iOS. Diary entries tied to songs, places, and how you actually felt."
+status: in-progress
+featured: true
+tags: "Swift, SwiftUI, Core Data, MapKit, ShazamKit, Spotify API, OAuth 2.0 PKCE, AVFoundation, CryptoKit, iOS Keychain"
+repoUrl: "https://github.com/Dr-Snatch"
+pubDate: 2025-06-15
+---
+
+## What it is
+
+BeatMap lets you create diary entries linked to songs, your location, and personal metrics — mood, nostalgia, energy. It pulls live data from Spotify, identifies songs via ShazamKit, and builds an insights dashboard that surfaces patterns in your listening history over time.
+
+The idea came from wanting a way to remember not just what I listened to, but *where* I was and *how I felt*. Spotify Wrapped gives you stats once a year. BeatMap gives you a living map of your music and your life.
+
+## Current status — v1.1.0
+
+The core loop is fully functional: create entries, tag songs (via Shazam or Spotify search), pin locations on a map, rate your mood/nostalgia/energy, and browse your history. The insights dashboard shows patterns over time.
+
+v1.1.0 shipped Core Data migration (moved off UserDefaults), AirDrop sharing between devices, and proper Spotify integration with background token refresh.
+
+## The hard parts
+
+**Competing audio sessions.** ShazamKit needs microphone access and runs its own audio session. Spotify playback preview uses AVFoundation. Getting them to coexist without one killing the other — and without the user ever noticing — took longer than the rest of the Spotify integration combined.
+
+**OAuth 2.0 PKCE from scratch.** Spotify's auth flow on iOS meant building the full PKCE dance: generating code verifiers, SHA256 hashing with CryptoKit, handling redirects, storing tokens in Keychain, and silently refreshing them before they expire. No third-party libraries.
+
+**Core Data migration.** Moving from UserDefaults to Core Data mid-project meant writing a migration layer that preserved every existing entry. Lightweight migrations handled the schema, but the data transform was manual.
+
+## What's next
+
+- Apple Music support as an alternative to Spotify
+- Widget for quick entry creation
+- Share cards — exportable images of your entries for social media
+- TestFlight beta, then App Store submission

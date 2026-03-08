@@ -1,0 +1,39 @@
+---
+title: file-organiser
+description: "Python script that watches the downloads folder and auto-sorts files by type and date."
+status: released
+featured: false
+tags: "Python, Automation, watchdog, CLI"
+repoUrl: "https://github.com/Dr-Snatch"
+pubDate: 2025-09-01
+---
+
+## The problem
+
+My Downloads folder was chaos. Hundreds of files — PDFs, images, installers, random CSVs — all dumped in one place. I'd waste minutes hunting for things I'd downloaded an hour ago.
+
+## The solution
+
+A Python script that uses `watchdog` to monitor `~/Downloads` in real time. When a new file appears, it waits for the download to finish (watches for file size to stabilise), then moves it into a structured folder hierarchy based on file type and date.
+
+```
+~/Downloads/
+  sorted/
+    2026-03/
+      images/
+      documents/
+      code/
+      installers/
+      other/
+```
+
+## How it works
+
+- **File type detection** — maps extensions to categories (`.pdf` → documents, `.png` → images, `.dmg` → installers, etc.)
+- **Download completion detection** — polls file size every 500ms until it stops changing, avoiding moving partial downloads
+- **Duplicate handling** — appends a counter if a file with the same name already exists
+- **Runs as a background daemon** — launches on login, stays out of the way
+
+## What I learned
+
+This was one of my first Python projects that solved a real daily annoyance. The `watchdog` library made file system monitoring simple, but handling edge cases (partial downloads, temporary Chrome files, `.crdownload` extensions) taught me that real-world automation is 20% core logic and 80% edge cases.

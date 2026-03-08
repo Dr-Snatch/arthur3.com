@@ -1,0 +1,13 @@
+---
+title: Prompt Sandwich
+description: "Testing different prompt wrapping strategies for reliable JSON extraction from LLM responses."
+status: experiment
+tags: "Python, Claude API, prompt engineering, JSON"
+pubDate: 2026-02-15
+---
+
+An experiment in getting structured data out of LLMs reliably. I tested different strategies for wrapping structured output requests inside narrative prompts — XML tags, markdown fences, custom delimiters — and measured parse success rates across Claude, GPT-4, and llama3.2.
+
+The XML sandwich (wrapping JSON blocks in XML tags inside the system prompt) consistently outperformed other approaches, especially with smaller models. This became the core architecture for RPtext's game state system.
+
+Results: 98.7% valid JSON from Claude with XML sandwich vs 89.2% with markdown fences and 76.1% with raw "respond in JSON" instructions.

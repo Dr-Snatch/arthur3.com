@@ -1,0 +1,44 @@
+---
+title: RPtext
+description: "An AI-powered text RPG for macOS. Living world, real consequences, no scripted content."
+status: in-progress
+featured: true
+tags: "Swift, SwiftUI, Claude API, Ollama, llama3.2:3b, JSON parsing, Streaming responses, macOS"
+repoUrl: "https://github.com/Dr-Snatch"
+pubDate: 2025-12-01
+---
+
+## What it is
+
+RPtext is a native macOS app where AI generates the entire narrative in real time. There's no scripted content — the world reacts to what you do and how you say it. Vague or lazy input gets punished. Thoughtful play gets rewarded. NPCs remember you. Factions track your reputation.
+
+It's a text RPG where the engine *is* the AI. Every encounter, every line of dialogue, every consequence is generated on the fly based on your choices and the world state.
+
+## How it works
+
+The player types natural language actions. The AI responds with narrative text, but hidden inside that response is a structured JSON block containing game state updates — health changes, inventory modifications, reputation shifts, NPC memory updates.
+
+This is what I call the **XML sandwich architecture**: the AI's response is wrapped in markers that let me extract reliable structured data from an inherently unpredictable output. The model writes narrative for the player, then writes machine-readable state changes for the engine, all in one completion.
+
+## The technical challenge
+
+**Reliable structured output from LLMs.** Getting an AI to consistently produce valid JSON inside a narrative response is harder than it sounds. Models forget the schema, hallucinate fields, or break JSON syntax mid-stream. RPtext uses a multi-fallback parsing system: try strict JSON parse first, then regex extraction, then a repair pass. The game never breaks mid-session.
+
+**Streaming responses.** The narrative streams token-by-token to the UI for that typewriter feel, but the JSON block can't be parsed until it's complete. So the engine buffers the structured section while streaming everything else, then processes state changes once the block closes.
+
+**Dual model support.** RPtext works with both Claude API (for quality) and Ollama running llama3.2:3b locally (for speed and offline play). The prompt architecture is the same, but the parsing needs to be more forgiving with smaller local models.
+
+## Core systems
+
+- **Character creation** — stats, background, traits that actually affect gameplay
+- **Combat** — turn-based with AI narration, not just number crunching
+- **Inventory** — items have narrative weight, not just stat bonuses
+- **NPC memory** — characters remember what you said and did
+- **Faction standings** — your reputation precedes you
+- **World state** — consequences compound over time
+
+## What's next
+
+- Save/load system with full world state serialisation
+- Procedural map generation
+- Multiplayer experiments (shared world state via WebSocket)

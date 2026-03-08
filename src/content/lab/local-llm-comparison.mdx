@@ -1,0 +1,18 @@
+---
+title: Local LLM Comparison
+description: "Running llama3.2, mistral, and phi-3 through Ollama for game narrative quality."
+status: experiment
+tags: "Ollama, llama3.2, mistral, phi-3, Python, benchmarking"
+pubDate: 2026-01-05
+---
+
+For RPtext's offline mode, I needed a local model that could generate decent narrative *and* produce reliable structured JSON — on a MacBook Air M2 with 8GB RAM.
+
+I tested three models through Ollama: llama3.2:3b, mistral:7b (quantised to 4-bit), and phi-3:3.8b. Each got the same 20 RPG scenarios with the XML sandwich prompt, and I measured narrative quality (subjective 1-5 rating), JSON parse success rate, and tokens per second.
+
+Results:
+- **llama3.2:3b** — Best balance. 91% JSON success, ~35 tok/s, narrative quality 3.5/5. Fastest and most consistent.
+- **mistral:7b (Q4)** — Best narrative quality (4.2/5) but only 82% JSON success and ~18 tok/s. Too slow for real-time streaming feel.
+- **phi-3:3.8b** — Solid JSON (94%) but narrative felt robotic (2.8/5). Good for game state, bad for immersion.
+
+llama3.2:3b won for RPtext. The speed matters more than you'd think — the typewriter streaming effect breaks immersion if tokens come in too slowly.

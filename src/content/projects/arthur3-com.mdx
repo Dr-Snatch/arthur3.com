@@ -1,0 +1,32 @@
+---
+title: arthur3.com
+description: "This website. Built with Astro, managed with Keystatic, deployed on Cloudflare."
+status: in-progress
+featured: false
+tags: "Astro, React, Keystatic CMS, Cloudflare Pages, TypeScript"
+repoUrl: "https://github.com/Dr-Snatch/arthur3.com"
+liveUrl: "https://arthur3.com"
+pubDate: 2026-02-01
+---
+
+## What it is
+
+The site you're on right now. A portfolio, blog, and project showcase built from scratch with Astro, managed through Keystatic CMS, and deployed on Cloudflare Pages.
+
+## The terminal
+
+The most distinctive feature is the interactive terminal at the top of every page. It's a fully functional virtual Linux shell with a real filesystem, path resolution, `cd`, `ls`, `cat`, `tree`, tab completion, command history, and a bunch of hidden easter eggs.
+
+Typing `cd ~/projects` actually navigates you to the `/projects` page. The terminal state persists across page navigation via sessionStorage — your command history and output survive the trip. The terminal knows which page you're on and sets the working directory accordingly.
+
+## Tech decisions
+
+**Astro** — Static site generator with islands architecture. Perfect for a content-heavy site where most pages are static but a few components (the terminal) need client-side interactivity.
+
+**Keystatic CMS** — Content management that stores everything as files in the GitHub repo. No external database, no vendor lock-in. I can edit content through a web UI at `/keystatic` or directly in the markdown files.
+
+**Cloudflare Pages + Workers** — Free hosting with server-side rendering support for the Keystatic API routes. SSL, CDN, and deployment from GitHub push are all handled automatically.
+
+## What I learned
+
+The biggest lesson was that CMS choice matters more than you'd think. I went through Decap CMS (didn't work with Cloudflare), Sanity (too heavy), and finally landed on Keystatic — which stores content as files in the repo. Simple, version-controlled, and it just works.

@@ -1,0 +1,15 @@
+---
+title: Shazam vs Audio Fingerprinting
+description: "Benchmarking ShazamKit recognition speed and accuracy in noisy environments."
+status: experiment
+tags: "Swift, ShazamKit, AVFoundation, iOS"
+pubDate: 2026-01-20
+---
+
+While building BeatMap, I wanted to understand ShazamKit's limits. How fast does it identify a song? How much background noise can it tolerate? Does distance from the speaker matter?
+
+I set up a test rig: iPhone at fixed distances from a speaker (0.5m, 1m, 2m, 3m), playing 50 songs across genres, with varying levels of ambient noise (silent room, coffee shop recording, street noise overlay).
+
+Key findings: ShazamKit identified songs within 3-5 seconds in quiet environments regardless of distance. At coffee shop noise levels, recognition dropped to ~80% at 2m+. Heavy bass tracks were identified faster than acoustic or vocal-heavy tracks. The API's confidence score correlated well with actual accuracy — anything above 0.7 was reliable.
+
+This informed BeatMap's UX: the app now shows a confidence indicator and suggests moving closer to the source if recognition is slow.
