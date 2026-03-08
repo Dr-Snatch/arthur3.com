@@ -3,9 +3,7 @@ import BaseHead from '../components/BaseHead.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import TerminalBar from '../components/TerminalBar.astro';
-import ProjectCard from '../components/portfolio/ProjectCard.astro';
 import { SITE_DESCRIPTION, SITE_TITLE, SOCIAL_LINKS } from '../consts';
-import { projects } from '../data/projects';
 
 const stack = [
 	'Swift', 'SwiftUI', 'Python', 'JavaScript',
@@ -29,24 +27,6 @@ const buildLog = [
 	{ hash: 'a2e95f4', date: 'Late 2025', message: 'Building with JavaScript and TypeScript. First proper web projects.' },
 	{ hash: 'c8d1240', date: 'Mid 2025', message: 'Started learning SwiftUI. BeatMap concept begins.' },
 ];
-
-const writingPosts = [
-	{
-		title: 'What I learned migrating BeatMap from UserDefaults to Core Data',
-		date: 'Coming soon',
-		desc: 'Why the migration was harder than expected and what I\'d do differently.',
-	},
-	{
-		title: 'Why I chose SwiftUI over UIKit as a beginner',
-		date: 'Coming soon',
-		desc: 'The tradeoffs I didn\'t fully understand until I was deep in both.',
-	},
-	{
-		title: 'Getting structured JSON out of streaming AI responses without breaking immersion',
-		date: 'Coming soon',
-		desc: 'The XML sandwich architecture I use in RPtext and why it works.',
-	},
-];
 ---
 
 <!doctype html>
@@ -60,7 +40,6 @@ const writingPosts = [
 
 		<main>
 
-			<!-- ── HERO CTAs ── -->
 			<section class="hero-ctas-section">
 				<div class="container">
 					<div class="hero-ctas">
@@ -70,7 +49,6 @@ const writingPosts = [
 				</div>
 			</section>
 
-			<!-- ── MARQUEE ── -->
 			<div class="marquee-wrap" aria-hidden="true">
 				<div class="marquee-track">
 					{[...stack, ...stack, ...stack].map((t) => (
@@ -79,7 +57,6 @@ const writingPosts = [
 				</div>
 			</div>
 
-			<!-- ── WHAT I BUILD ── -->
 			<section class="section">
 				<div class="container">
 					<p class="eyebrow">what i build</p>
@@ -100,7 +77,6 @@ const writingPosts = [
 				</div>
 			</section>
 
-			<!-- ── FEATURED PROJECTS ── -->
 			<section id="projects" class="section section-dark">
 				<div class="container">
 					<p class="eyebrow">featured projects</p>
@@ -113,22 +89,12 @@ const writingPosts = [
 								</div>
 								<span class="feat-status">● In Progress — v1.1.0</span>
 							</div>
-							<p class="feat-desc">
-								BeatMap lets you create diary entries linked to songs, your location,
-								and personal metrics — mood, nostalgia, energy. It pulls live data from
-								Spotify, identifies songs via ShazamKit, and builds an insights dashboard
-								that surfaces patterns in your listening history over time.
-							</p>
-							<div class="feat-callout">
-								<span class="callout-prefix">// </span>The hardest part: managing competing audio sessions between ShazamKit
-								and AVFoundation while keeping OAuth token refresh completely invisible to the user.
-							</div>
+							<p class="feat-desc">BeatMap lets you create diary entries linked to songs, your location, and personal metrics — mood, nostalgia, energy. It pulls live data from Spotify, identifies songs via ShazamKit, and builds an insights dashboard that surfaces patterns in your listening history over time.</p>
+							<div class="feat-callout"><span class="callout-prefix">// </span>The hardest part: managing competing audio sessions between ShazamKit and AVFoundation while keeping OAuth token refresh completely invisible to the user.</div>
 							<div class="feat-tags">
-								{['Swift', 'SwiftUI', 'Core Data', 'MapKit', 'ShazamKit', 'Spotify API', 'OAuth 2.0 PKCE', 'AVFoundation', 'CryptoKit', 'iOS Keychain'].map((t) => (
-									<span class="feat-tag">{t}</span>
-								))}
+								{['Swift', 'SwiftUI', 'Core Data', 'MapKit', 'ShazamKit', 'Spotify API', 'OAuth 2.0 PKCE', 'AVFoundation', 'CryptoKit', 'iOS Keychain'].map((t) => (<span class="feat-tag">{t}</span>))}
 							</div>
-							<a href="https://github.com/Dr-Snatch" target="_blank" rel="noopener noreferrer" class="feat-link">GitHub (coming soon) ↗</a>
+							<a href="/projects/beatmap" class="feat-link">Read more ↗</a>
 						</article>
 						<article class="feat-card reveal" style="transition-delay: 0.08s">
 							<div class="feat-header">
@@ -138,44 +104,18 @@ const writingPosts = [
 								</div>
 								<span class="feat-status">● In Progress — Core systems functional</span>
 							</div>
-							<p class="feat-desc">
-								RPtext is a native macOS app where AI generates the entire narrative in
-								real time. No scripted content — the world reacts to what you do and how
-								you say it. Vague or lazy input gets punished. Thoughtful play gets rewarded.
-								NPCs remember you. Factions track your reputation.
-							</p>
-							<div class="feat-callout">
-								<span class="callout-prefix">// </span>Reliable structured data exchange via hidden JSON blocks inside AI narrative
-								responses — XML sandwich architecture for better model attention, with multi-fallback
-								parsing so the game never breaks mid-session.
-							</div>
+							<p class="feat-desc">RPtext is a native macOS app where AI generates the entire narrative in real time. No scripted content — the world reacts to what you do and how you say it. Vague or lazy input gets punished. Thoughtful play gets rewarded. NPCs remember you. Factions track your reputation.</p>
+							<div class="feat-callout"><span class="callout-prefix">// </span>Reliable structured data exchange via hidden JSON blocks inside AI narrative responses — XML sandwich architecture for better model attention, with multi-fallback parsing so the game never breaks mid-session.</div>
 							<div class="feat-tags">
-								{['Swift', 'SwiftUI', 'Claude API', 'Ollama', 'llama3.2:3b', 'JSON parsing', 'Streaming responses', 'macOS'].map((t) => (
-									<span class="feat-tag">{t}</span>
-								))}
+								{['Swift', 'SwiftUI', 'Claude API', 'Ollama', 'llama3.2:3b', 'JSON parsing', 'Streaming responses', 'macOS'].map((t) => (<span class="feat-tag">{t}</span>))}
 							</div>
-							<a href="https://github.com/Dr-Snatch" target="_blank" rel="noopener noreferrer" class="feat-link">GitHub (coming soon) ↗</a>
+							<a href="/projects/rptext" class="feat-link">Read more ↗</a>
 						</article>
 					</div>
 				</div>
 			</section>
 
-			<!-- ── OTHER PROJECTS ── -->
 			<section class="section">
-				<div class="container">
-					<p class="eyebrow">other projects</p>
-					<div class="other-grid">
-						{projects.map((p, i) => (
-							<div class="reveal" style={`transition-delay:${i*0.07}s`}>
-								<ProjectCard {...p} />
-							</div>
-						))}
-					</div>
-				</div>
-			</section>
-
-			<!-- ── TECH STACK ── -->
-			<section class="section section-dark">
 				<div class="container">
 					<p class="eyebrow">tech stack</p>
 					<div class="stack-list reveal">
@@ -184,8 +124,7 @@ const writingPosts = [
 				</div>
 			</section>
 
-			<!-- ── CURRENTLY EXPLORING ── -->
-			<section class="section">
+			<section class="section section-dark">
 				<div class="container">
 					<p class="eyebrow">currently exploring</p>
 					<ul class="explore-list">
@@ -199,8 +138,7 @@ const writingPosts = [
 				</div>
 			</section>
 
-			<!-- ── BUILD LOG ── -->
-			<section class="section section-dark" id="log">
+			<section class="section" id="log">
 				<div class="container">
 					<p class="eyebrow">build log</p>
 					<div class="gitlog">
@@ -217,35 +155,12 @@ const writingPosts = [
 				</div>
 			</section>
 
-			<!-- ── WRITING ── -->
-			<section class="section">
-				<div class="container">
-					<div class="writing-header">
-						<p class="eyebrow">writing</p>
-						<a href="/blog" class="subtle-link">All posts ↗</a>
-					</div>
-					<p class="writing-sub">Short notes, tool opinions, and devlogs. Just getting started.</p>
-					<div class="writing-grid">
-						{writingPosts.map((post, i) => (
-							<a href="/blog" class="post-card reveal" style={`transition-delay:${i*0.07}s`}>
-								<span class="post-date">{post.date}</span>
-								<h3 class="post-title">{post.title}</h3>
-								<p class="post-desc">{post.desc}</p>
-								<span class="post-read">Read →</span>
-							</a>
-						))}
-					</div>
-				</div>
-			</section>
-
-			<!-- ── PHILOSOPHY ── -->
 			<section class="section section-dark">
 				<div class="container">
 					<p class="philosophy">"I build things to understand them."</p>
 				</div>
 			</section>
 
-			<!-- ── CONTACT ── -->
 			<section id="contact" class="section">
 				<div class="container">
 					<h2 class="contact-heading">Get in touch.</h2>
@@ -270,14 +185,10 @@ const writingPosts = [
 
 <script>
 	const obs = new IntersectionObserver(
-		(entries) => entries.forEach((e) => {
-			if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
-		}),
+		(entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } }),
 		{ threshold: 0.06, rootMargin: '0px 0px -20px 0px' }
 	);
-	document.addEventListener('DOMContentLoaded', () => {
-		document.querySelectorAll('.reveal').forEach((el) => obs.observe(el));
-	});
+	document.addEventListener('DOMContentLoaded', () => { document.querySelectorAll('.reveal').forEach((el) => obs.observe(el)); });
 </script>
 
 <style>
@@ -287,8 +198,6 @@ const writingPosts = [
 	.reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
 	.reveal.visible { opacity: 1; transform: translateY(0); }
 	.eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(var(--fg-rgb),0.35); margin: 0 0 1.75rem 0; }
-
-	/* ── CTAs below terminal ── */
 	.hero-ctas-section { padding: 0 2rem 2.5rem; }
 	.hero-ctas-section .container { max-width: 1060px; }
 	.hero-ctas { display: flex; gap: 0.75rem; flex-wrap: wrap; max-width: 660px; }
@@ -296,24 +205,19 @@ const writingPosts = [
 	.btn-primary:hover { background: var(--accent-dark); color: var(--bg); transform: translateY(-1px); }
 	.btn-ghost { display: inline-block; padding: 0.7rem 1.6rem; background: transparent; color: rgba(var(--fg-rgb),0.55); text-decoration: none; border-radius: 8px; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 0.875rem; border: 1px solid rgba(var(--accent-rgb),0.14); transition: color 0.2s ease, border-color 0.2s ease, transform 0.15s ease; }
 	.btn-ghost:hover { color: var(--fg); border-color: rgba(0,255,65,0.28); transform: translateY(-1px); }
-
-	/* ── MARQUEE ── */
 	.marquee-wrap { border-top: 1px solid rgba(var(--accent-rgb),0.08); border-bottom: 1px solid rgba(var(--accent-rgb),0.08); overflow: hidden; padding: 0.65rem 0; }
 	.marquee-track { display: flex; width: max-content; animation: scroll 50s linear infinite; }
 	.marquee-item { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: rgba(var(--fg-rgb),0.3); letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; }
 	.msep { color: rgba(var(--accent-rgb),0.25); margin: 0 0.3rem; }
 	@keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-33.333%); } }
-
 	.section { padding: 6rem 0; }
 	.section-dark { background: var(--bg-alt); }
-
 	.build-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid rgba(var(--accent-rgb),0.1); }
 	.build-col { padding: 2rem 2rem 2rem 0; border-right: 1px solid rgba(var(--accent-rgb),0.1); }
 	.build-col:last-child { border-right: none; padding-right: 0; }
 	.build-col:not(:first-child) { padding-left: 2rem; }
 	.build-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: var(--fg); margin: 0 0 0.6rem 0; }
 	.build-desc { font-family: 'JetBrains Mono', monospace; font-size: 0.77rem; color: rgba(var(--fg-rgb),0.45); line-height: 1.7; margin: 0; }
-
 	.featured-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
 	.feat-card { background: var(--bg-card); border: 1px solid rgba(var(--accent-rgb),0.1); border-top: 2px solid rgba(var(--accent-rgb),0.4); border-radius: 14px; padding: 2rem; display: flex; flex-direction: column; gap: 1.25rem; transition: border-color 0.25s ease, box-shadow 0.25s ease; }
 	.feat-card:hover { border-color: rgba(var(--accent-rgb),0.25); border-top-color: var(--accent); box-shadow: 0 12px 40px rgba(var(--accent-rgb),0.12); }
@@ -328,39 +232,19 @@ const writingPosts = [
 	.feat-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; padding: 0.2rem 0.55rem; background: rgba(var(--accent-rgb),0.07); color: var(--accent); border: 1px solid rgba(var(--accent-rgb),0.18); border-radius: 5px; }
 	.feat-link { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: rgba(var(--fg-rgb),0.32); text-decoration: none; letter-spacing: 0.03em; transition: color 0.2s ease; margin-top: 0.25rem; }
 	.feat-link:hover { color: rgba(var(--fg-rgb),0.7); }
-
-	.other-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
-
 	.stack-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
 	.stack-item { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; padding: 0.35rem 0.85rem; border: 1px solid rgba(var(--accent-rgb),0.12); border-radius: 6px; color: rgba(var(--fg-rgb),0.55); background: rgba(var(--accent-rgb),0.02); transition: color 0.2s ease, border-color 0.2s ease; cursor: default; }
 	.stack-item:hover { color: var(--fg); border-color: rgba(var(--accent-rgb),0.35); }
-
 	.explore-list { list-style: none; margin: 0; padding: 0; }
 	.explore-item { display: flex; align-items: baseline; gap: 0.9rem; padding: 0.9rem 0; border-bottom: 1px solid rgba(var(--accent-rgb),0.06); font-family: 'JetBrains Mono', monospace; font-size: 0.83rem; color: rgba(var(--fg-rgb),0.62); line-height: 1.5; }
 	.explore-arr { color: var(--accent); font-size: 0.78rem; flex-shrink: 0; }
-
 	.gitlog { display: flex; flex-direction: column; }
 	.commit { display: grid; grid-template-columns: 160px 1fr; gap: 2.5rem; padding: 1.1rem 0; border-bottom: 1px solid rgba(var(--accent-rgb),0.08); align-items: start; }
 	.commit-left { display: flex; flex-direction: column; gap: 0.2rem; }
 	.c-hash { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--accent); letter-spacing: 0.06em; background: none; padding: 0; }
 	.c-date { font-family: 'JetBrains Mono', monospace; font-size: 0.66rem; color: rgba(var(--fg-rgb),0.3); }
 	.c-msg { font-family: 'Inter', sans-serif; font-size: 0.875rem; color: rgba(var(--fg-rgb),0.62); line-height: 1.65; margin: 0; }
-
-	.writing-header { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
-	.writing-header .eyebrow { margin-bottom: 0; }
-	.subtle-link { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: rgba(var(--fg-rgb),0.32); text-decoration: none; letter-spacing: 0.05em; transition: color 0.2s ease; margin-bottom: 1.75rem; }
-	.subtle-link:hover { color: rgba(var(--fg-rgb),0.7); }
-	.writing-sub { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: rgba(var(--fg-rgb),0.35); margin: 0 0 2rem 0; letter-spacing: 0.02em; }
-	.writing-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
-	.post-card { display: flex; flex-direction: column; gap: 0.5rem; padding: 1.5rem; background: var(--bg-card); border: 1px solid rgba(var(--accent-rgb),0.1); border-radius: 12px; text-decoration: none; transition: border-color 0.22s ease, box-shadow 0.22s ease; }
-	.post-card:hover { border-color: rgba(var(--accent-rgb),0.25); box-shadow: 0 4px 16px rgba(var(--accent-rgb),0.08); }
-	.post-date { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: rgba(var(--fg-rgb),0.3); letter-spacing: 0.05em; }
-	.post-title { font-family: 'Syne', sans-serif; font-size: 0.95rem; font-weight: 700; color: var(--fg); line-height: 1.35; margin: 0.1rem 0; letter-spacing: -0.01em; }
-	.post-desc { font-family: 'Inter', sans-serif; font-size: 0.8rem; color: rgba(var(--fg-rgb),0.45); line-height: 1.55; margin: 0 0 auto 0; }
-	.post-read { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--accent); margin-top: 0.75rem; }
-
 	.philosophy { font-family: 'Syne', sans-serif; font-size: clamp(1.4rem, 3vw, 2.2rem); font-weight: 700; color: rgba(var(--fg-rgb),0.8); letter-spacing: -0.02em; line-height: 1.25; margin: 0; }
-
 	.contact-heading { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; letter-spacing: -0.04em; color: var(--fg); margin: 0 0 0.5rem 0; }
 	.contact-sub { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: rgba(var(--fg-rgb),0.35); margin: 0 0 2rem 0; }
 	.contact-links { display: flex; gap: 0.75rem; flex-wrap: wrap; }
@@ -368,8 +252,7 @@ const writingPosts = [
 	.contact-link:hover { color: var(--fg); border-color: rgba(var(--accent-rgb),0.35); box-shadow: 0 2px 10px rgba(var(--accent-rgb),0.08); }
 	.c-arr { font-size: 0.7rem; color: rgba(var(--fg-rgb),0.22); margin-left: 0.1rem; }
 	.contact-link:hover .c-arr { color: var(--accent); }
-
-	@media (max-width: 900px) { .featured-grid { grid-template-columns: 1fr; } .writing-grid { grid-template-columns: 1fr; } }
+	@media (max-width: 900px) { .featured-grid { grid-template-columns: 1fr; } }
 	@media (max-width: 860px) { .build-grid { grid-template-columns: 1fr; } .build-col { border-right: none; border-bottom: 1px solid rgba(var(--accent-rgb),0.1); padding: 1.75rem 0; } .build-col:last-child { border-bottom: none; } .build-col:not(:first-child) { padding-left: 0; } }
 	@media (max-width: 640px) { .hero-ctas-section { padding: 0 1.5rem 2rem; } .container { padding: 0 1.5rem; } .section { padding: 4.5rem 0; } .commit { grid-template-columns: 1fr; gap: 0.3rem; } .contact-links { flex-direction: column; } .feat-header { flex-direction: column; } }
 	@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } .marquee-track { animation: none; } }

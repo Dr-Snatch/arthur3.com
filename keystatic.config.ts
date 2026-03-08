@@ -45,53 +45,6 @@ export default config({
         content: fields.mdx({ label: 'Full Description' }),
       },
     }),
-    swiftProjects: collection({
-      label: 'Swift Projects',
-      slugField: 'title',
-      path: 'src/content/swift-projects/*',
-      format: { contentField: 'content' },
-      schema: {
-        title: fields.slug({ name: { label: 'Title' } }),
-        description: fields.text({ label: 'Short Description' }),
-        platform: fields.select({
-          label: 'Platform',
-          options: [
-            { label: 'iOS', value: 'ios' },
-            { label: 'macOS', value: 'macos' },
-            { label: 'iOS & macOS', value: 'both' },
-          ],
-          defaultValue: 'ios',
-        }),
-        status: fields.select({
-          label: 'Status',
-          options: [
-            { label: 'In Progress', value: 'in-progress' },
-            { label: 'Released', value: 'released' },
-            { label: 'Beta', value: 'beta' },
-            { label: 'On Hold', value: 'on-hold' },
-          ],
-          defaultValue: 'in-progress',
-        }),
-        tags: fields.text({ label: 'Tech Stack (comma-separated)' }),
-        repoUrl: fields.text({ label: 'GitHub URL' }),
-        appStoreUrl: fields.text({ label: 'App Store URL' }),
-        pubDate: fields.date({ label: 'Start Date' }),
-        content: fields.mdx({ label: 'Full Description' }),
-      },
-    }),
-    swiftPosts: collection({
-      label: 'Swift Blog',
-      slugField: 'title',
-      path: 'src/content/swift-blog/*',
-      format: { contentField: 'content' },
-      schema: {
-        title: fields.slug({ name: { label: 'Title' } }),
-        description: fields.text({ label: 'Description' }),
-        pubDate: fields.date({ label: 'Publish Date' }),
-        tags: fields.text({ label: 'Tags (comma-separated)' }),
-        content: fields.mdx({ label: 'Content' }),
-      },
-    }),
     labExperiments: collection({
       label: 'Lab Experiments',
       slugField: 'title',

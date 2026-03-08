@@ -28,32 +28,6 @@ const projects = defineCollection({
 		}),
 });
 
-const swiftProjects = defineCollection({
-	loader: glob({ base: './src/content/swift-projects', pattern: '**/*.{md,mdx}' }),
-	schema: () =>
-		z.object({
-			title: z.string(),
-			description: z.string(),
-			platform: z.string().default('ios'),
-			status: z.string().default('in-progress'),
-			tags: z.string().optional(),
-			repoUrl: z.string().optional(),
-			appStoreUrl: z.string().optional(),
-			pubDate: z.coerce.date().optional(),
-		}),
-});
-
-const swiftBlog = defineCollection({
-	loader: glob({ base: './src/content/swift-blog', pattern: '**/*.{md,mdx}' }),
-	schema: () =>
-		z.object({
-			title: z.string(),
-			description: z.string(),
-			pubDate: z.coerce.date(),
-			tags: z.string().optional(),
-		}),
-});
-
 const lab = defineCollection({
 	loader: glob({ base: './src/content/lab', pattern: '**/*.{md,mdx}' }),
 	schema: () =>
@@ -68,4 +42,4 @@ const lab = defineCollection({
 		}),
 });
 
-export const collections = { blog, projects, swiftProjects, swiftBlog, lab };
+export const collections = { blog, projects, lab };
