@@ -102,9 +102,13 @@ function cowsay(msg) { const t = " " + "_".repeat(msg.length + 2), b = " " + "-"
 
 const SK_LINES = "a3t-lines";
 const SK_HIST  = "a3t-hist";
-function saveState(lines, history) { try { sessionStorage.setItem(SK_LINES, JSON.stringify(lines.length > 300 ? lines.slice(-300) : lines)); sessionStorage.setItem(SK_HIST, JSON.stringify(history.slice(0, 50))); } catch {} }
-function loadState() { try { const l = sessionStorage.getItem(SK_LINES), h = sessionStorage.getItem(SK_HIST); if (l) return { lines: JSON.parse(l), history: h ? JSON.parse(h) : [] }; } catch {} return null; }
-function clearState() { try { sessionStorage.removeItem(SK_LINES); sessionStorage.removeItem(SK_HIST); } catch {} }
+const SK_WINDOW = "a3t-window";
+const DEFAULT_WINDOW_STATE = "minimized";
+function saveSession(lines, history) { try { sessionStorage.setItem(SK_LINES, JSON.stringify(lines.length > 300 ? lines.slice(-300) : lines)); sessionStorage.setItem(SK_HIST, JSON.stringify(history.slice(0, 50))); } catch {} }
+function loadSession() { try { const l = sessionStorage.getItem(SK_LINES), h = sessionStorage.getItem(SK_HIST); if (l) return { lines: JSON.parse(l), history: h ? JSON.parse(h) : [] }; } catch {} return null; }
+function clearSession() { try { sessionStorage.removeItem(SK_LINES); sessionStorage.removeItem(SK_HIST); } catch {} }
+function saveWindowState(windowState) { try { sessionStorage.setItem(SK_WINDOW, windowState); } catch {} }
+function loadWindowState() { try { const windowState = sessionStorage.getItem(SK_WINDOW); if (windowState === "normal" || windowState === "minimized" || windowState === "maximized" || windowState === "closed") return windowState; } catch {} return DEFAULT_WINDOW_STATE; }
 function cwdFromUrl() { if (typeof window === "undefined") return HOME; const p = window.location.pathname.replace(/\/+$/, "") || "/"; return URL_TO_PATH[p] || HOME; }
 
 export default function Terminal() {
@@ -114,7 +118,7 @@ export default function Terminal() {
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [booted, setBooted] = useState(false);
   const [cwd, setCwd] = useState(HOME);
-  const [windowState, setWindowState] = useState("normal");
+  const [windowState, setWindowState] = useState(DEFAULT_WINDOW_STATE);
   const inputRef = useRef(null);
   const bodyRef = useRef(null);
   const linesRef = useRef([]);
@@ -122,10 +126,11 @@ export default function Terminal() {
 
   useEffect(() => { linesRef.current = lines; }, [lines]);
   useEffect(() => { histRef.current = history; }, [history]);
-  useEffect(() => { if (booted) saveState(lines, history); }, [lines, history, booted]);
+  useEffect(() => { if (booted) saveSession(lines, history); }, [lines, history, booted]);
+  useEffect(() => { saveWindowState(windowState); }, [windowState]);
 
   useEffect(() => {
-    const saved = loadState(); setCwd(cwdFromUrl());
+    const saved = loadSession(); setCwd(cwdFromUrl()); setWindowState(loadWindowState());
     if (saved && saved.lines.length > 0) { setLines(saved.lines); setHistory(saved.history); setBooted(true); }
     else { const timers = BOOT.map(({ text, delay, color }) => setTimeout(() => setLines((p) => [...p, { text, color }]), delay)); const bt = setTimeout(() => setBooted(true), BOOT_READY); return () => { timers.forEach(clearTimeout); clearTimeout(bt); }; }
   }, []);
@@ -145,10 +150,10 @@ export default function Terminal() {
     const parts = trimmed.split(/\s+/); const base = parts[0].toLowerCase(); const args = parts.slice(1); const rawArgs = trimmed.slice(base.length).trim();
 
     if (base === "clear") { setLines([]); return; }
-    if (base === "reset") { clearState(); setLines([]); setHistory([]); setHistoryIndex(-1); const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (cp !== "/") { window.location.href = "/"; return; } setCwd(HOME); BOOT.forEach(({ text, delay, color }) => setTimeout(() => setLines((p) => [...p, { text, color }]), delay)); setTimeout(() => setBooted(true), BOOT_READY); return; }
-    if (base === "home") { const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (cp === "/") { setCwd(HOME); out([{ text: "already home.", color: "#475569" }]); return; } saveState([...linesRef.current, prompt, { text: "going home...", color: "#34d399" }], [raw, ...histRef.current]); window.location.href = "/"; return; }
+    if (base === "reset") { clearSession(); saveWindowState("normal"); setWindowState("normal"); setLines([]); setHistory([]); setHistoryIndex(-1); const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (cp !== "/") { window.location.href = "/"; return; } setCwd(HOME); BOOT.forEach(({ text, delay, color }) => setTimeout(() => setLines((p) => [...p, { text, color }]), delay)); setTimeout(() => setBooted(true), BOOT_READY); return; }
+    if (base === "home") { const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (cp === "/") { setCwd(HOME); out([{ text: "already home.", color: "#475569" }]); return; } saveSession([...linesRef.current, prompt, { text: "going home...", color: "#34d399" }], [raw, ...histRef.current]); saveWindowState(windowState); window.location.href = "/"; return; }
 
-    if (base === "cd") { const target = args[0] || "~"; if (target === "-") { out([{ text: "cd: OLDPWD not set", color: "#f87171" }]); return; } const resolved = resolvePath(cwd, target); const node = FS[resolved]; if (!node) { out([{ text: `cd: ${target}: no such file or directory`, color: "#f87171" }]); return; } if (node.type !== "dir") { out([{ text: `cd: ${target}: not a directory`, color: "#f87171" }]); return; } if (node.url) { const cp = (window.location.pathname.replace(/\/+$/, "") || "/"); if (node.url !== cp) { saveState([...linesRef.current, prompt], [raw, ...histRef.current]); window.location.href = node.url; return; } } setCwd(resolved); return; }
+    if (base === "cd") { const target = args[0] || "~"; if (target === "-") { out([{ text: "cd: OLDPWD not set", color: "#f87171" }]); return; } const resolved = resolvePath(cwd, target); const node = FS[resolved]; if (!node) { out([{ text: `cd: ${target}: no such file or directory`, color: "#f87171" }]); return; } if (node.type !== "dir") { out([{ text: `cd: ${target}: not a directory`, color: "#f87171" }]); return; } if (node.url) { const cp = (window.location.pathname.replace(/\/+$/, "") || "/"); if (node.url !== cp) { saveSession([...linesRef.current, prompt], [raw, ...histRef.current]); saveWindowState(windowState); window.location.href = node.url; return; } } setCwd(resolved); return; }
     if (base === "pwd") { out([{ text: cwd }]); return; }
 
     if (base === "ls") {
@@ -163,7 +168,7 @@ export default function Terminal() {
     if (base === "cat") { if (!args[0]) { out([{ text: "cat: missing operand", color: "#f87171" }]); return; } const t = resolvePath(cwd, args[0]); const n = FS[t]; if (!n) out([{ text: `cat: ${args[0]}: no such file or directory`, color: "#f87171" }]); else if (n.type === "dir") out([{ text: `cat: ${args[0]}: is a directory`, color: "#f87171" }]); else out(n.content.map((l) => ({ text: l }))); return; }
     if (base === "head") { const t = resolvePath(cwd, args[0] || ""); const n = FS[t]; if (!n || n.type !== "file") out([{ text: `head: cannot read`, color: "#f87171" }]); else out(n.content.slice(0, 5).map((l) => ({ text: l }))); return; }
 
-    if (base === "open") { const target = args[0]; if (!target) { const node = FS[cwd]; if (node && node.url) { const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (node.url === cp) { out([{ text: "you're already here.", color: "#475569" }]); return; } saveState([...linesRef.current, prompt, { text: `opening ${node.url}...`, color: "#34d399" }], [raw, ...histRef.current]); setTimeout(() => { window.location.href = node.url; }, 400); } else out([{ text: "open: no page for this directory", color: "#f87171" }]); return; } const resolved = resolvePath(cwd, target); const node = FS[resolved]; if (node && node.url) { saveState([...linesRef.current, prompt, { text: `opening ${node.url}...`, color: "#34d399" }], [raw, ...histRef.current]); setTimeout(() => { window.location.href = node.url; }, 400); } else if (target.startsWith("http")) { out([{ text: `opening ${target}...`, color: "#34d399" }]); setTimeout(() => { window.open(target, "_blank"); }, 400); } else out([{ text: `open: ${target}: no page associated`, color: "#f87171" }]); return; }
+    if (base === "open") { const target = args[0]; if (!target) { const node = FS[cwd]; if (node && node.url) { const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (node.url === cp) { out([{ text: "you're already here.", color: "#475569" }]); return; } saveSession([...linesRef.current, prompt, { text: `opening ${node.url}...`, color: "#34d399" }], [raw, ...histRef.current]); saveWindowState(windowState); setTimeout(() => { window.location.href = node.url; }, 400); } else out([{ text: "open: no page for this directory", color: "#f87171" }]); return; } const resolved = resolvePath(cwd, target); const node = FS[resolved]; if (node && node.url) { saveSession([...linesRef.current, prompt, { text: `opening ${node.url}...`, color: "#34d399" }], [raw, ...histRef.current]); saveWindowState(windowState); setTimeout(() => { window.location.href = node.url; }, 400); } else if (target.startsWith("http")) { out([{ text: `opening ${target}...`, color: "#34d399" }]); setTimeout(() => { window.open(target, "_blank"); }, 400); } else out([{ text: `open: ${target}: no page associated`, color: "#f87171" }]); return; }
 
     if (base === "tree") { const target = args[0] ? resolvePath(cwd, args[0]) : cwd; const node = FS[target]; if (!node || node.type !== "dir") { out([{ text: `tree: not a directory`, color: "#f87171" }]); return; } const tl = [{ text: toDisplayPath(target), color: "#60a5fa" }]; function walk(p, pfx) { const n = FS[p]; if (!n || n.type !== "dir") return; const items = (n.children || []).filter((i) => !i.startsWith(".")); items.forEach((item, i) => { const last = i === items.length - 1; const cp = p === "/" ? "/" + item : p + "/" + item; const cn = FS[cp]; const isDir = cn && cn.type === "dir"; tl.push({ text: pfx + (last ? "└── " : "├── ") + item + (isDir ? "/" : ""), color: isDir ? "#60a5fa" : "#94a3b8" }); if (isDir) walk(cp, pfx + (last ? "    " : "│   ")); }); } walk(target, ""); out(tl); return; }
 
@@ -258,22 +263,22 @@ export default function Terminal() {
   return (
     <>
       <style>{`
-        .term-tab{position:fixed;bottom:0;right:32px;z-index:9999;display:flex;align-items:center;gap:8px;padding:10px 18px;background:#111118;border:1px solid #1e1e2e;border-bottom:none;border-radius:8px 8px 0 0;cursor:pointer;transition:background .15s;box-shadow:0 -4px 20px rgba(99,102,241,.08);user-select:none;-webkit-tap-highlight-color:transparent}
+        .term-tab{position:fixed;right:24px;bottom:18px;z-index:9999;display:flex;align-items:center;gap:8px;padding:10px 16px;background:#111118;border:1px solid #1e1e2e;border-radius:999px;cursor:pointer;transition:background .15s,border-color .15s,transform .15s;box-shadow:0 8px 24px rgba(0,0,0,.35),0 0 0 1px rgba(99,102,241,.06);user-select:none;-webkit-tap-highlight-color:transparent}
         .term-tab:hover{background:#16161f}
         .term-tab-dot{width:7px;height:7px;border-radius:50%;background:#6366f1;box-shadow:0 0 6px rgba(99,102,241,.7);animation:tabpulse 2s ease-in-out infinite}
         @keyframes tabpulse{0%,100%{opacity:1}50%{opacity:.35}}
         .term-tab-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:#64748b;letter-spacing:.05em}
         .term-tab-open{font-family:'JetBrains Mono',monospace;font-size:10px;color:#334155}
         .term-overlay{position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.6);backdrop-filter:blur(2px)}
-        .term-window{background:#0f0f0f;border:1px solid #1e1e2e;border-radius:12px;overflow:hidden;width:100%;display:flex;flex-direction:column;box-shadow:0 0 0 1px rgba(99,102,241,.08),0 25px 60px rgba(0,0,0,.6),0 0 80px rgba(99,102,241,.05);transition:box-shadow .2s}
-        .term-window.maximized{position:fixed;inset:40px;z-index:9999;border-radius:14px;width:auto;box-shadow:0 0 0 1px rgba(99,102,241,.15),0 40px 100px rgba(0,0,0,.9),0 0 120px rgba(99,102,241,.1)}
+        .term-window{position:fixed;right:24px;bottom:72px;z-index:9999;background:#0f0f0f;border:1px solid #1e1e2e;border-radius:14px;overflow:hidden;width:min(480px,calc(100vw - 2rem));height:min(420px,calc(100vh - 120px));display:flex;flex-direction:column;box-shadow:0 0 0 1px rgba(99,102,241,.08),0 25px 60px rgba(0,0,0,.6),0 0 80px rgba(99,102,241,.05);transition:box-shadow .2s,transform .2s}
+        .term-window.maximized{inset:40px;right:auto;bottom:auto;z-index:9999;border-radius:14px;width:auto;height:auto;box-shadow:0 0 0 1px rgba(99,102,241,.15),0 40px 100px rgba(0,0,0,.9),0 0 120px rgba(99,102,241,.1)}
         .term-titlebar{display:flex;align-items:center;gap:7px;padding:11px 16px;background:#111118;border-bottom:1px solid #1a1a2e;position:relative;flex-shrink:0;user-select:none}
         .term-btn{width:28px;height:28px;border-radius:50%;flex-shrink:0;border:none;cursor:pointer;padding:8px;background-clip:content-box;transition:filter .15s;-webkit-tap-highlight-color:transparent}
         .term-btn:hover{filter:brightness(1.25)}
         .term-btn-close{background-color:#ff5f57}.term-btn-min{background-color:#febc2e}.term-btn-max{background-color:#28c840}
         .term-btn-group{display:flex;gap:4px;align-items:center}
         .term-titlebar-label{position:absolute;left:50%;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:11px;color:#334155;letter-spacing:.05em;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:55%}
-        .term-body{padding:14px 16px 4px;height:320px;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:#1e293b transparent;flex-shrink:0}
+        .term-body{padding:14px 16px 4px;flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:#1e293b transparent}
         .term-window.maximized .term-body{flex:1;height:auto}
         .term-body::-webkit-scrollbar{width:4px}.term-body::-webkit-scrollbar-thumb{background:#1e293b;border-radius:2px}
         .term-line{font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.65;white-space:pre-wrap;word-break:break-word}
@@ -285,12 +290,12 @@ export default function Terminal() {
         .term-input{flex:1;background:transparent;border:none;outline:none;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#e2e8f0;caret-color:#6366f1;min-width:0}
         .term-window.maximized .term-input{font-size:14px}
         @media(max-width:640px){
-          .term-tab{right:8px;left:8px;justify-content:center}
-          .term-window{border-radius:10px}
+          .term-tab{right:12px;bottom:12px;left:auto;justify-content:center;max-width:calc(100vw - 24px)}
+          .term-window{right:12px;left:12px;bottom:64px;width:auto;height:min(380px,calc(100vh - 96px));border-radius:10px}
           .term-window.maximized{inset:8px;border-radius:10px}
           .term-titlebar{padding:9px 12px}
           .term-titlebar-label{font-size:10px;max-width:40%}
-          .term-body{height:200px;padding:10px 10px 4px}
+          .term-body{padding:10px 10px 4px}
           .term-line{font-size:11px;line-height:1.55}
           .term-window.maximized .term-line{font-size:12.5px}
           .term-input-row{padding:8px 10px 10px;gap:4px}

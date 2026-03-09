@@ -2,27 +2,16 @@
 import Terminal from './Terminal.jsx';
 ---
 
-<section class="terminal-dock">
-	<div class="terminal-dock-inner">
-		<Terminal client:load />
-	</div>
-</section>
+<Terminal client:load />
 
-<style>
-	.terminal-dock {
-		padding: 8rem 2rem 1.5rem;
-		max-width: 1060px;
-		margin: 0 auto;
+<style is:global>
+	body {
+		padding-bottom: 5.5rem;
 	}
-	.terminal-dock-inner {
-		max-width: 660px;
-	}
-	@media (max-width: 768px) {
-		.terminal-dock {
-			padding: 4.5rem 0.75rem 0.75rem;
-		}
-		.terminal-dock-inner {
-			max-width: 100%;
+
+	@media (max-width: 640px) {
+		body {
+			padding-bottom: 4.5rem;
 		}
 	}
 </style>
