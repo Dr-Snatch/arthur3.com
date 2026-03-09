@@ -1,0 +1,212 @@
+---
+export const prerender = true;
+
+import { getCollection, render } from 'astro:content';
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import FormattedDate from '../../components/FormattedDate.astro';
+import Nav from '../../components/Nav.astro';
+import TerminalBar from '../../components/TerminalBar.astro';
+
+export async function getStaticPaths() {
+	const notes = await getCollection('lab');
+	return notes.map((note) => ({
+		params: { slug: note.id },
+		props: { note },
+	}));
+}
+
+const { note } = Astro.props;
+const { Content } = await render(note);
+const tags = note.data.tags ? note.data.tags.split(',').map((tag) => tag.trim()) : [];
+const summaryCards = [
+	{ label: 'Problem', value: note.data.problem },
+	{ label: 'Approach', value: note.data.approach },
+	{ label: 'Result', value: note.data.result },
+].filter((item) => item.value);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`${note.data.title} — arthur3`} description={note.data.description} />
+	</head>
+	<body>
+		<Nav />
+		<TerminalBar />
+		<main>
+			<section class="note-hero">
+				<div class="container">
+					<a href="/lab" class="back-link">← All Notes</a>
+					<div class="hero-top">
+						<div>
+							<p class="status-label">{note.data.status}</p>
+							<h1 class="note-title">{note.data.title}</h1>
+						</div>
+						<div class="meta-block">
+							{note.data.pubDate && <FormattedDate date={note.data.pubDate} />}
+						</div>
+					</div>
+					<p class="note-description">{note.data.description}</p>
+					{tags.length > 0 && (
+						<div class="tag-row">
+							{tags.map((tag) => <span class="tag">{tag}</span>)}
+						</div>
+					)}
+					{summaryCards.length > 0 && (
+						<div class="summary-grid">
+							{summaryCards.map((item) => (
+								<div class="summary-card">
+									<p class="summary-label">{item.label}</p>
+									<p class="summary-text">{item.value}</p>
+								</div>
+							))}
+						</div>
+					)}
+					<div class="note-links">
+						{note.data.liveUrl && <a href={note.data.liveUrl} target="_blank" rel="noopener noreferrer" class="plink">Demo ↗</a>}
+						{note.data.repoUrl && <a href={note.data.repoUrl} target="_blank" rel="noopener noreferrer" class="plink">Source ↗</a>}
+					</div>
+				</div>
+			</section>
+			<section class="note-content">
+				<div class="container prose"><Content /></div>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	body { padding-top: 0; }
+	main { width: 100%; max-width: 100%; margin: 0; padding: 0; }
+	.container { max-width: 1060px; margin: 0 auto; padding: 0 2rem; }
+	.note-hero { padding: 3rem 0 2.5rem; }
+	.note-content { padding: 3rem 0 6rem; border-top: 1px solid rgba(var(--accent-rgb), 0.08); }
+	.back-link,
+	.status-label,
+	.meta-block,
+	.summary-label,
+	.tag,
+	.plink {
+		font-family: 'JetBrains Mono', monospace;
+	}
+	.back-link {
+		display: inline-block;
+		margin-bottom: 1.75rem;
+		color: rgba(var(--fg-rgb), 0.35);
+		text-decoration: none;
+		font-size: 0.72rem;
+	}
+	.back-link:hover { color: var(--accent); }
+	.hero-top {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		align-items: flex-start;
+	}
+	.status-label {
+		margin: 0 0 0.6rem;
+		font-size: 0.68rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: rgba(var(--fg-rgb), 0.3);
+	}
+	.note-title {
+		font-size: clamp(2rem, 5vw, 3rem);
+		letter-spacing: -0.04em;
+		margin: 0;
+	}
+	.meta-block {
+		font-size: 0.75rem;
+		color: rgba(var(--fg-rgb), 0.35);
+		padding-top: 0.35rem;
+	}
+	.note-description {
+		max-width: 700px;
+		font-size: 1.02rem;
+		line-height: 1.75;
+		color: rgba(var(--fg-rgb), 0.56);
+		margin: 1rem 0 1.25rem;
+	}
+	.tag-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin-bottom: 1.5rem;
+	}
+	.tag {
+		font-size: 0.68rem;
+		padding: 0.2rem 0.55rem;
+		background: rgba(var(--accent-rgb), 0.06);
+		color: var(--accent);
+		border: 1px solid rgba(var(--accent-rgb), 0.16);
+		border-radius: 999px;
+	}
+	.summary-grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 0.9rem;
+		margin-bottom: 1.5rem;
+	}
+	.summary-card {
+		padding: 1rem;
+		background: var(--bg-card);
+		border: 1px solid rgba(var(--accent-rgb), 0.1);
+		border-radius: 14px;
+	}
+	.summary-label {
+		margin: 0 0 0.4rem;
+		font-size: 0.68rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: rgba(var(--fg-rgb), 0.32);
+	}
+	.summary-text {
+		margin: 0;
+		font-size: 0.9rem;
+		line-height: 1.7;
+		color: rgba(var(--fg-rgb), 0.58);
+	}
+	.note-links {
+		display: flex;
+		gap: 0.75rem;
+		flex-wrap: wrap;
+	}
+	.plink {
+		display: inline-flex;
+		align-items: center;
+		padding: 0.55rem 1rem;
+		border-radius: 8px;
+		text-decoration: none;
+		font-size: 0.74rem;
+		color: rgba(var(--fg-rgb), 0.42);
+		border: 1px solid rgba(var(--accent-rgb), 0.12);
+	}
+	.plink:hover { color: var(--fg); border-color: rgba(var(--accent-rgb), 0.32); }
+	.prose {
+		max-width: 720px;
+		font-family: 'Inter', sans-serif;
+		font-size: 0.95rem;
+		line-height: 1.8;
+		color: rgba(var(--fg-rgb), 0.68);
+	}
+	.prose :global(h2) {
+		font-size: 1.4rem;
+		margin: 2.5rem 0 1rem;
+	}
+	.prose :global(a) { color: var(--accent); text-decoration: none; }
+	.prose :global(code) {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.85em;
+		background: rgba(var(--accent-rgb), 0.06);
+		padding: 0.15em 0.4em;
+		border-radius: 4px;
+		color: var(--accent);
+	}
+	@media (max-width: 720px) {
+		.container { padding: 0 1.5rem; }
+		.hero-top { flex-direction: column; }
+		.summary-grid { grid-template-columns: 1fr; }
+	}
+</style>

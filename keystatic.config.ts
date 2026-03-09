@@ -27,6 +27,10 @@ export default config({
       schema: {
         title: fields.slug({ name: { label: 'Title' } }),
         description: fields.text({ label: 'Short Description' }),
+        headline: fields.text({ label: 'Headline', description: 'A stronger one-line positioning statement for cards and hero sections.' }),
+        problem: fields.text({ label: 'Problem', description: 'What difficult problem does this system solve?' }),
+        system: fields.text({ label: 'System', description: 'How is the system designed at a high level?' }),
+        result: fields.text({ label: 'Result', description: 'What shipped or what outcome did the work produce?' }),
         status: fields.select({
           label: 'Status',
           options: [
@@ -38,6 +42,7 @@ export default config({
           defaultValue: 'in-progress',
         }),
         featured: fields.checkbox({ label: 'Featured on homepage?', defaultValue: false }),
+        flagship: fields.checkbox({ label: 'Flagship system?', defaultValue: false }),
         tags: fields.text({ label: 'Tags (comma-separated)' }),
         repoUrl: fields.text({ label: 'GitHub URL' }),
         liveUrl: fields.text({ label: 'Live / App Store URL' }),
@@ -53,6 +58,9 @@ export default config({
       schema: {
         title: fields.slug({ name: { label: 'Title' } }),
         description: fields.text({ label: 'Description' }),
+        problem: fields.text({ label: 'Problem', description: 'What technical question or risk prompted this note?' }),
+        approach: fields.text({ label: 'Approach', description: 'What did you test or build to answer it?' }),
+        result: fields.text({ label: 'Result', description: 'What decision or outcome came from the work?' }),
         status: fields.select({
           label: 'Status',
           options: [

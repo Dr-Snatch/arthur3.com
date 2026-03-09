@@ -1,6 +1,9 @@
 ---
 title: Prompt Sandwich
 description: "Testing different prompt wrapping strategies for reliable JSON extraction from LLM responses."
+problem: "Narrative LLM prompts tend to break JSON schemas when they also need to produce machine-readable output."
+approach: "Compared XML tags, markdown fences, and raw JSON instructions across Claude, GPT-4, and llama3.2."
+result: "XML sandwich produced the most reliable structured output and became the extraction pattern behind RPtext."
 status: experiment
 tags: "Python, Claude API, prompt engineering, JSON"
 pubDate: 2026-02-15

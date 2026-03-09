@@ -12,11 +12,11 @@ const FS = {
     content: [
       "# arthur3.com", "",
       "BSc Artificial Intelligence — Northumbria University", "",
-      "AI solutions, cybersecurity, and software engineering.", "",
+      "Reliable AI systems, secure native apps, and automation.", "",
       "## Focus areas",
-      "  → AI       LLM integration, structured output, prompt engineering",
-      "  → Cyber    Network security, secure auth, offensive fundamentals",
-      "  → Apps     Native iOS/macOS with SwiftUI", "",
+      "  → AI       LLM pipelines, structured output, prompt engineering",
+      "  → Native   Secure iOS/macOS app systems with SwiftUI",
+      "  → Tools    Automation, APIs, and developer tooling", "",
       "## Currently shipping",
       "  → RPtext   AI narrative engine with structured state extraction",
       "  → BeatMap  iOS app with OAuth 2.0 PKCE + Keychain security", "",
@@ -75,8 +75,8 @@ const BOOT = [
   { text: "Arthur Wheildon", delay: 0, color: "#e2e8f0" },
   { text: "BSc Artificial Intelligence · Northumbria University · Newcastle, UK", delay: 0, color: "#475569" },
   { text: "", delay: 0 },
-  { text: "AI solutions. Cybersecurity. Software engineering.", delay: 100, color: "#94a3b8" },
-  { text: "Building tools on LLMs, exploring offensive security, shipping native apps.", delay: 100, color: "#94a3b8" },
+  { text: "AI systems developer building reliable software.", delay: 100, color: "#94a3b8" },
+  { text: "Structured LLM pipelines, secure native apps, and automation systems.", delay: 100, color: "#94a3b8" },
   { text: "", delay: 200 },
   { text: "→ type help or start exploring with ls, cd, cat", delay: 300, color: "#64748b" },
 ];
@@ -90,11 +90,11 @@ const NEOFETCH = [
   { text: "      //   \\ \\       Host: Cloudflare Pages" },
   { text: "     (|     | )      Kernel: Astro 5.x" },
   { text: '    /\'_   _/`\\       Shell: zsh 5.9' },
-  { text: "    \\___)=(___/      Focus: AI · Cyber · Apps" },
+  { text: "    \\___)=(___/      Focus: AI systems · Apps · Automation" },
   { text: "                     AI: Claude API · Ollama · LLMs" },
   { text: "                     Sec: OAuth · Keychain · PKCE" },
   { text: "                     Lang: Python · Swift · TypeScript" },
-  { text: "                     Theme: dark [always]" },
+  { text: "                     Theme: adaptive" },
 ];
 
 const COWMSGS = ["moo. i mean, ship it.", "have you tried turning it off and on again?", "segfault in the matrix.", "git push --force and pray."];
@@ -201,10 +201,10 @@ export default function Terminal() {
       { text: "└────────────────────────────────────────────────────┘" },
     ]); return; }
 
-    if (base === "about") { out([{ text: "arthur@arthur3.com", color: "#6366f1" }, { text: "──────────────────" }, { text: "AI undergraduate @ Northumbria University" }, { text: "" }, { text: "Focused on AI engineering and cybersecurity." }, { text: "Building tools on LLMs, exploring offensive security," }, { text: "and shipping production software." }, { text: "" }, { text: "Currently shipping:" }, { text: "  → RPtext   — AI narrative engine with structured output" }, { text: "  → BeatMap  — iOS app with custom OAuth + Keychain security" }, { text: "" }, { text: "I build things to understand how they break." }]); return; }
-    if (base === "skills") { out([{ text: "TECH STACK", color: "#6366f1" }, { text: "──────────" }, { text: "AI          Claude API · Ollama · LLM tooling · prompt eng" }, { text: "Security    OAuth 2.0 PKCE · CryptoKit · Keychain · networking" }, { text: "Languages   Python · Swift · TypeScript · JavaScript" }, { text: "Native      SwiftUI · Core Data · MapKit · AVFoundation" }, { text: "Infra       Linux · Git · Docker · Cloudflare" }, { text: "" }, { text: "Exploring   offensive security · CTFs · packet analysis" }]); return; }
+    if (base === "about") { out([{ text: "arthur@arthur3.com", color: "#6366f1" }, { text: "──────────────────" }, { text: "AI systems developer @ Northumbria University" }, { text: "" }, { text: "I build reliable LLM-powered software, secure native apps," }, { text: "and automation systems with Swift and Python." }, { text: "" }, { text: "Currently shipping:" }, { text: "  → RPtext   — real-time AI game engine with structured state" }, { text: "  → BeatMap  — iOS journaling app with hardened Spotify auth" }, { text: "" }, { text: "I build things to understand how they break." }]); return; }
+    if (base === "skills") { out([{ text: "SYSTEMS I BUILD", color: "#6366f1" }, { text: "───────────────" }, { text: "AI systems   structured output pipelines · streaming · evals" }, { text: "Native apps  OAuth 2.0 PKCE · Keychain · Core Data · SwiftUI" }, { text: "Tooling      automation · API integrations · CLI workflows" }, { text: "Languages    Python · Swift · TypeScript · JavaScript" }, { text: "Infra        Linux · Git · Docker · Cloudflare" }, { text: "" }, { text: "Research     local LLMs · prompt design · applied security" }]); return; }
     if (base === "contact") { out([{ text: "CONTACT", color: "#6366f1" }, { text: "───────" }, { text: "GitHub    github.com/Dr-Snatch" }, { text: "Email     arthurwheildon0@gmail.com" }, { text: "Twitter   x.com/ExpoArturo" }, { text: "LinkedIn  linkedin.com/in/arthurwheildon" }]); return; }
-    if (base === "projects") { out([{ text: "PROJECTS", color: "#6366f1" }, { text: "────────" }, { text: "RPtext     AI narrative engine — structured LLM output" }, { text: "BeatMap    iOS app — OAuth 2.0 PKCE + Keychain security" }, { text: "" }, { text: "cd ~/projects to explore, or 'open' to visit the page", color: "#475569" }]); return; }
+    if (base === "projects") { out([{ text: "SELECTED SYSTEMS", color: "#6366f1" }, { text: "────────────────" }, { text: "RPtext     AI game engine — resilient structured state" }, { text: "BeatMap    iOS product — hardened OAuth + durable local data" }, { text: "" }, { text: "cd ~/projects to explore, or 'open' to visit the page", color: "#475569" }]); return; }
 
     if (base === "neofetch") { out(NEOFETCH); return; }
     if (base === "cowsay") { out(cowsay(rawArgs || COWMSGS[Math.floor(Math.random() * COWMSGS.length)])); return; }

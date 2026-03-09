@@ -1,26 +1,49 @@
 ---
 title: RPtext
 description: "An AI-powered text RPG for macOS. Living world, real consequences, no scripted content."
+headline: "A real-time AI game engine that turns unreliable model output into resilient game state."
+problem: "LLM-driven games break when narrative output drifts and the underlying state becomes inconsistent."
+system: "Streaming narrative generation, XML-wrapped state extraction, multi-fallback JSON parsing, and dual-model support."
+result: "A playable macOS RPG loop that keeps world state intact even with smaller local models."
 status: in-progress
 featured: true
+flagship: true
 tags: "Swift, SwiftUI, Claude API, Ollama, llama3.2:3b, JSON parsing, Streaming responses, macOS"
 repoUrl: "https://github.com/Dr-Snatch"
 pubDate: 2025-12-01
 ---
 
-## What it is
+## Flagship system
+
+RPtext is the clearest example of the kind of engineering work I want to do: taking a messy, probabilistic system and forcing it to behave like reliable software.
+
+The product surface is a text RPG. The actual challenge is systems design. The engine has to stream narrative in real time, extract structured state updates from the same response, validate them, and apply them without breaking the session.
+
+<div class="architecture-diagram">
+  <div class="diagram-step">Player input</div>
+  <div class="diagram-arrow" aria-hidden="true">→</div>
+  <div class="diagram-step">LLM narrative stream</div>
+  <div class="diagram-arrow" aria-hidden="true">→</div>
+  <div class="diagram-step">State extraction pipeline</div>
+  <div class="diagram-arrow" aria-hidden="true">→</div>
+  <div class="diagram-step">JSON validation + repair</div>
+  <div class="diagram-arrow" aria-hidden="true">→</div>
+  <div class="diagram-step">World state update</div>
+</div>
+
+## Problem
 
 RPtext is a native macOS app where AI generates the entire narrative in real time. There's no scripted content — the world reacts to what you do and how you say it. Vague or lazy input gets punished. Thoughtful play gets rewarded. NPCs remember you. Factions track your reputation.
 
 It's a text RPG where the engine *is* the AI. Every encounter, every line of dialogue, every consequence is generated on the fly based on your choices and the world state.
 
-## How it works
+## System design
 
 The player types natural language actions. The AI responds with narrative text, but hidden inside that response is a structured JSON block containing game state updates — health changes, inventory modifications, reputation shifts, NPC memory updates.
 
 This is what I call the **XML sandwich architecture**: the AI's response is wrapped in markers that let me extract reliable structured data from an inherently unpredictable output. The model writes narrative for the player, then writes machine-readable state changes for the engine, all in one completion.
 
-## The technical challenge
+## Why it is hard
 
 **Reliable structured output from LLMs.** Getting an AI to consistently produce valid JSON inside a narrative response is harder than it sounds. Models forget the schema, hallucinate fields, or break JSON syntax mid-stream. RPtext uses a multi-fallback parsing system: try strict JSON parse first, then regex extraction, then a repair pass. The game never breaks mid-session.
 
@@ -36,6 +59,12 @@ This is what I call the **XML sandwich architecture**: the AI's response is wrap
 - **NPC memory** — characters remember what you said and did
 - **Faction standings** — your reputation precedes you
 - **World state** — consequences compound over time
+
+## Result
+
+The result is a system that behaves like software instead of a demo. Narrative can stay fluid and model-driven while the game state remains structured, inspectable, and durable enough for a real session.
+
+That same extraction pipeline now informs other work on the site, especially the notes around prompt design and local-model benchmarking.
 
 ## What's next
 

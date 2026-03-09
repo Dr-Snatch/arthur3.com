@@ -38,23 +38,24 @@ function getTags(tagString) {
 				</div>
 			) : (
 				<div class="project-grid">
-					{sorted.map((project) => {
-						const tags = getTags(project.data.tags);
-						const dotColor = getStatusColor(project.data.status);
-						return (
-							<a href={`/projects/${project.id}`} class="project-card">
-								<div class="card-top">
-									<span class="card-name">{project.data.title}</span>
-									<span class="card-status" style={`color: ${dotColor}`}>
+						{sorted.map((project) => {
+							const tags = getTags(project.data.tags);
+							const dotColor = getStatusColor(project.data.status);
+							const summary = project.data.headline || project.data.description;
+							return (
+								<a href={`/projects/${project.id}`} class="project-card">
+									<div class="card-top">
+										<span class="card-name">{project.data.title}</span>
+										<span class="card-status" style={`color: ${dotColor}`}>
 										● {project.data.status.replace('-', ' ')}
 									</span>
 								</div>
-								<p class="card-desc">{project.data.description}</p>
-								{tags.length > 0 && (
-									<div class="card-tags">
-										{tags.map((tag) => <span class="card-tag">{tag}</span>)}
-									</div>
-								)}
+									<p class="card-desc">{summary}</p>
+									{tags.length > 0 && (
+										<div class="card-tags">
+											{tags.map((tag) => <span class="card-tag">{tag}</span>)}
+										</div>
+									)}
 							</a>
 						);
 					})}

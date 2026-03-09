@@ -1,9 +1,10 @@
 ---
 import SectionPage from '../../layouts/SectionPage.astro';
 import { getCollection } from 'astro:content';
+import FormattedDate from '../../components/FormattedDate.astro';
 
-const experiments = await getCollection('lab');
-const sorted = experiments.sort((a, b) => {
+const notes = await getCollection('lab');
+const sorted = notes.sort((a, b) => {
 	const da = a.data.pubDate ? new Date(a.data.pubDate).getTime() : 0;
 	const db = b.data.pubDate ? new Date(b.data.pubDate).getTime() : 0;
 	return db - da;
@@ -25,10 +26,10 @@ function getEmoji(status) {
 }
 ---
 
-<SectionPage title="Lab" description="Experiments, prototypes, and things that might not work.">
+<SectionPage title="Engineering Notes" description="Benchmarks, technical case studies, and experiments behind the shipped work.">
 	<Fragment slot="eyebrow">~/lab</Fragment>
-	<Fragment slot="heading">Lab.</Fragment>
-	<Fragment slot="description">Rough experiments, half-baked ideas, and prototypes. Some of these might become real projects. Most won't. That's the point.</Fragment>
+	<Fragment slot="heading">Engineering Notes.</Fragment>
+	<Fragment slot="description">Benchmarks, prototypes, and technical write-ups that explain how the systems on this site were designed, tested, and improved.</Fragment>
 
 	<section class="section">
 		<div class="container">
@@ -45,16 +46,34 @@ function getEmoji(status) {
 							<article class="lab-card">
 								<div class="lab-top">
 									<span class="lab-emoji" aria-hidden="true">{emoji}</span>
-									<span class="lab-status">{exp.data.status}</span>
+									<div class="lab-meta">
+										<span class="lab-status">{exp.data.status}</span>
+										{exp.data.pubDate && (
+											<span class="lab-date"><FormattedDate date={exp.data.pubDate} /></span>
+										)}
+									</div>
 								</div>
 								<h3 class="lab-name">{exp.data.title}</h3>
 								<p class="lab-desc">{exp.data.description}</p>
+								{exp.data.problem && (
+									<div>
+										<p class="lab-label">Problem</p>
+										<p class="lab-detail">{exp.data.problem}</p>
+									</div>
+								)}
+								{exp.data.result && (
+									<div>
+										<p class="lab-label">Result</p>
+										<p class="lab-detail">{exp.data.result}</p>
+									</div>
+								)}
 								{tags.length > 0 && (
 									<div class="lab-tags">
 										{tags.map((t) => <span class="ltag">{t}</span>)}
 									</div>
 								)}
 								<div class="lab-links">
+									<a href={`/lab/${exp.id}`} class="llink">Read note ↗</a>
 									{exp.data.liveUrl && <a href={exp.data.liveUrl} target="_blank" rel="noopener noreferrer" class="llink">Demo ↗</a>}
 									{exp.data.repoUrl && <a href={exp.data.repoUrl} target="_blank" rel="noopener noreferrer" class="llink">Source ↗</a>}
 								</div>
@@ -77,11 +96,15 @@ function getEmoji(status) {
 	.lab-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; }
 	.lab-card { display: flex; flex-direction: column; gap: 0.6rem; padding: 1.5rem; background: var(--bg-card); border: 1px dashed rgba(var(--accent-rgb),0.15); border-radius: 12px; transition: border-color 0.22s ease, box-shadow 0.22s ease; }
 	.lab-card:hover { border-color: rgba(var(--accent-rgb),0.35); box-shadow: 0 4px 16px rgba(var(--accent-rgb),0.06); }
-	.lab-top { display: flex; align-items: center; gap: 0.5rem; }
+	.lab-top { display: flex; align-items: flex-start; gap: 0.65rem; }
 	.lab-emoji { font-size: 1.1rem; }
+	.lab-meta { display: flex; flex-direction: column; gap: 0.2rem; }
 	.lab-status { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; color: rgba(var(--fg-rgb),0.3); text-transform: uppercase; letter-spacing: 0.1em; }
+	.lab-date { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: rgba(var(--fg-rgb),0.28); }
 	.lab-name { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--fg); margin: 0.15rem 0 0; }
 	.lab-desc { font-family: 'Inter', sans-serif; font-size: 0.85rem; color: rgba(var(--fg-rgb),0.5); line-height: 1.6; margin: 0; }
+	.lab-label { margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(var(--fg-rgb),0.3); }
+	.lab-detail { margin: 0.25rem 0 0; font-family: 'Inter', sans-serif; font-size: 0.84rem; color: rgba(var(--fg-rgb),0.55); line-height: 1.6; }
 	.lab-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: auto; }
 	.ltag { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; padding: 0.15rem 0.45rem; background: rgba(var(--accent-rgb),0.05); color: rgba(var(--accent-rgb),0.7); border: 1px solid rgba(var(--accent-rgb),0.12); border-radius: 4px; }
 	.lab-links { display: flex; gap: 0.6rem; margin-top: 0.25rem; }

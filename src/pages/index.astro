@@ -1,34 +1,69 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
 import TerminalBar from '../components/TerminalBar.astro';
 import { SITE_DESCRIPTION, SITE_TITLE, SOCIAL_LINKS } from '../consts';
 
-const stack = [
-	'Python', 'Claude API', 'Ollama', 'LLM Tooling',
-	'Prompt Engineering', 'JSON Extraction',
-	'Swift', 'SwiftUI', 'Linux', 'Networking',
-	'OAuth 2.0', 'Keychain', 'CryptoKit', 'Git',
+const allProjects = await getCollection('projects');
+const featuredProjects = allProjects
+	.filter((project) => project.data.featured)
+	.sort((a, b) => {
+		const flagshipDelta = Number(b.data.flagship) - Number(a.data.flagship);
+		if (flagshipDelta !== 0) return flagshipDelta;
+		const da = a.data.pubDate ? new Date(a.data.pubDate).getTime() : 0;
+		const db = b.data.pubDate ? new Date(b.data.pubDate).getTime() : 0;
+		return db - da;
+	});
+
+const flagshipProject = featuredProjects.find((project) => project.data.flagship) ?? featuredProjects[0];
+const engineeringNotes = (await getCollection('lab'))
+	.sort((a, b) => {
+		const da = a.data.pubDate ? new Date(a.data.pubDate).getTime() : 0;
+		const db = b.data.pubDate ? new Date(b.data.pubDate).getTime() : 0;
+		return db - da;
+	})
+	.slice(0, 3);
+
+const systems = [
+	{
+		title: 'Structured AI pipelines',
+		copy: 'LLM systems that stream useful output while still producing machine-readable state the rest of the software can trust.',
+	},
+	{
+		title: 'Secure native application flows',
+		copy: 'Mobile and desktop apps with PKCE auth, token lifecycle management, Keychain storage, and deliberate handling of failure states.',
+	},
+	{
+		title: 'Automation and API tooling',
+		copy: 'Small systems that remove repetitive work, integrate third-party APIs, and turn unreliable processes into repeatable ones.',
+	},
+	{
+		title: 'Research-backed product experiments',
+		copy: 'Benchmarks, technical notes, and prototype work that feed directly into product decisions instead of staying as isolated experiments.',
+	},
 ];
 
-const exploring = [
-	'AI agent architectures and tool-use patterns',
-	'Structured data extraction from LLM outputs at scale',
-	'Network security fundamentals — packet analysis, protocols, attack surfaces',
-	'Offensive security basics — CTFs, OWASP Top 10, reconnaissance',
-	'Secure authentication flows — OAuth, PKCE, token management',
-	'How modern AI systems are actually built under the hood',
+const principles = [
+	'Reliability over cleverness.',
+	'Structured outputs over ambiguous text.',
+	'Security as a first-class feature.',
+	'Systems should fail safely and recover cleanly.',
+	'Build small tools that solve real problems.',
 ];
 
-const buildLog = [
-	{ hash: 'f3a91cc', date: 'Mar 2026', message: 'RPtext: AI narrative engine with NPC memory, faction reputation, and structured game state extraction.' },
-	{ hash: 'b7e24d1', date: 'Mar 2026', message: 'BeatMap v1.1.0: OAuth 2.0 PKCE auth, Keychain token storage, secure API integration.' },
-	{ hash: '9c1f8a3', date: 'Feb 2026', message: 'XML sandwich architecture — 98.7% reliable JSON extraction from streaming LLM responses.' },
-	{ hash: '5d3b70e', date: 'Jan 2026', message: 'First semester of BSc Artificial Intelligence at Northumbria underway.' },
-	{ hash: 'a2e95f4', date: 'Late 2025', message: 'First experiments with Claude API and Ollama. Local LLM benchmarking.' },
-	{ hash: 'c8d1240', date: 'Mid 2025', message: 'Started learning SwiftUI. Building native apps from scratch.' },
-];
+function getTags(tagString, limit = 4) {
+	return tagString ? tagString.split(',').map((tag) => tag.trim()).slice(0, limit) : [];
+}
+
+const flagshipSummary = flagshipProject
+	? [
+			{ label: 'Problem', value: flagshipProject.data.problem },
+			{ label: 'System', value: flagshipProject.data.system },
+			{ label: 'Result', value: flagshipProject.data.result },
+		].filter((item) => item.value)
+	: [];
 ---
 
 <!doctype html>
@@ -41,221 +76,589 @@ const buildLog = [
 		<TerminalBar />
 
 		<main>
-
-			<section class="hero-ctas-section">
-				<div class="container">
-					<div class="hero-ctas">
-						<a href="/projects" class="btn-primary">View Projects</a>
-						<a href="/#contact" class="btn-ghost">Get in Touch</a>
-					</div>
-				</div>
-			</section>
-
-			<div class="marquee-wrap" aria-hidden="true">
-				<div class="marquee-track">
-					{[...stack, ...stack, ...stack].map((t) => (
-						<span class="marquee-item">{t}<span class="msep"> / </span></span>
-					))}
-				</div>
-			</div>
-
-			<section class="section">
-				<div class="container">
-					<p class="eyebrow">what i build</p>
-					<div class="build-grid">
-						<div class="build-col">
-							<h3 class="build-title">AI-Powered Software</h3>
-							<p class="build-desc">Tools built on top of LLMs — structured output extraction, streaming integrations, prompt architectures that actually work in production.</p>
-						</div>
-						<div class="build-col">
-							<h3 class="build-title">Security-Conscious Apps</h3>
-							<p class="build-desc">Native iOS and macOS apps with secure auth flows, Keychain storage, cryptographic operations, and hardened API integrations.</p>
-						</div>
-						<div class="build-col">
-							<h3 class="build-title">Automation &amp; Tooling</h3>
-							<p class="build-desc">Python scripts, CLI tools, and infrastructure. If it can be automated or reverse-engineered, I'm interested.</p>
+			<section class="hero-section">
+				<div class="container hero-grid">
+					<div class="hero-copy">
+						<p class="eyebrow">Arthur Wheildon</p>
+						<h1 class="hero-title">AI Systems Developer.</h1>
+						<p class="hero-description">
+							I build reliable AI-powered software, secure native apps, and automation systems with Swift and Python. Currently studying BSc Artificial Intelligence while shipping production-minded tools and experiments.
+						</p>
+						<div class="hero-actions">
+							<a href="#selected-systems" class="btn-primary">View Selected Systems</a>
+							<a href="#engineering-notes" class="btn-ghost">Read Engineering Notes</a>
 						</div>
 					</div>
-				</div>
-			</section>
 
-			<section id="projects" class="section section-dark">
-				<div class="container">
-					<p class="eyebrow">featured projects</p>
-					<div class="featured-grid">
-						<article class="feat-card reveal">
-							<div class="feat-header">
-								<div>
-									<span class="feat-name">RPtext</span>
-									<p class="feat-tagline">AI narrative engine. Real-time world generation with structured state extraction.</p>
-								</div>
-								<span class="feat-status">● In Progress — Core systems functional</span>
-							</div>
-							<p class="feat-desc">A macOS app where AI generates an entire text RPG in real time. The engine extracts structured JSON game state from streaming LLM responses using a custom prompt architecture — reliable enough that the game never breaks mid-session, even with smaller local models.</p>
-							<div class="feat-callout"><span class="callout-prefix">// </span>XML sandwich architecture for structured data extraction from LLM output. Multi-fallback JSON parsing chain. Dual-model support: Claude API for quality, Ollama + llama3.2 for local/offline.</div>
-							<div class="feat-tags">
-								{['Claude API', 'Ollama', 'llama3.2:3b', 'Prompt Engineering', 'JSON Extraction', 'Streaming', 'Swift', 'SwiftUI', 'macOS'].map((t) => (<span class="feat-tag">{t}</span>))}
-							</div>
-							<a href="/projects/rptext" class="feat-link">Read more ↗</a>
-						</article>
-						<article class="feat-card reveal" style="transition-delay: 0.08s">
-							<div class="feat-header">
-								<div>
-									<span class="feat-name">BeatMap</span>
-									<p class="feat-tagline">iOS app with secure OAuth, Keychain management, and third-party API integration.</p>
-								</div>
-								<span class="feat-status">● In Progress — v1.1.0</span>
-							</div>
-							<p class="feat-desc">Music journaling app that integrates Spotify and ShazamKit. The interesting part: OAuth 2.0 PKCE built from scratch — code verifier generation, SHA256 with CryptoKit, Keychain token storage, and silent background refresh. No third-party auth libraries.</p>
-							<div class="feat-callout"><span class="callout-prefix">// </span>Full OAuth 2.0 PKCE implementation with CryptoKit. Secure token lifecycle in iOS Keychain. Competing audio session management between ShazamKit and AVFoundation.</div>
-							<div class="feat-tags">
-								{['OAuth 2.0 PKCE', 'CryptoKit', 'iOS Keychain', 'Swift', 'SwiftUI', 'Core Data', 'ShazamKit', 'Spotify API', 'AVFoundation'].map((t) => (<span class="feat-tag">{t}</span>))}
-							</div>
-							<a href="/projects/beatmap" class="feat-link">Read more ↗</a>
-						</article>
+					<div class="hero-aside">
+						<div class="trust-card">
+							<p class="trust-label">Why this work matters</p>
+							<p class="trust-copy">
+								I am interested in systems that are easy to demo but difficult to make robust: structured AI outputs, secure auth flows, native app state, and automation that survives real use.
+							</p>
+						</div>
+						<ul class="trust-list">
+							<li>BSc Artificial Intelligence, Northumbria University</li>
+							<li>Building LLM pipelines, native apps, and tooling</li>
+							<li>Focused on reliability, security, and system design</li>
+						</ul>
 					</div>
 				</div>
 			</section>
 
 			<section class="section">
 				<div class="container">
-					<p class="eyebrow">tech stack</p>
-					<div class="stack-list reveal">
-						{stack.map((t) => <span class="stack-item">{t}</span>)}
+					<p class="eyebrow">Systems I Build</p>
+					<div class="systems-grid">
+						{systems.map((system) => (
+							<article class="system-card">
+								<h2 class="system-title">{system.title}</h2>
+								<p class="system-copy">{system.copy}</p>
+							</article>
+						))}
 					</div>
 				</div>
 			</section>
 
-			<section class="section section-dark">
+			{flagshipProject && (
+				<section class="section section-dark" id="flagship">
+					<div class="container">
+						<p class="eyebrow">Flagship System</p>
+						<div class="flagship-grid">
+							<div class="flagship-copy">
+								<span class="status-pill">Flagship project</span>
+								<h2 class="flagship-title">{flagshipProject.data.title}</h2>
+								<p class="flagship-headline">
+									{flagshipProject.data.headline ?? flagshipProject.data.description}
+								</p>
+								<p class="flagship-description">{flagshipProject.data.description}</p>
+
+								{flagshipSummary.length > 0 && (
+									<div class="summary-grid">
+										{flagshipSummary.map((item) => (
+											<div class="summary-card">
+												<p class="summary-label">{item.label}</p>
+												<p class="summary-text">{item.value}</p>
+											</div>
+										))}
+									</div>
+								)}
+
+								<div class="flagship-actions">
+									<a href={`/projects/${flagshipProject.id}`} class="btn-primary">Read Case Study</a>
+									<a href="/lab/prompt-sandwich" class="btn-ghost">See the extraction note</a>
+								</div>
+							</div>
+
+							<div class="diagram-panel">
+								<p class="diagram-label">System flow</p>
+								<div class="diagram-flow" aria-label="RPtext system flow">
+									<div class="diagram-step">Player input</div>
+									<div class="diagram-arrow" aria-hidden="true">→</div>
+									<div class="diagram-step">LLM narrative generation</div>
+									<div class="diagram-arrow" aria-hidden="true">→</div>
+									<div class="diagram-step">State extraction pipeline</div>
+									<div class="diagram-arrow" aria-hidden="true">→</div>
+									<div class="diagram-step">JSON validation</div>
+									<div class="diagram-arrow" aria-hidden="true">→</div>
+									<div class="diagram-step">Game state update</div>
+								</div>
+								<p class="diagram-note">
+									The interesting problem is not generating text. It is turning unpredictable model output into durable software state without breaking the user experience.
+								</p>
+							</div>
+						</div>
+					</div>
+				</section>
+			)}
+
+			<section class="section" id="selected-systems">
 				<div class="container">
-					<p class="eyebrow">currently exploring</p>
-					<ul class="explore-list">
-						{exploring.map((item, i) => (
-							<li class="explore-item reveal" style={`transition-delay:${i*0.06}s`}>
-								<span class="explore-arr" aria-hidden="true">→</span>
-								{item}
+					<p class="eyebrow">Selected Systems</p>
+					<div class="project-grid">
+						{featuredProjects.map((project) => (
+							<article class={`project-card${project.data.flagship ? ' project-card-flagship' : ''}`}>
+								<div class="project-header">
+									<div>
+										<p class="project-name">{project.data.title}</p>
+										<p class="project-headline">{project.data.headline ?? project.data.description}</p>
+									</div>
+									<span class="project-status">{project.data.status.replace('-', ' ')}</span>
+								</div>
+
+								<div class="project-points">
+									{project.data.problem && (
+										<div>
+											<p class="point-label">Problem</p>
+											<p class="point-copy">{project.data.problem}</p>
+										</div>
+									)}
+									{project.data.system && (
+										<div>
+											<p class="point-label">System</p>
+											<p class="point-copy">{project.data.system}</p>
+										</div>
+									)}
+									{project.data.result && (
+										<div>
+											<p class="point-label">Result</p>
+											<p class="point-copy">{project.data.result}</p>
+										</div>
+									)}
+								</div>
+
+								<div class="project-footer">
+									<div class="tag-row">
+										{getTags(project.data.tags).map((tag) => <span class="tag">{tag}</span>)}
+									</div>
+									<a href={`/projects/${project.id}`} class="project-link">View case study ↗</a>
+								</div>
+							</article>
+						))}
+					</div>
+				</div>
+			</section>
+
+			<section class="section section-dark" id="engineering-notes">
+				<div class="container">
+					<p class="eyebrow">Engineering Notes</p>
+					<div class="notes-grid">
+						{engineeringNotes.map((note) => (
+							<article class="note-card">
+								<div class="note-top">
+									<span class="note-status">{note.data.status}</span>
+									<span class="note-date">
+										{note.data.pubDate?.toLocaleDateString('en-GB', {
+											month: 'short',
+											year: 'numeric',
+										})}
+									</span>
+								</div>
+								<h2 class="note-title">{note.data.title}</h2>
+								<p class="note-description">{note.data.description}</p>
+								<div class="note-points">
+									{note.data.problem && (
+										<div>
+											<p class="point-label">Problem</p>
+											<p class="point-copy">{note.data.problem}</p>
+										</div>
+									)}
+									{note.data.approach && (
+										<div>
+											<p class="point-label">Approach</p>
+											<p class="point-copy">{note.data.approach}</p>
+										</div>
+									)}
+									{note.data.result && (
+										<div>
+											<p class="point-label">Result</p>
+											<p class="point-copy">{note.data.result}</p>
+										</div>
+									)}
+								</div>
+								<a href={`/lab/${note.id}`} class="project-link">Read note ↗</a>
+							</article>
+						))}
+					</div>
+				</div>
+			</section>
+
+			<section class="section">
+				<div class="container principles-grid">
+					<div>
+						<p class="eyebrow">Engineering Principles</p>
+						<h2 class="principles-title">How I think about building software.</h2>
+					</div>
+					<ul class="principles-list">
+						{principles.map((principle) => (
+							<li class="principle-item">
+								<span class="principle-marker" aria-hidden="true">→</span>
+								<span>{principle}</span>
 							</li>
 						))}
 					</ul>
 				</div>
 			</section>
 
-			<section class="section" id="log">
-				<div class="container">
-					<p class="eyebrow">build log</p>
-					<div class="gitlog">
-						{buildLog.map((entry, i) => (
-							<div class="commit reveal" style={`transition-delay:${i*0.06}s`}>
-								<div class="commit-left">
-									<code class="c-hash">{entry.hash}</code>
-									<span class="c-date">{entry.date}</span>
-								</div>
-								<p class="c-msg">{entry.message}</p>
-							</div>
-						))}
+			<section id="contact" class="section section-dark">
+				<div class="container contact-grid">
+					<div>
+						<p class="eyebrow">Contact</p>
+						<h2 class="contact-title">If the problem is interesting, I want to hear about it.</h2>
+						<p class="contact-copy">
+							Best fit: AI systems work, native app engineering, and product-minded tooling that needs careful technical design.
+						</p>
 					</div>
-				</div>
-			</section>
-
-			<section class="section section-dark">
-				<div class="container">
-					<p class="philosophy">"I build things to understand how they break."</p>
-				</div>
-			</section>
-
-			<section id="contact" class="section">
-				<div class="container">
-					<h2 class="contact-heading">Get in touch.</h2>
-					<p class="contact-sub">GitHub, LinkedIn, or email. No fluff.</p>
 					<div class="contact-links">
 						{SOCIAL_LINKS.map((link) => {
 							const isEmail = link.href.startsWith('mailto:');
 							return (
-								<a href={link.href} target={isEmail ? undefined : '_blank'} rel={isEmail ? undefined : 'noopener noreferrer'} class="contact-link">
-									{link.label}<span class="c-arr" aria-hidden="true">↗</span>
+								<a
+									href={link.href}
+									target={isEmail ? undefined : '_blank'}
+									rel={isEmail ? undefined : 'noopener noreferrer'}
+									class="contact-link"
+								>
+									{link.label}<span class="link-arrow" aria-hidden="true">↗</span>
 								</a>
 							);
 						})}
 					</div>
 				</div>
 			</section>
-
 		</main>
 		<Footer />
 	</body>
 </html>
 
-<script>
-	const obs = new IntersectionObserver(
-		(entries) => entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } }),
-		{ threshold: 0.06, rootMargin: '0px 0px -20px 0px' }
-	);
-	document.addEventListener('DOMContentLoaded', () => { document.querySelectorAll('.reveal').forEach((el) => obs.observe(el)); });
-</script>
-
 <style>
 	body { padding-top: 0; }
 	main { width: 100%; max-width: 100%; margin: 0; padding: 0; }
-	.container { max-width: 1060px; margin: 0 auto; padding: 0 2rem; }
-	.reveal { opacity: 0; transform: translateY(16px); transition: opacity 0.5s ease, transform 0.5s ease; }
-	.reveal.visible { opacity: 1; transform: translateY(0); }
-	.eyebrow { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(var(--fg-rgb),0.35); margin: 0 0 1.75rem 0; }
-	.hero-ctas-section { padding: 0 2rem 2.5rem; }
-	.hero-ctas-section .container { max-width: 1060px; }
-	.hero-ctas { display: flex; gap: 0.75rem; flex-wrap: wrap; max-width: 660px; }
-	.btn-primary { display: inline-block; padding: 0.7rem 1.6rem; background: var(--accent); color: var(--bg); text-decoration: none; border-radius: 8px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.875rem; transition: background 0.2s ease, transform 0.15s ease; }
-	.btn-primary:hover { background: var(--accent-dark); color: var(--bg); transform: translateY(-1px); }
-	.btn-ghost { display: inline-block; padding: 0.7rem 1.6rem; background: transparent; color: rgba(var(--fg-rgb),0.55); text-decoration: none; border-radius: 8px; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 0.875rem; border: 1px solid rgba(var(--accent-rgb),0.14); transition: color 0.2s ease, border-color 0.2s ease, transform 0.15s ease; }
-	.btn-ghost:hover { color: var(--fg); border-color: rgba(0,255,65,0.28); transform: translateY(-1px); }
-	.marquee-wrap { border-top: 1px solid rgba(var(--accent-rgb),0.08); border-bottom: 1px solid rgba(var(--accent-rgb),0.08); overflow: hidden; padding: 0.65rem 0; }
-	.marquee-track { display: flex; width: max-content; animation: scroll 50s linear infinite; }
-	.marquee-item { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: rgba(var(--fg-rgb),0.3); letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; }
-	.msep { color: rgba(var(--accent-rgb),0.25); margin: 0 0.3rem; }
-	@keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-33.333%); } }
-	.section { padding: 6rem 0; }
+	.container { max-width: 1080px; margin: 0 auto; padding: 0 2rem; }
+	.section { padding: 5.5rem 0; }
 	.section-dark { background: var(--bg-alt); }
-	.build-grid { display: grid; grid-template-columns: repeat(3, 1fr); border-top: 1px solid rgba(var(--accent-rgb),0.1); }
-	.build-col { padding: 2rem 2rem 2rem 0; border-right: 1px solid rgba(var(--accent-rgb),0.1); }
-	.build-col:last-child { border-right: none; padding-right: 0; }
-	.build-col:not(:first-child) { padding-left: 2rem; }
-	.build-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; color: var(--fg); margin: 0 0 0.6rem 0; }
-	.build-desc { font-family: 'JetBrains Mono', monospace; font-size: 0.77rem; color: rgba(var(--fg-rgb),0.45); line-height: 1.7; margin: 0; }
-	.featured-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
-	.feat-card { background: var(--bg-card); border: 1px solid rgba(var(--accent-rgb),0.1); border-top: 2px solid rgba(var(--accent-rgb),0.4); border-radius: 14px; padding: 2rem; display: flex; flex-direction: column; gap: 1.25rem; transition: border-color 0.25s ease, box-shadow 0.25s ease; }
-	.feat-card:hover { border-color: rgba(var(--accent-rgb),0.25); border-top-color: var(--accent); box-shadow: 0 12px 40px rgba(var(--accent-rgb),0.12); }
-	.feat-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
-	.feat-name { font-family: 'Syne', sans-serif; font-size: 1.5rem; font-weight: 800; color: var(--fg); letter-spacing: -0.03em; display: block; margin-bottom: 0.3rem; }
-	.feat-tagline { font-family: 'Inter', sans-serif; font-size: 0.88rem; color: rgba(var(--fg-rgb),0.5); margin: 0; line-height: 1.5; }
-	.feat-status { font-family: 'JetBrains Mono', monospace; font-size: 0.67rem; color: #4ade80; white-space: nowrap; letter-spacing: 0.02em; padding-top: 0.2rem; flex-shrink: 0; }
-	.feat-desc { font-family: 'Inter', sans-serif; font-size: 0.9rem; color: rgba(var(--fg-rgb),0.62); line-height: 1.7; margin: 0; }
-	.feat-callout { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: rgba(var(--fg-rgb),0.45); line-height: 1.65; background: rgba(var(--accent-rgb),0.04); border-left: 2px solid rgba(var(--accent-rgb),0.3); padding: 0.75rem 1rem; border-radius: 0 6px 6px 0; }
-	.callout-prefix { color: rgba(99,102,241,0.6); }
-	.feat-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: auto; }
-	.feat-tag { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; padding: 0.2rem 0.55rem; background: rgba(var(--accent-rgb),0.07); color: var(--accent); border: 1px solid rgba(var(--accent-rgb),0.18); border-radius: 5px; }
-	.feat-link { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: rgba(var(--fg-rgb),0.32); text-decoration: none; letter-spacing: 0.03em; transition: color 0.2s ease; margin-top: 0.25rem; }
-	.feat-link:hover { color: rgba(var(--fg-rgb),0.7); }
-	.stack-list { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-	.stack-item { font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; padding: 0.35rem 0.85rem; border: 1px solid rgba(var(--accent-rgb),0.12); border-radius: 6px; color: rgba(var(--fg-rgb),0.55); background: rgba(var(--accent-rgb),0.02); transition: color 0.2s ease, border-color 0.2s ease; cursor: default; }
-	.stack-item:hover { color: var(--fg); border-color: rgba(var(--accent-rgb),0.35); }
-	.explore-list { list-style: none; margin: 0; padding: 0; }
-	.explore-item { display: flex; align-items: baseline; gap: 0.9rem; padding: 0.9rem 0; border-bottom: 1px solid rgba(var(--accent-rgb),0.06); font-family: 'JetBrains Mono', monospace; font-size: 0.83rem; color: rgba(var(--fg-rgb),0.62); line-height: 1.5; }
-	.explore-arr { color: var(--accent); font-size: 0.78rem; flex-shrink: 0; }
-	.gitlog { display: flex; flex-direction: column; }
-	.commit { display: grid; grid-template-columns: 160px 1fr; gap: 2.5rem; padding: 1.1rem 0; border-bottom: 1px solid rgba(var(--accent-rgb),0.08); align-items: start; }
-	.commit-left { display: flex; flex-direction: column; gap: 0.2rem; }
-	.c-hash { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--accent); letter-spacing: 0.06em; background: none; padding: 0; }
-	.c-date { font-family: 'JetBrains Mono', monospace; font-size: 0.66rem; color: rgba(var(--fg-rgb),0.3); }
-	.c-msg { font-family: 'Inter', sans-serif; font-size: 0.875rem; color: rgba(var(--fg-rgb),0.62); line-height: 1.65; margin: 0; }
-	.philosophy { font-family: 'Syne', sans-serif; font-size: clamp(1.4rem, 3vw, 2.2rem); font-weight: 700; color: rgba(var(--fg-rgb),0.8); letter-spacing: -0.02em; line-height: 1.25; margin: 0; }
-	.contact-heading { font-family: 'Syne', sans-serif; font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; letter-spacing: -0.04em; color: var(--fg); margin: 0 0 0.5rem 0; }
-	.contact-sub { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: rgba(var(--fg-rgb),0.35); margin: 0 0 2rem 0; }
-	.contact-links { display: flex; gap: 0.75rem; flex-wrap: wrap; }
-	.contact-link { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.6rem 1.25rem; background: var(--bg-card); border: 1px solid rgba(var(--accent-rgb),0.12); border-radius: 8px; color: rgba(var(--fg-rgb),0.65); text-decoration: none; font-family: 'Inter', sans-serif; font-size: 0.875rem; font-weight: 500; transition: color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease; }
-	.contact-link:hover { color: var(--fg); border-color: rgba(var(--accent-rgb),0.35); box-shadow: 0 2px 10px rgba(var(--accent-rgb),0.08); }
-	.c-arr { font-size: 0.7rem; color: rgba(var(--fg-rgb),0.22); margin-left: 0.1rem; }
-	.contact-link:hover .c-arr { color: var(--accent); }
-	@media (max-width: 900px) { .featured-grid { grid-template-columns: 1fr; } }
-	@media (max-width: 860px) { .build-grid { grid-template-columns: 1fr; } .build-col { border-right: none; border-bottom: 1px solid rgba(var(--accent-rgb),0.1); padding: 1.75rem 0; } .build-col:last-child { border-bottom: none; } .build-col:not(:first-child) { padding-left: 0; } }
-	@media (max-width: 640px) { .hero-ctas-section { padding: 0 1.5rem 2rem; } .container { padding: 0 1.5rem; } .section { padding: 4.5rem 0; } .commit { grid-template-columns: 1fr; gap: 0.3rem; } .contact-links { flex-direction: column; } .feat-header { flex-direction: column; } }
-	@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } .marquee-track { animation: none; } }
+	.eyebrow {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.68rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: rgba(var(--fg-rgb), 0.35);
+		margin: 0 0 1rem 0;
+	}
+	.hero-section { padding: 1rem 0 4.5rem; }
+	.hero-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1.3fr) minmax(300px, 0.7fr);
+		gap: 2rem;
+		align-items: start;
+	}
+	.hero-title {
+		font-family: 'Syne', sans-serif;
+		font-size: clamp(2.8rem, 8vw, 5.5rem);
+		line-height: 0.96;
+		letter-spacing: -0.05em;
+		margin: 0 0 1.2rem 0;
+	}
+	.hero-description {
+		max-width: 760px;
+		font-size: 1.06rem;
+		line-height: 1.8;
+		color: rgba(var(--fg-rgb), 0.62);
+		margin: 0 0 1.8rem 0;
+	}
+	.hero-actions,
+	.flagship-actions,
+	.contact-links {
+		display: flex;
+		gap: 0.75rem;
+		flex-wrap: wrap;
+	}
+	.btn-primary,
+	.btn-ghost,
+	.contact-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.35rem;
+		padding: 0.78rem 1.35rem;
+		border-radius: 10px;
+		text-decoration: none;
+		font-size: 0.9rem;
+		transition: transform 0.15s ease, border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+	}
+	.btn-primary {
+		background: var(--accent);
+		color: var(--bg);
+		font-weight: 600;
+	}
+	.btn-primary:hover { transform: translateY(-1px); background: var(--accent-dark); color: var(--bg); }
+	.btn-ghost,
+	.contact-link {
+		background: transparent;
+		color: rgba(var(--fg-rgb), 0.62);
+		border: 1px solid rgba(var(--accent-rgb), 0.14);
+	}
+	.btn-ghost:hover,
+	.contact-link:hover {
+		color: var(--fg);
+		border-color: rgba(var(--accent-rgb), 0.32);
+		transform: translateY(-1px);
+		box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.08);
+	}
+	.hero-aside {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+	.trust-card,
+	.system-card,
+	.summary-card,
+	.project-card,
+	.note-card,
+	.diagram-panel {
+		background: var(--bg-card);
+		border: 1px solid rgba(var(--accent-rgb), 0.1);
+		border-radius: 16px;
+	}
+	.trust-card {
+		padding: 1.4rem;
+		border-top: 2px solid rgba(var(--accent-rgb), 0.35);
+	}
+	.trust-label,
+	.point-label,
+	.summary-label,
+	.diagram-label,
+	.note-status,
+	.project-status {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.68rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	.trust-label,
+	.summary-label,
+	.diagram-label,
+	.note-status { color: rgba(var(--fg-rgb), 0.32); }
+	.trust-copy,
+	.summary-text,
+	.point-copy,
+	.note-description,
+	.contact-copy {
+		color: rgba(var(--fg-rgb), 0.58);
+		line-height: 1.7;
+	}
+	.trust-copy { margin: 0.5rem 0 0; }
+	.trust-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 0.75rem;
+	}
+	.trust-list li {
+		padding: 0.9rem 1rem;
+		border: 1px solid rgba(var(--accent-rgb), 0.1);
+		border-radius: 12px;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.78rem;
+		color: rgba(var(--fg-rgb), 0.5);
+	}
+	.systems-grid,
+	.project-grid,
+	.notes-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1.25rem;
+	}
+	.system-card,
+	.note-card,
+	.project-card {
+		padding: 1.5rem;
+	}
+	.system-title,
+	.note-title {
+		font-size: 1.3rem;
+		margin: 0 0 0.75rem;
+	}
+	.system-copy { margin: 0; color: rgba(var(--fg-rgb), 0.56); }
+	.flagship-grid {
+		display: grid;
+		grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+		gap: 1.5rem;
+		align-items: start;
+	}
+	.flagship-copy {
+		padding: 2rem;
+		background: var(--bg-card);
+		border: 1px solid rgba(var(--accent-rgb), 0.1);
+		border-radius: 18px;
+		border-top: 2px solid rgba(var(--accent-rgb), 0.35);
+	}
+	.status-pill {
+		display: inline-flex;
+		padding: 0.32rem 0.6rem;
+		border-radius: 999px;
+		background: rgba(var(--accent-rgb), 0.08);
+		color: var(--accent);
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.68rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+	.flagship-title,
+	.contact-title,
+	.principles-title {
+		font-size: clamp(1.8rem, 4vw, 3rem);
+		letter-spacing: -0.04em;
+		margin: 0.85rem 0 0.75rem;
+	}
+	.flagship-headline,
+	.project-headline {
+		font-size: 1rem;
+		line-height: 1.7;
+		color: rgba(var(--fg-rgb), 0.72);
+		margin: 0 0 1rem;
+	}
+	.flagship-description { color: rgba(var(--fg-rgb), 0.54); margin: 0 0 1.5rem; }
+	.summary-grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 0.9rem;
+		margin: 0 0 1.5rem;
+	}
+	.summary-card {
+		padding: 1rem;
+		min-height: 100%;
+	}
+	.summary-text { margin: 0.5rem 0 0; font-size: 0.88rem; }
+	.diagram-panel {
+		padding: 1.5rem;
+		height: 100%;
+	}
+	.diagram-flow {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: 0.65rem;
+		margin: 0.8rem 0 1rem;
+	}
+	.diagram-step {
+		padding: 0.75rem 0.9rem;
+		border-radius: 12px;
+		background: rgba(var(--accent-rgb), 0.05);
+		border: 1px solid rgba(var(--accent-rgb), 0.14);
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.76rem;
+		color: rgba(var(--fg-rgb), 0.74);
+	}
+	.diagram-arrow {
+		color: var(--accent);
+		font-family: 'JetBrains Mono', monospace;
+	}
+	.diagram-note { margin: 0; color: rgba(var(--fg-rgb), 0.52); }
+	.project-card {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+	}
+	.project-card-flagship {
+		border-top: 2px solid rgba(var(--accent-rgb), 0.35);
+	}
+	.project-header,
+	.note-top,
+	.contact-grid,
+	.principles-grid {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+	.project-name {
+		font-family: 'Syne', sans-serif;
+		font-size: 1.5rem;
+		margin: 0 0 0.35rem;
+		letter-spacing: -0.03em;
+	}
+	.project-status {
+		color: #4ade80;
+		white-space: nowrap;
+		padding-top: 0.2rem;
+	}
+	.project-points,
+	.note-points {
+		display: grid;
+		gap: 0.9rem;
+	}
+	.point-label { color: rgba(var(--fg-rgb), 0.3); margin: 0 0 0.25rem; }
+	.point-copy { margin: 0; font-size: 0.88rem; }
+	.project-footer {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		align-items: flex-end;
+		margin-top: auto;
+	}
+	.tag-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+	}
+	.tag {
+		padding: 0.18rem 0.5rem;
+		border-radius: 999px;
+		background: rgba(var(--accent-rgb), 0.06);
+		border: 1px solid rgba(var(--accent-rgb), 0.14);
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.66rem;
+		color: var(--accent);
+	}
+	.project-link {
+		color: rgba(var(--fg-rgb), 0.48);
+		text-decoration: none;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.75rem;
+		white-space: nowrap;
+	}
+	.project-link:hover { color: var(--fg); }
+	.note-top { align-items: center; }
+	.note-date {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.7rem;
+		color: rgba(var(--fg-rgb), 0.28);
+	}
+	.principles-grid,
+	.contact-grid {
+		align-items: start;
+	}
+	.principles-list {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 0.85rem;
+		min-width: min(100%, 460px);
+	}
+	.principle-item {
+		display: flex;
+		align-items: baseline;
+		gap: 0.8rem;
+		padding-bottom: 0.85rem;
+		border-bottom: 1px solid rgba(var(--accent-rgb), 0.08);
+		color: rgba(var(--fg-rgb), 0.62);
+	}
+	.principle-marker {
+		font-family: 'JetBrains Mono', monospace;
+		color: var(--accent);
+	}
+	.contact-title { max-width: 640px; }
+	.contact-copy { max-width: 580px; margin: 0; }
+	.link-arrow { font-size: 0.7rem; color: rgba(var(--fg-rgb), 0.3); }
+	.contact-link:hover .link-arrow { color: var(--accent); }
+	@media (max-width: 980px) {
+		.hero-grid,
+		.flagship-grid,
+		.principles-grid,
+		.contact-grid,
+		.project-header,
+		.project-footer {
+			grid-template-columns: 1fr;
+			flex-direction: column;
+		}
+		.summary-grid,
+		.systems-grid,
+		.project-grid,
+		.notes-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+	@media (max-width: 720px) {
+		.container { padding: 0 1.5rem; }
+		.section { padding: 4.5rem 0; }
+		.hero-section { padding-bottom: 3.5rem; }
+		.hero-actions,
+		.flagship-actions,
+		.contact-links {
+			flex-direction: column;
+			align-items: stretch;
+		}
+		.summary-grid { grid-template-columns: 1fr; }
+	}
 </style>

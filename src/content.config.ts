@@ -19,8 +19,13 @@ const projects = defineCollection({
 		z.object({
 			title: z.string(),
 			description: z.string(),
+			headline: z.string().optional(),
+			problem: z.string().optional(),
+			system: z.string().optional(),
+			result: z.string().optional(),
 			status: z.string().default('in-progress'),
 			featured: z.boolean().default(false),
+			flagship: z.boolean().default(false),
 			tags: z.string().optional(),
 			repoUrl: z.string().optional(),
 			liveUrl: z.string().optional(),
@@ -34,6 +39,9 @@ const lab = defineCollection({
 		z.object({
 			title: z.string(),
 			description: z.string(),
+			problem: z.string().optional(),
+			approach: z.string().optional(),
+			result: z.string().optional(),
 			status: z.string().default('experiment'),
 			tags: z.string().optional(),
 			liveUrl: z.string().optional(),
