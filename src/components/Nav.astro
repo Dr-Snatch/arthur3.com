@@ -5,6 +5,13 @@ const navLinks = [
 	{ href: '/lab', label: 'Notes' },
 	{ href: '/contact', label: 'Contact' },
 ];
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+
+function isActive(href: string): boolean {
+	if (href === '/') return currentPath === '/';
+	return currentPath === href || currentPath.startsWith(href + '/');
+}
 ---
 
 <nav class="navbar">
@@ -21,7 +28,12 @@ const navLinks = [
 			<ul class="nav-links">
 				{navLinks.map((link) => (
 					<li>
-						<a href={link.href} data-nav-link={link.label === 'Home' ? 'home' : undefined}>{link.label}</a>
+						<a
+							href={link.href}
+							class={isActive(link.href) ? 'nav-active' : undefined}
+							aria-current={isActive(link.href) ? 'page' : undefined}
+							data-nav-link={link.label === 'Home' ? 'home' : undefined}
+						>{link.label}</a>
 					</li>
 				))}
 			</ul>
@@ -40,7 +52,12 @@ const navLinks = [
 		<ul class="mobile-nav-links">
 			{navLinks.map((link) => (
 				<li>
-					<a href={link.href} data-nav-link={link.label === 'Home' ? 'home' : undefined}>{link.label}</a>
+					<a
+						href={link.href}
+						class={isActive(link.href) ? 'nav-active' : undefined}
+						aria-current={isActive(link.href) ? 'page' : undefined}
+						data-nav-link={link.label === 'Home' ? 'home' : undefined}
+					>{link.label}</a>
 				</li>
 			))}
 		</ul>
@@ -195,9 +212,27 @@ const navLinks = [
 		color: rgba(var(--fg-rgb), 0.72);
 	}
 
-	.nav-links a:hover {
+	.nav-links a:hover,
+	.nav-links a.nav-active {
 		color: var(--fg);
 		background: rgba(255, 255, 255, 0.05);
+	}
+
+	.nav-links a.nav-active {
+		color: var(--fg);
+		position: relative;
+	}
+
+	.nav-links a.nav-active::after {
+		content: '';
+		position: absolute;
+		bottom: 0.4rem;
+		left: 50%;
+		transform: translateX(-50%);
+		width: 4px;
+		height: 4px;
+		border-radius: 50%;
+		background: var(--accent);
 	}
 
 	.terminal-trigger {
@@ -326,6 +361,12 @@ const navLinks = [
 		text-decoration: none;
 		color: rgba(var(--fg-rgb), 0.84);
 		background: rgba(255, 255, 255, 0.03);
+	}
+
+	.mobile-nav-links a.nav-active {
+		color: var(--fg);
+		background: rgba(255, 255, 255, 0.06);
+		border: 1px solid rgba(var(--accent-rgb), 0.12);
 	}
 
 	.mobile-utility-row {

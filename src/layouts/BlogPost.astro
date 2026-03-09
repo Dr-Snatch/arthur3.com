@@ -8,40 +8,140 @@ import TerminalBar from '../components/TerminalBar.astro';
 
 type Props = CollectionEntry<'blog'>['data'];
 
-const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
+const { title, description, pubDate, updatedDate } = Astro.props;
 ---
 
 <html lang="en">
 	<head>
-		<BaseHead title={title} description={description} />
-		<style>
-			main { width: 100%; max-width: 100%; margin: 0; }
-			.prose { width: 800px; max-width: calc(100% - 4rem); margin: auto; padding: 3rem 2rem; color: rgb(var(--gray-dark)); }
-			.title { margin-bottom: 2em; padding: 2em 0 1em; text-align: center; line-height: 1; }
-			.title h1 { margin: 0 0 0.5em 0; font-size: clamp(2rem, 5vw, 3rem); }
-			.date { margin-bottom: 0.5em; color: rgb(var(--gray)); }
-			.last-updated-on { font-style: italic; }
-			@media (max-width: 768px) { .prose { padding: 2rem 1.5rem; } }
-		</style>
+		<BaseHead title={`${title} — arthur3`} description={description} />
 	</head>
 	<body>
 		<Nav />
 		<TerminalBar />
 		<main>
-			<article>
-				<div class="prose">
-					<div class="title">
-						<div class="date">
+			<section class="post-hero">
+				<div class="container">
+					<a href="/blog" class="back-link">← All Posts</a>
+					<div class="hero-card">
+						<p class="eyebrow">devlog</p>
+						<h1 class="post-title">{title}</h1>
+						<p class="post-date">
 							<FormattedDate date={pubDate} />
-							{updatedDate && (<div class="last-updated-on">Last updated on <FormattedDate date={updatedDate} /></div>)}
-						</div>
-						<h1>{title}</h1>
-						<hr />
+							{updatedDate && (
+								<span class="updated"> · updated <FormattedDate date={updatedDate} /></span>
+							)}
+						</p>
 					</div>
-					<slot />
 				</div>
-			</article>
+			</section>
+
+			<section class="post-content">
+				<div class="container prose"><slot /></div>
+			</section>
 		</main>
 		<Footer />
 	</body>
 </html>
+
+<style>
+	body {
+		padding-top: 0;
+	}
+
+	.container {
+		max-width: var(--page-max);
+		margin: 0 auto;
+		padding: 0 2rem;
+	}
+
+	.post-hero {
+		padding: 1.2rem 0 1.6rem;
+	}
+
+	.back-link {
+		display: inline-block;
+		margin-bottom: 1rem;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.72rem;
+		text-decoration: none;
+		color: var(--muted-faint);
+	}
+
+	.hero-card {
+		padding: 1.5rem;
+		border-radius: 28px;
+		border: 1px solid var(--border);
+		background:
+			radial-gradient(circle at top right, rgba(var(--accent-rgb), 0.16), transparent 34%),
+			linear-gradient(180deg, rgba(15, 34, 66, 0.98), rgba(8, 18, 34, 0.96));
+		box-shadow: var(--box-shadow);
+	}
+
+	.eyebrow {
+		margin: 0 0 0.8rem;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.68rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--muted-faint);
+	}
+
+	.post-title {
+		font-size: clamp(2.2rem, 5vw, 3.8rem);
+		margin: 0 0 1rem;
+	}
+
+	.post-date,
+	.updated {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.72rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		color: var(--muted-faint);
+		margin: 0;
+	}
+
+	.post-content {
+		padding: 0 0 5.5rem;
+	}
+
+	.prose {
+		max-width: 46rem;
+		font-family: 'Inter', sans-serif;
+		font-size: 0.98rem;
+		line-height: 1.8;
+		color: rgba(var(--fg-rgb), 0.82);
+	}
+
+	.prose :global(h2) {
+		font-size: 1.55rem;
+		margin: 2.4rem 0 1rem;
+	}
+
+	.prose :global(a) {
+		text-decoration: none;
+	}
+
+	.prose :global(code) {
+		font-family: 'JetBrains Mono', monospace;
+	}
+
+	@media (max-width: 768px) {
+		.container {
+			padding: 0 1rem;
+		}
+
+		.post-hero {
+			padding: 0.8rem 0 1.3rem;
+		}
+
+		.hero-card {
+			border-radius: 22px;
+			padding: 1.15rem;
+		}
+
+		.post-content {
+			padding-bottom: 4.5rem;
+		}
+	}
+</style>

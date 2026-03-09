@@ -1,8 +1,3 @@
-export interface Project {
-	title: string;
-	description: string;
-	link?: string;
-	tags?: string[];
-}
-
-export const projects: Project[] = [];
+// Deprecated — projects are now managed through Keystatic CMS
+// content collections in src/content/projects/*.mdx
+// This file is unused and kept only for reference.
