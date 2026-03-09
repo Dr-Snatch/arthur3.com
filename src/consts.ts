@@ -2,7 +2,7 @@
 // SITE CONFIGURATION — edit this file to customise your site
 // ============================================================
 
-export const SITE_TITLE = 'arthur3';
+export const SITE_TITLE = 'Arthur Wheildon — AI Systems Developer';
 export const SITE_DESCRIPTION = 'AI Systems Developer building inventive, reliable, and scalable AI solutions, secure native apps, and product-minded tooling.';
 
 export const CONTACT_TEXT = 'Recruiters, founders, and teams building product-minded software.';
