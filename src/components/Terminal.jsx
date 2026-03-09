@@ -258,9 +258,51 @@ export default function Terminal() {
   return (
     <>
       <style>{`
-        .term-tab{position:fixed;bottom:0;right:32px;z-index:9999;display:flex;align-items:center;gap:8px;padding:8px 18px 8px 14px;background:#111118;border:1px solid #1e1e2e;border-bottom:none;border-radius:8px 8px 0 0;cursor:pointer;transition:background .15s;box-shadow:0 -4px 20px rgba(99,102,241,.08);user-select:none}.term-tab:hover{background:#16161f}.term-tab-dot{width:7px;height:7px;border-radius:50%;background:#6366f1;box-shadow:0 0 6px rgba(99,102,241,.7);animation:tabpulse 2s ease-in-out infinite}@keyframes tabpulse{0%,100%{opacity:1}50%{opacity:.35}}.term-tab-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:#64748b;letter-spacing:.05em}.term-tab-open{font-family:'JetBrains Mono',monospace;font-size:10px;color:#334155}.term-overlay{position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.6);backdrop-filter:blur(2px)}.term-window{background:#0f0f0f;border:1px solid #1e1e2e;border-radius:12px;overflow:hidden;width:100%;display:flex;flex-direction:column;box-shadow:0 0 0 1px rgba(99,102,241,.08),0 25px 60px rgba(0,0,0,.6),0 0 80px rgba(99,102,241,.05);transition:box-shadow .2s}.term-window.maximized{position:fixed;inset:40px;z-index:9999;border-radius:14px;width:auto;box-shadow:0 0 0 1px rgba(99,102,241,.15),0 40px 100px rgba(0,0,0,.9),0 0 120px rgba(99,102,241,.1)}.term-titlebar{display:flex;align-items:center;gap:7px;padding:11px 16px;background:#111118;border-bottom:1px solid #1a1a2e;position:relative;flex-shrink:0;user-select:none}.term-btn{width:12px;height:12px;border-radius:50%;flex-shrink:0;border:none;cursor:pointer;padding:0;transition:filter .15s}.term-btn:hover{filter:brightness(1.25)}.term-btn-close{background:#ff5f57}.term-btn-min{background:#febc2e}.term-btn-max{background:#28c840}.term-btn-group{display:flex;gap:7px;align-items:center}.term-titlebar-label{position:absolute;left:50%;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:11px;color:#334155;letter-spacing:.05em;pointer-events:none;white-space:nowrap}.term-body{padding:18px 20px 4px;height:320px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#1e293b transparent;flex-shrink:0}.term-window.maximized .term-body{flex:1;height:auto}.term-body::-webkit-scrollbar{width:4px}.term-body::-webkit-scrollbar-thumb{background:#1e293b;border-radius:2px}.term-line{font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.65;white-space:pre}.term-window.maximized .term-line{font-size:14px}.term-input-row{display:flex;align-items:center;gap:8px;padding:10px 20px 14px;border-top:1px solid #111;flex-shrink:0}.term-prompt{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#6366f1;white-space:nowrap;user-select:none;flex-shrink:0}.term-window.maximized .term-prompt{font-size:14px}.term-input{flex:1;background:transparent;border:none;outline:none;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#e2e8f0;caret-color:#6366f1;min-width:0}.term-window.maximized .term-input{font-size:14px}
+        .term-tab{position:fixed;bottom:0;right:32px;z-index:9999;display:flex;align-items:center;gap:8px;padding:10px 18px;background:#111118;border:1px solid #1e1e2e;border-bottom:none;border-radius:8px 8px 0 0;cursor:pointer;transition:background .15s;box-shadow:0 -4px 20px rgba(99,102,241,.08);user-select:none;-webkit-tap-highlight-color:transparent}
+        .term-tab:hover{background:#16161f}
+        .term-tab-dot{width:7px;height:7px;border-radius:50%;background:#6366f1;box-shadow:0 0 6px rgba(99,102,241,.7);animation:tabpulse 2s ease-in-out infinite}
+        @keyframes tabpulse{0%,100%{opacity:1}50%{opacity:.35}}
+        .term-tab-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:#64748b;letter-spacing:.05em}
+        .term-tab-open{font-family:'JetBrains Mono',monospace;font-size:10px;color:#334155}
+        .term-overlay{position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.6);backdrop-filter:blur(2px)}
+        .term-window{background:#0f0f0f;border:1px solid #1e1e2e;border-radius:12px;overflow:hidden;width:100%;display:flex;flex-direction:column;box-shadow:0 0 0 1px rgba(99,102,241,.08),0 25px 60px rgba(0,0,0,.6),0 0 80px rgba(99,102,241,.05);transition:box-shadow .2s}
+        .term-window.maximized{position:fixed;inset:40px;z-index:9999;border-radius:14px;width:auto;box-shadow:0 0 0 1px rgba(99,102,241,.15),0 40px 100px rgba(0,0,0,.9),0 0 120px rgba(99,102,241,.1)}
+        .term-titlebar{display:flex;align-items:center;gap:7px;padding:11px 16px;background:#111118;border-bottom:1px solid #1a1a2e;position:relative;flex-shrink:0;user-select:none}
+        .term-btn{width:28px;height:28px;border-radius:50%;flex-shrink:0;border:none;cursor:pointer;padding:8px;background-clip:content-box;transition:filter .15s;-webkit-tap-highlight-color:transparent}
+        .term-btn:hover{filter:brightness(1.25)}
+        .term-btn-close{background-color:#ff5f57}.term-btn-min{background-color:#febc2e}.term-btn-max{background-color:#28c840}
+        .term-btn-group{display:flex;gap:4px;align-items:center}
+        .term-titlebar-label{position:absolute;left:50%;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:11px;color:#334155;letter-spacing:.05em;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:55%}
+        .term-body{padding:14px 16px 4px;height:320px;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:#1e293b transparent;flex-shrink:0}
+        .term-window.maximized .term-body{flex:1;height:auto}
+        .term-body::-webkit-scrollbar{width:4px}.term-body::-webkit-scrollbar-thumb{background:#1e293b;border-radius:2px}
+        .term-line{font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.65;white-space:pre-wrap;word-break:break-word}
+        .term-window.maximized .term-line{font-size:14px}
+        .term-input-row{display:flex;align-items:center;gap:6px;padding:10px 16px 14px;border-top:1px solid #111;flex-shrink:0}
+        .term-prompt{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#6366f1;white-space:nowrap;user-select:none;flex-shrink:0}
+        .term-prompt-short{display:none}
+        .term-window.maximized .term-prompt{font-size:14px}
+        .term-input{flex:1;background:transparent;border:none;outline:none;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#e2e8f0;caret-color:#6366f1;min-width:0}
+        .term-window.maximized .term-input{font-size:14px}
+        @media(max-width:640px){
+          .term-tab{right:8px;left:8px;justify-content:center}
+          .term-window{border-radius:10px}
+          .term-window.maximized{inset:8px;border-radius:10px}
+          .term-titlebar{padding:9px 12px}
+          .term-titlebar-label{font-size:10px;max-width:40%}
+          .term-body{height:200px;padding:10px 10px 4px}
+          .term-line{font-size:11px;line-height:1.55}
+          .term-window.maximized .term-line{font-size:12.5px}
+          .term-input-row{padding:8px 10px 10px;gap:4px}
+          .term-prompt{font-size:11px}
+          .term-prompt-full{display:none!important}
+          .term-prompt-short{display:inline!important}
+          .term-input{font-size:16px}
+          .term-window.maximized .term-prompt{font-size:12px}
+          .term-window.maximized .term-input{font-size:16px}
+        }
       `}</style>
-      {isMin && <button className="term-tab" onClick={() => setWindowState("normal")} aria-label="Restore terminal"><span className="term-tab-dot" /><span className="term-tab-label">arthur@arthur3 {displayCwd}</span><span className="term-tab-open">↑</span></button>}
+      {isMin && <button className="term-tab" onClick={() => setWindowState("normal")} aria-label="Restore terminal"><span className="term-tab-dot" /><span className="term-tab-label">{displayCwd}</span><span className="term-tab-open">↑</span></button>}
       {isMax && <div className="term-overlay" onClick={() => setWindowState("normal")} />}
       {!isClosed && !isMin && (
         <div className={`term-window${isMax ? " maximized" : ""}`} onClick={() => inputRef.current?.focus()}>
@@ -270,11 +312,11 @@ export default function Terminal() {
               <button className="term-btn term-btn-min" onClick={(e) => { e.stopPropagation(); setWindowState("minimized"); }} title="Minimise" />
               <button className="term-btn term-btn-max" onClick={(e) => { e.stopPropagation(); setWindowState((s) => s === "maximized" ? "normal" : "maximized"); }} title={isMax ? "Restore" : "Maximise"} />
             </div>
-            <span className="term-titlebar-label">arthur@arthur3 {displayCwd} — zsh</span>
+            <span className="term-titlebar-label">arthur@arthur3 {displayCwd}</span>
           </div>
           <div className="term-body" ref={bodyRef}>{lines.map((l, i) => <div key={i} className="term-line" style={{ color: l.color || "#94a3b8" }}>{l.text}</div>)}</div>
           <div className="term-input-row">
-            <span className="term-prompt">arthur@arthur3 {displayCwd} %</span>
+            <span className="term-prompt"><span className="term-prompt-full">arthur@arthur3 {displayCwd} %</span><span className="term-prompt-short">{displayCwd} %</span></span>
             <input ref={inputRef} className="term-input" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyDown} autoFocus spellCheck={false} autoComplete="off" autoCapitalize="off" disabled={!booted} />
           </div>
         </div>

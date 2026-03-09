@@ -11,7 +11,6 @@
 	--accent-rgb: 0, 255, 65;
 	--border:     rgba(0, 255, 65, 0.1);
 	--border-sub: rgba(0, 255, 65, 0.08);
-	/* Legacy vars used by blog layout */
 	--black: 220, 255, 230;
 	--gray: 100, 140, 110;
 	--gray-light: 20, 30, 22;
@@ -21,7 +20,6 @@
 	--accent-glow: rgba(0, 255, 65, 0.12);
 }
 
-/* ── Light — when browser/OS is set to light ── */
 @media (prefers-color-scheme: light) {
 	:root {
 		--bg:         #FAFAFA;
@@ -35,7 +33,6 @@
 		--accent-rgb: 99, 102, 241;
 		--border:     rgba(0, 0, 0, 0.09);
 		--border-sub: rgba(0, 0, 0, 0.07);
-		/* Legacy vars */
 		--black: 17, 17, 24;
 		--gray: 100, 100, 120;
 		--gray-light: 230, 230, 235;
@@ -46,18 +43,12 @@
 	}
 }
 
-* {
-	box-sizing: border-box;
-}
-
-html {
-	scroll-behavior: smooth;
-}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
 
 body {
 	font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-	margin: 0;
-	padding: 0;
+	margin: 0; padding: 0;
 	text-align: left;
 	background: var(--bg);
 	color: var(--fg);
@@ -67,6 +58,7 @@ body {
 	line-height: 1.7;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	-webkit-text-size-adjust: 100%;
 }
 
 main {
@@ -91,41 +83,14 @@ h4 { font-size: 1.563em; }
 h5 { font-size: 1.25em; }
 
 strong, b { font-weight: 700; }
-
-a {
-	color: var(--accent);
-}
-
-a:hover {
-	color: var(--accent-dark);
-}
-
-p {
-	margin-bottom: 1em;
-}
-
-.prose p {
-	margin-bottom: 2em;
-}
-
-textarea {
-	width: 100%;
-	font-size: 16px;
-}
-
-input {
-	font-size: 16px;
-}
-
-table {
-	width: 100%;
-}
-
-img {
-	max-width: 100%;
-	height: auto;
-	border-radius: 8px;
-}
+a { color: var(--accent); }
+a:hover { color: var(--accent-dark); }
+p { margin-bottom: 1em; }
+.prose p { margin-bottom: 2em; }
+textarea { width: 100%; font-size: 16px; }
+input { font-size: 16px; }
+table { width: 100%; }
+img { max-width: 100%; height: auto; border-radius: 8px; }
 
 code {
 	font-family: 'JetBrains Mono', 'Fira Code', monospace;
@@ -144,11 +109,7 @@ pre {
 	border: 1px solid var(--border);
 	overflow-x: auto;
 }
-
-pre > code {
-	all: unset;
-	font-family: 'JetBrains Mono', 'Fira Code', monospace;
-}
+pre > code { all: unset; font-family: 'JetBrains Mono', 'Fira Code', monospace; }
 
 blockquote {
 	border-left: 3px solid var(--accent);
@@ -158,28 +119,20 @@ blockquote {
 	color: rgba(var(--fg-rgb), 0.6);
 }
 
-hr {
-	border: none;
-	border-top: 1px solid var(--border);
-}
+hr { border: none; border-top: 1px solid var(--border); }
 
 @media (max-width: 720px) {
-	body {
-		font-size: 16px;
-	}
-
-	main {
-		padding: 1em;
-	}
+	body { font-size: 16px; }
+	main { padding: 1em; }
+	h1 { font-size: 2.2em; }
+	h2 { font-size: 1.8em; }
+	h3 { font-size: 1.4em; }
 }
 
 .sr-only {
-	border: 0;
-	padding: 0;
-	margin: 0;
+	border: 0; padding: 0; margin: 0;
 	position: absolute !important;
-	height: 1px;
-	width: 1px;
+	height: 1px; width: 1px;
 	overflow: hidden;
 	clip: rect(1px 1px 1px 1px);
 	clip: rect(1px, 1px, 1px, 1px);
