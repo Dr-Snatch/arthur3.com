@@ -2,14 +2,23 @@
 import Terminal from './Terminal.jsx';
 ---
 
+<div class="terminal-shell-offset" aria-hidden="true"></div>
 <Terminal client:load />
 
 <style is:global>
+	.terminal-shell-offset {
+		height: 8rem;
+	}
+
 	body {
 		padding-bottom: 5.5rem;
 	}
 
 	@media (max-width: 640px) {
+		.terminal-shell-offset {
+			height: 4.5rem;
+		}
+
 		body {
 			padding-bottom: 4.5rem;
 		}

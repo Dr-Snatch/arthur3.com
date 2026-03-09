@@ -259,16 +259,19 @@ export default function Terminal() {
   };
 
   const isMax = windowState === "maximized", isMin = windowState === "minimized", isClosed = windowState === "closed";
+  const tabCwdLabel = displayCwd === "~" ? "home" : displayCwd;
 
   return (
     <>
       <style>{`
-        .term-tab{position:fixed;right:24px;bottom:18px;z-index:9999;display:flex;align-items:center;gap:8px;padding:10px 16px;background:#111118;border:1px solid #1e1e2e;border-radius:999px;cursor:pointer;transition:background .15s,border-color .15s,transform .15s;box-shadow:0 8px 24px rgba(0,0,0,.35),0 0 0 1px rgba(99,102,241,.06);user-select:none;-webkit-tap-highlight-color:transparent}
-        .term-tab:hover{background:#16161f}
-        .term-tab-dot{width:7px;height:7px;border-radius:50%;background:#6366f1;box-shadow:0 0 6px rgba(99,102,241,.7);animation:tabpulse 2s ease-in-out infinite}
-        @keyframes tabpulse{0%,100%{opacity:1}50%{opacity:.35}}
-        .term-tab-label{font-family:'JetBrains Mono',monospace;font-size:11px;color:#64748b;letter-spacing:.05em}
-        .term-tab-open{font-family:'JetBrains Mono',monospace;font-size:10px;color:#334155}
+        .term-tab{position:fixed;right:24px;bottom:18px;z-index:9999;display:flex;align-items:center;gap:10px;padding:12px 16px 12px 14px;background:linear-gradient(135deg,rgba(99,102,241,.2),rgba(15,15,15,.96) 45%,rgba(15,15,15,.98));border:1px solid rgba(99,102,241,.34);border-radius:16px;cursor:pointer;transition:background .15s,border-color .15s,transform .15s,box-shadow .15s;box-shadow:0 14px 32px rgba(0,0,0,.42),0 0 0 1px rgba(99,102,241,.08),0 0 34px rgba(99,102,241,.18);user-select:none;-webkit-tap-highlight-color:transparent}
+        .term-tab:hover{background:linear-gradient(135deg,rgba(99,102,241,.28),rgba(22,22,31,.98) 45%,rgba(22,22,31,.98));border-color:rgba(99,102,241,.55);transform:translateY(-2px);box-shadow:0 18px 40px rgba(0,0,0,.5),0 0 0 1px rgba(99,102,241,.16),0 0 48px rgba(99,102,241,.24)}
+        .term-tab-dot{width:10px;height:10px;border-radius:50%;background:#818cf8;box-shadow:0 0 10px rgba(129,140,248,.85);animation:tabpulse 1.6s ease-in-out infinite}
+        @keyframes tabpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.88)}}
+        .term-tab-copy{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+        .term-tab-label{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#e2e8f0;letter-spacing:.03em;line-height:1}
+        .term-tab-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:#94a3b8;letter-spacing:.06em;text-transform:uppercase;line-height:1}
+        .term-tab-open{margin-left:4px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#a5b4fc}
         .term-overlay{position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.6);backdrop-filter:blur(2px)}
         .term-window{position:fixed;right:24px;bottom:72px;z-index:9999;background:#0f0f0f;border:1px solid #1e1e2e;border-radius:14px;overflow:hidden;width:min(480px,calc(100vw - 2rem));height:min(420px,calc(100vh - 120px));display:flex;flex-direction:column;box-shadow:0 0 0 1px rgba(99,102,241,.08),0 25px 60px rgba(0,0,0,.6),0 0 80px rgba(99,102,241,.05);transition:box-shadow .2s,transform .2s}
         .term-window.maximized{inset:40px;right:auto;bottom:auto;z-index:9999;border-radius:14px;width:auto;height:auto;box-shadow:0 0 0 1px rgba(99,102,241,.15),0 40px 100px rgba(0,0,0,.9),0 0 120px rgba(99,102,241,.1)}
@@ -290,7 +293,7 @@ export default function Terminal() {
         .term-input{flex:1;background:transparent;border:none;outline:none;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#e2e8f0;caret-color:#6366f1;min-width:0}
         .term-window.maximized .term-input{font-size:14px}
         @media(max-width:640px){
-          .term-tab{right:12px;bottom:12px;left:auto;justify-content:center;max-width:calc(100vw - 24px)}
+          .term-tab{right:12px;bottom:12px;left:auto;max-width:calc(100vw - 24px);padding:11px 14px 11px 13px;border-radius:14px}
           .term-window{right:12px;left:12px;bottom:64px;width:auto;height:min(380px,calc(100vh - 96px));border-radius:10px}
           .term-window.maximized{inset:8px;border-radius:10px}
           .term-titlebar{padding:9px 12px}
@@ -305,9 +308,11 @@ export default function Terminal() {
           .term-input{font-size:16px}
           .term-window.maximized .term-prompt{font-size:12px}
           .term-window.maximized .term-input{font-size:16px}
+          .term-tab-label{font-size:11px}
+          .term-tab-meta{font-size:9px}
         }
       `}</style>
-      {isMin && <button className="term-tab" onClick={() => setWindowState("normal")} aria-label="Restore terminal"><span className="term-tab-dot" /><span className="term-tab-label">{displayCwd}</span><span className="term-tab-open">↑</span></button>}
+      {isMin && <button className="term-tab" onClick={() => setWindowState("normal")} aria-label="Restore terminal"><span className="term-tab-dot" /><span className="term-tab-copy"><span className="term-tab-label">Open Terminal</span><span className="term-tab-meta">{tabCwdLabel}</span></span><span className="term-tab-open">↑</span></button>}
       {isMax && <div className="term-overlay" onClick={() => setWindowState("normal")} />}
       {!isClosed && !isMin && (
         <div className={`term-window${isMax ? " maximized" : ""}`} onClick={() => inputRef.current?.focus()}>
@@ -326,7 +331,7 @@ export default function Terminal() {
           </div>
         </div>
       )}
-      {isClosed && <button className="term-tab" onClick={() => setWindowState("normal")} aria-label="Open terminal"><span className="term-tab-dot" /><span className="term-tab-label">terminal</span><span className="term-tab-open">↑</span></button>}
+      {isClosed && <button className="term-tab" onClick={() => setWindowState("normal")} aria-label="Open terminal"><span className="term-tab-dot" /><span className="term-tab-copy"><span className="term-tab-label">Open Terminal</span><span className="term-tab-meta">command line</span></span><span className="term-tab-open">↑</span></button>}
     </>
   );
 }
