@@ -82,20 +82,20 @@ function toDisplayPath(absPath) {
 }
 
 const BOOT = [
-  { text: "Arthur Wheildon", delay: 0, color: "#e2e8f0" },
-  { text: "BSc Artificial Intelligence · Northumbria University · Newcastle, UK", delay: 0, color: "#475569" },
+  { text: "Arthur Wheildon", delay: 0, color: "#d1fae5" },
+  { text: "BSc Artificial Intelligence · Northumbria University · Newcastle, UK", delay: 0, color: "rgba(167,243,208,0.42)" },
   { text: "", delay: 0 },
-  { text: "AI systems developer building reliable software.", delay: 100, color: "#94a3b8" },
-  { text: "Structured LLM pipelines, secure native apps, and automation systems.", delay: 100, color: "#94a3b8" },
+  { text: "AI systems developer building reliable software.", delay: 100, color: "rgba(167,243,208,0.65)" },
+  { text: "Structured LLM pipelines, secure native apps, and automation systems.", delay: 100, color: "rgba(167,243,208,0.65)" },
   { text: "", delay: 200 },
-  { text: "→ type help or start exploring with ls, cd, cat", delay: 300, color: "#64748b" },
+  { text: "→ type help or start exploring with ls, cd, cat", delay: 300, color: "rgba(167,243,208,0.38)" },
 ];
 
 const BOOT_READY = 500;
 
 const NEOFETCH = [
-  { text: "        .--.         arthur@arthur3.com", color: "#6366f1" },
-  { text: "       |o_o |        ──────────────────", color: "#6366f1" },
+  { text: "        .--.         arthur@arthur3.com", color: "#4ade80" },
+  { text: "       |o_o |        ──────────────────", color: "#4ade80" },
   { text: "       |:_/ |        OS: arthur3-os 1.0.0 x86_64" },
   { text: "      //   \\ \\       Host: Cloudflare Pages" },
   { text: "     (|     | )      Kernel: Astro 5.x" },
@@ -186,7 +186,7 @@ export default function Terminal() {
 
   const handleCommand = (raw) => {
     const trimmed = raw.trim();
-    const prompt = { text: `arthur@arthur3 ${displayCwd} % ${raw}`, color: "#a78bfa" };
+    const prompt = { text: `arthur@arthur3 ${displayCwd} % ${raw}`, color: "#4ade80" };
     setLines((p) => [...p, prompt]);
     if (!trimmed) return;
     setHistory((p) => [raw, ...p]); setHistoryIndex(-1);
@@ -194,7 +194,7 @@ export default function Terminal() {
 
     if (base === "clear") { setLines([]); return; }
     if (base === "reset") { clearSession(); saveWindowState("normal"); setWindowState("normal"); setLines([]); setHistory([]); setHistoryIndex(-1); const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (cp !== "/") { window.location.href = "/"; return; } setCwd(HOME); BOOT.forEach(({ text, delay, color }) => setTimeout(() => setLines((p) => [...p, { text, color }]), delay)); setTimeout(() => setBooted(true), BOOT_READY); return; }
-    if (base === "home") { const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (cp === "/") { setCwd(HOME); out([{ text: "already home.", color: "#475569" }]); return; } saveSession([...linesRef.current, prompt, { text: "going home...", color: "#34d399" }], [raw, ...histRef.current]); saveWindowState(windowState); window.location.href = "/"; return; }
+    if (base === "home") { const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (cp === "/") { setCwd(HOME); out([{ text: "already home.", color: "#3d6645" }]); return; } saveSession([...linesRef.current, prompt, { text: "going home...", color: "#34d399" }], [raw, ...histRef.current]); saveWindowState(windowState); window.location.href = "/"; return; }
 
     if (base === "cd") { const target = args[0] || "~"; if (target === "-") { out([{ text: "cd: OLDPWD not set", color: "#f87171" }]); return; } const resolved = resolvePath(cwd, target); const node = FS[resolved]; if (!node) { out([{ text: `cd: ${target}: no such file or directory`, color: "#f87171" }]); return; } if (node.type !== "dir") { out([{ text: `cd: ${target}: not a directory`, color: "#f87171" }]); return; } if (node.url) { const cp = (window.location.pathname.replace(/\/+$/, "") || "/"); if (node.url !== cp) { saveSession([...linesRef.current, prompt], [raw, ...histRef.current]); saveWindowState(windowState); window.location.href = node.url; return; } } setCwd(resolved); return; }
     if (base === "pwd") { out([{ text: cwd }]); return; }
@@ -203,17 +203,17 @@ export default function Terminal() {
       const showHidden = args.includes("-a") || args.includes("-la") || args.includes("-al"); const showLong = args.includes("-l") || args.includes("-la") || args.includes("-al"); const pathArg = args.find((a) => !a.startsWith("-")); const target = pathArg ? resolvePath(cwd, pathArg) : cwd; const node = FS[target];
       if (!node) { out([{ text: `ls: ${pathArg}: no such file or directory`, color: "#f87171" }]); return; } if (node.type === "file") { out([{ text: pathArg || target.split("/").pop() }]); return; }
       let items = node.children || []; if (!showHidden) items = items.filter((i) => !i.startsWith("."));
-      if (showLong) { if (showHidden) out([{ text: "total " + items.length }, { text: "drwxr-xr-x  .   ", color: "#60a5fa" }, { text: "drwxr-xr-x  ..  ", color: "#60a5fa" }]); items.forEach((item) => { const cp = target === "/" ? "/" + item : target + "/" + item; const cn = FS[cp]; const isDir = cn && cn.type === "dir"; const perms = isDir ? "drwxr-xr-x" : "-rw-r--r--"; const sz = cn && cn.content ? String(cn.content.length * 42).padStart(5) : "  4096"; const c = isDir ? "#60a5fa" : item.startsWith(".") ? "#475569" : item.endsWith(".py") || item.endsWith(".sh") ? "#4ade80" : "#94a3b8"; out([{ text: `${perms}  ${sz} Mar  7 00:00  ${item}${isDir ? "/" : ""}`, color: c }]); });
-      } else { const result = items.map((item) => { const cp = target === "/" ? "/" + item : target + "/" + item; const cn = FS[cp]; const isDir = cn && cn.type === "dir"; return { text: isDir ? item + "/" : item, color: isDir ? "#60a5fa" : "#94a3b8" }; }); out(result.length > 0 ? result : [{ text: "(empty)", color: "#475569" }]); }
+      if (showLong) { if (showHidden) out([{ text: "total " + items.length }, { text: "drwxr-xr-x  .   ", color: "#86efac" }, { text: "drwxr-xr-x  ..  ", color: "#86efac" }]); items.forEach((item) => { const cp = target === "/" ? "/" + item : target + "/" + item; const cn = FS[cp]; const isDir = cn && cn.type === "dir"; const perms = isDir ? "drwxr-xr-x" : "-rw-r--r--"; const sz = cn && cn.content ? String(cn.content.length * 42).padStart(5) : "  4096"; const c = isDir ? "#86efac" : item.startsWith(".") ? "rgba(167,243,208,0.35)" : item.endsWith(".py") || item.endsWith(".sh") ? "#4ade80" : "rgba(167,243,208,0.65)"; out([{ text: `${perms}  ${sz} Mar  7 00:00  ${item}${isDir ? "/" : ""}`, color: c }]); });
+      } else { const result = items.map((item) => { const cp = target === "/" ? "/" + item : target + "/" + item; const cn = FS[cp]; const isDir = cn && cn.type === "dir"; return { text: isDir ? item + "/" : item, color: isDir ? "#86efac" : "rgba(167,243,208,0.65)" }; }); out(result.length > 0 ? result : [{ text: "(empty)", color: "rgba(167,243,208,0.38)" }]); }
       return;
     }
 
     if (base === "cat") { if (!args[0]) { out([{ text: "cat: missing operand", color: "#f87171" }]); return; } const t = resolvePath(cwd, args[0]); const n = FS[t]; if (!n) out([{ text: `cat: ${args[0]}: no such file or directory`, color: "#f87171" }]); else if (n.type === "dir") out([{ text: `cat: ${args[0]}: is a directory`, color: "#f87171" }]); else out(n.content.map((l) => ({ text: l }))); return; }
     if (base === "head") { const t = resolvePath(cwd, args[0] || ""); const n = FS[t]; if (!n || n.type !== "file") out([{ text: `head: cannot read`, color: "#f87171" }]); else out(n.content.slice(0, 5).map((l) => ({ text: l }))); return; }
 
-    if (base === "open") { const target = args[0]; if (!target) { const node = FS[cwd]; if (node && node.url) { const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (node.url === cp) { out([{ text: "you're already here.", color: "#475569" }]); return; } saveSession([...linesRef.current, prompt, { text: `opening ${node.url}...`, color: "#34d399" }], [raw, ...histRef.current]); saveWindowState(windowState); setTimeout(() => { window.location.href = node.url; }, 400); } else out([{ text: "open: no page for this directory", color: "#f87171" }]); return; } const resolved = resolvePath(cwd, target); const node = FS[resolved]; if (node && node.url) { saveSession([...linesRef.current, prompt, { text: `opening ${node.url}...`, color: "#34d399" }], [raw, ...histRef.current]); saveWindowState(windowState); setTimeout(() => { window.location.href = node.url; }, 400); } else if (target.startsWith("http")) { out([{ text: `opening ${target}...`, color: "#34d399" }]); setTimeout(() => { window.open(target, "_blank"); }, 400); } else out([{ text: `open: ${target}: no page associated`, color: "#f87171" }]); return; }
+    if (base === "open") { const target = args[0]; if (!target) { const node = FS[cwd]; if (node && node.url) { const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (node.url === cp) { out([{ text: "you're already here.", color: "#3d6645" }]); return; } saveSession([...linesRef.current, prompt, { text: `opening ${node.url}...`, color: "#34d399" }], [raw, ...histRef.current]); saveWindowState(windowState); setTimeout(() => { window.location.href = node.url; }, 400); } else out([{ text: "open: no page for this directory", color: "#f87171" }]); return; } const resolved = resolvePath(cwd, target); const node = FS[resolved]; if (node && node.url) { saveSession([...linesRef.current, prompt, { text: `opening ${node.url}...`, color: "#34d399" }], [raw, ...histRef.current]); saveWindowState(windowState); setTimeout(() => { window.location.href = node.url; }, 400); } else if (target.startsWith("http")) { out([{ text: `opening ${target}...`, color: "#34d399" }]); setTimeout(() => { window.open(target, "_blank"); }, 400); } else out([{ text: `open: ${target}: no page associated`, color: "#f87171" }]); return; }
 
-    if (base === "tree") { const target = args[0] ? resolvePath(cwd, args[0]) : cwd; const node = FS[target]; if (!node || node.type !== "dir") { out([{ text: `tree: not a directory`, color: "#f87171" }]); return; } const tl = [{ text: toDisplayPath(target), color: "#60a5fa" }]; function walk(p, pfx) { const n = FS[p]; if (!n || n.type !== "dir") return; const items = (n.children || []).filter((i) => !i.startsWith(".")); items.forEach((item, i) => { const last = i === items.length - 1; const cp = p === "/" ? "/" + item : p + "/" + item; const cn = FS[cp]; const isDir = cn && cn.type === "dir"; tl.push({ text: pfx + (last ? "└── " : "├── ") + item + (isDir ? "/" : ""), color: isDir ? "#60a5fa" : "#94a3b8" }); if (isDir) walk(cp, pfx + (last ? "    " : "│   ")); }); } walk(target, ""); out(tl); return; }
+    if (base === "tree") { const target = args[0] ? resolvePath(cwd, args[0]) : cwd; const node = FS[target]; if (!node || node.type !== "dir") { out([{ text: `tree: not a directory`, color: "#f87171" }]); return; } const tl = [{ text: toDisplayPath(target), color: "#86efac" }]; function walk(p, pfx) { const n = FS[p]; if (!n || n.type !== "dir") return; const items = (n.children || []).filter((i) => !i.startsWith(".")); items.forEach((item, i) => { const last = i === items.length - 1; const cp = p === "/" ? "/" + item : p + "/" + item; const cn = FS[cp]; const isDir = cn && cn.type === "dir"; tl.push({ text: pfx + (last ? "└── " : "├── ") + item + (isDir ? "/" : ""), color: isDir ? "#86efac" : "rgba(167,243,208,0.65)" }); if (isDir) walk(cp, pfx + (last ? "    " : "│   ")); }); } walk(target, ""); out(tl); return; }
 
     if (base === "echo") { out([{ text: rawArgs.replace(/^["']|["']$/g, "") || "" }]); return; }
     if (base === "date") { out([{ text: new Date().toString() }]); return; }
@@ -221,7 +221,7 @@ export default function Terminal() {
     if (base === "hostname") { out([{ text: "arthur3.com" }]); return; }
     if (base === "uname") { out([{ text: args.includes("-a") ? "arthur3-os 1.0.0 arthur3.com x86_64 GNU/Linux" : "arthur3-os" }]); return; }
     if (base === "uptime") { const m = Math.floor((Date.now() - new Date("2025-06-01").getTime()) / 2592000000); out([{ text: ` up ${m} months, 1 user, load average: 0.42, 0.69, 0.13` }]); return; }
-    if (base === "history") { out([...history].reverse().map((c, i) => ({ text: `  ${String(i + 1).padStart(4)}  ${c}`, color: "#64748b" }))); return; }
+    if (base === "history") { out([...history].reverse().map((c, i) => ({ text: `  ${String(i + 1).padStart(4)}  ${c}`, color: "rgba(167,243,208,0.38)" }))); return; }
     if (base === "which" || base === "type") { out([{ text: `${args[0] || "?"}: shell built-in command` }]); return; }
 
     if (base === "help") { out([
@@ -245,14 +245,14 @@ export default function Terminal() {
       { text: "│  SYSTEM                                              │" },
       { text: "│    whoami hostname uname date uptime echo history    │" },
       { text: "│                                                      │" },
-      { text: "│  there are also some hidden commands...              │", color: "#475569" },
+      { text: "│  there are also some hidden commands...              │", color: "#3d6645" },
       { text: "└────────────────────────────────────────────────────┘" },
     ]); return; }
 
-    if (base === "about") { out([{ text: "arthur@arthur3.com", color: "#6366f1" }, { text: "──────────────────" }, { text: "AI systems developer @ Northumbria University" }, { text: "" }, { text: "I build reliable LLM-powered software, secure native apps," }, { text: "and automation systems with Swift and Python." }, { text: "" }, { text: "Currently shipping:" }, { text: "  → RPtext   — real-time AI game engine with structured state" }, { text: "  → BeatMap  — iOS journaling app with hardened Spotify auth" }, { text: "" }, { text: "I build things to understand how they break." }]); return; }
-    if (base === "skills") { out([{ text: "SYSTEMS I BUILD", color: "#6366f1" }, { text: "───────────────" }, { text: "AI systems   structured output pipelines · streaming · evals" }, { text: "Native apps  OAuth 2.0 PKCE · Keychain · Core Data · SwiftUI" }, { text: "Tooling      automation · API integrations · CLI workflows" }, { text: "Languages    Python · Swift · TypeScript · JavaScript" }, { text: "Infra        Linux · Git · Docker · Cloudflare" }, { text: "" }, { text: "Research     local LLMs · prompt design · applied security" }]); return; }
-    if (base === "contact") { out([{ text: "CONTACT", color: "#6366f1" }, { text: "───────" }, { text: "GitHub    github.com/Dr-Snatch" }, { text: "Email     arthurwheildon0@gmail.com" }, { text: "Twitter   x.com/ExpoArturo" }, { text: "LinkedIn  linkedin.com/in/arthurwheildon" }, { text: "" }, { text: "or open /contact for the full page", color: "#475569" }]); return; }
-    if (base === "projects") { out([{ text: "SELECTED SYSTEMS", color: "#6366f1" }, { text: "────────────────" }, { text: "BeatMap    iOS product — hardened OAuth + durable local data" }, { text: "RPtext     AI game engine — resilient structured state" }, { text: "" }, { text: "cd ~/projects to explore, or 'open' to visit the page", color: "#475569" }]); return; }
+    if (base === "about") { out([{ text: "arthur@arthur3.com", color: "#22c55e" }, { text: "──────────────────" }, { text: "AI systems developer @ Northumbria University" }, { text: "" }, { text: "I build reliable LLM-powered software, secure native apps," }, { text: "and automation systems with Swift and Python." }, { text: "" }, { text: "Currently shipping:" }, { text: "  → RPtext   — real-time AI game engine with structured state" }, { text: "  → BeatMap  — iOS journaling app with hardened Spotify auth" }, { text: "" }, { text: "I build things to understand how they break." }]); return; }
+    if (base === "skills") { out([{ text: "SYSTEMS I BUILD", color: "#22c55e" }, { text: "───────────────" }, { text: "AI systems   structured output pipelines · streaming · evals" }, { text: "Native apps  OAuth 2.0 PKCE · Keychain · Core Data · SwiftUI" }, { text: "Tooling      automation · API integrations · CLI workflows" }, { text: "Languages    Python · Swift · TypeScript · JavaScript" }, { text: "Infra        Linux · Git · Docker · Cloudflare" }, { text: "" }, { text: "Research     local LLMs · prompt design · applied security" }]); return; }
+    if (base === "contact") { out([{ text: "CONTACT", color: "#22c55e" }, { text: "───────" }, { text: "GitHub    github.com/Dr-Snatch" }, { text: "Email     arthurwheildon0@gmail.com" }, { text: "Twitter   x.com/ExpoArturo" }, { text: "LinkedIn  linkedin.com/in/arthurwheildon" }, { text: "" }, { text: "or open /contact for the full page", color: "#3d6645" }]); return; }
+    if (base === "projects") { out([{ text: "SELECTED SYSTEMS", color: "#22c55e" }, { text: "────────────────" }, { text: "BeatMap    iOS product — hardened OAuth + durable local data" }, { text: "RPtext     AI game engine — resilient structured state" }, { text: "" }, { text: "cd ~/projects to explore, or 'open' to visit the page", color: "#3d6645" }]); return; }
 
     if (base === "neofetch") { out(NEOFETCH); return; }
     if (base === "cowsay") { out(cowsay(rawArgs || COWMSGS[Math.floor(Math.random() * COWMSGS.length)])); return; }
@@ -264,7 +264,7 @@ export default function Terminal() {
     if (base === "vim" || base === "vi") { out([{ text: "~" }, { text: "~" }, { text: "~                    VIM - Vi IMproved" }, { text: "~" }, { text: "~             you're stuck now. there's no escape." }, { text: "~                    (just kidding, type :q)" }, { text: "~" }]); return; }
     if (base === "emacs") { out([{ text: "emacs: great operating system, terrible text editor.", color: "#fbbf24" }, { text: "(this terminal is a vim household.)" }]); return; }
     if (base === "nano") { out([{ text: "nano is valid and I respect your choice.", color: "#4ade80" }]); return; }
-    if (base === "code" || base === "code.") { out([{ text: "VS Code... the Switzerland of editors.", color: "#60a5fa" }]); return; }
+    if (base === "code" || base === "code.") { out([{ text: "VS Code... the Switzerland of editors.", color: "#86efac" }]); return; }
     if (base === "python" || base === "python3") { out([{ text: "Python 3.12.0 (totally real)", color: "#fbbf24" }, { text: ">>> import antigravity" }, { text: "    (you are now floating)" }, { text: ">>> exit()" }]); return; }
     if (base === "node") { out([{ text: "Welcome to Node.js v24.12.0." }, { text: "> require('happiness')" }, { text: "Error: Cannot find module 'happiness'", color: "#f87171" }]); return; }
     if (base === "npm") { out(args[0] === "install" ? [{ text: "added 847 packages in 2s", color: "#4ade80" }, { text: "37 vulnerabilities (12 moderate, 25 high)", color: "#fbbf24" }, { text: "  good luck." }] : [{ text: `npm: '${args[0] || ""}' — sure, whatever.` }]); return; }
@@ -272,24 +272,24 @@ export default function Terminal() {
     if (base === "ping") { const h = args[0] || "localhost"; out([{ text: `PING ${h}: 56 data bytes` }, { text: `64 bytes from ${h}: icmp_seq=0 time=0.042 ms` }, { text: `64 bytes from ${h}: icmp_seq=1 time=0.069 ms` }, { text: "" }, { text: "3 packets transmitted, 3 received, 0% loss", color: "#4ade80" }]); return; }
     if (base === "curl") { out([{ text: '{"status":"alive","mood":"caffeinated","shipping":true}', color: "#4ade80" }]); return; }
     if (base === "make") { out([{ text: args[0] === "coffee" ? "☕ brewing..." : `make: *** No rule to make target '${args[0] || ""}'. Stop.`, color: args[0] === "coffee" ? "#fbbf24" : "#f87171" }]); return; }
-    if (base === "man") { out([{ text: `No manual entry for ${args[0] || "life"}.` }, { text: "RTFM? there is no FM. just vibes.", color: "#475569" }]); return; }
+    if (base === "man") { out([{ text: `No manual entry for ${args[0] || "life"}.` }, { text: "RTFM? there is no FM. just vibes.", color: "#3d6645" }]); return; }
     if (base === "apt" || base === "apt-get") { out([{ text: "E: Could not open lock file — are you root?", color: "#f87171" }]); return; }
     if (base === "brew") { out([{ text: "Error: This is Linux, not macOS. Oh wait...", color: "#fbbf24" }]); return; }
     if (base === "exit" || base === "logout") { out([{ text: "there's no escape. you live here now." }]); return; }
     if (base === "reboot" || base === "shutdown") { out([{ text: "system going down for reboot...", color: "#f87171" }, { text: "..." }, { text: "just kidding. refresh the page." }]); return; }
     if (base === "hack" || base === "hackerman") { out([{ text: "initiating hack sequence..." }, { text: "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ 100%", color: "#4ade80" }, { text: "ACCESS GRANTED", color: "#4ade80" }, { text: "" }, { text: "just kidding. this is a portfolio." }]); return; }
-    if (base === "nmap") { out([{ text: "Starting Nmap 7.94 ( https://nmap.org )", color: "#4ade80" }, { text: "Nmap scan report for arthur3.com (104.21.x.x)" }, { text: "PORT    STATE SERVICE" }, { text: "443/tcp open  https" }, { text: "" }, { text: "nice try. the firewall says hi.", color: "#475569" }]); return; }
+    if (base === "nmap") { out([{ text: "Starting Nmap 7.94 ( https://nmap.org )", color: "#4ade80" }, { text: "Nmap scan report for arthur3.com (104.21.x.x)" }, { text: "PORT    STATE SERVICE" }, { text: "443/tcp open  https" }, { text: "" }, { text: "nice try. the firewall says hi.", color: "#3d6645" }]); return; }
     if (base === "wireshark" || base === "tcpdump") { out([{ text: `${base}: capturing packets...`, color: "#4ade80" }, { text: "0 packets captured. this is a browser, not a NIC." }]); return; }
-    if (base === "metasploit" || base === "msfconsole") { out([{ text: "       =[ metasploit v6.3.x-dev ]", color: "#f87171" }, { text: "+ -- --=[ not really. this is a portfolio. ]" }, { text: "" }, { text: "msf6 > exit", color: "#475569" }]); return; }
+    if (base === "metasploit" || base === "msfconsole") { out([{ text: "       =[ metasploit v6.3.x-dev ]", color: "#f87171" }, { text: "+ -- --=[ not really. this is a portfolio. ]" }, { text: "" }, { text: "msf6 > exit", color: "#3d6645" }]); return; }
     if (base === "coffee" || base === "cafe") { out([{ text: "     ( (" }, { text: "      ) )" }, { text: "   .______." }, { text: "   |      |]" }, { text: "   \\      /" }, { text: "    '----'" }, { text: "" }, { text: "coffee.service: active (running)", color: "#4ade80" }]); return; }
     if (base === "matrix") { out([{ text: "wake up, Neo...", color: "#4ade80" }, { text: "the Matrix has you...", color: "#4ade80" }, { text: "follow the white rabbit.", color: "#4ade80" }, { text: "" }, { text: "(or just keep browsing this portfolio)" }]); return; }
-    if (base === "sl") { out([{ text: "      ====        ________                ___________" }, { text: "  _D _|  |_______/        \\__I_I_____===__|_________/" }, { text: "   |(_)---  |   H\\________/ |   |        =|___ ___|" }, { text: "" }, { text: "you meant 'ls', didn't you?", color: "#475569" }]); return; }
+    if (base === "sl") { out([{ text: "      ====        ________                ___________" }, { text: "  _D _|  |_______/        \\__I_I_____===__|_________/" }, { text: "   |(_)---  |   H\\________/ |   |        =|___ ___|" }, { text: "" }, { text: "you meant 'ls', didn't you?", color: "#3d6645" }]); return; }
     if (base === "hello" || base === "hi" || base === "hey") { const g = ["hey!", "hello there.", "sup.", "oh hi.", "greetings, human."]; out([{ text: g[Math.floor(Math.random() * g.length)], color: "#4ade80" }]); return; }
     if (base === "42" || trimmed === "the answer") { out([{ text: "to life, the universe, and everything.", color: "#fbbf24" }]); return; }
     if (base === "xkcd") { out([{ text: "there's always a relevant xkcd. always." }]); return; }
     if (base === "rickroll" || trimmed === "never gonna") { out([{ text: "Never gonna give you up", color: "#f87171" }, { text: "Never gonna let you down", color: "#fbbf24" }, { text: "Never gonna run around and desert you", color: "#4ade80" }]); return; }
 
-    out([{ text: `zsh: command not found: ${base}`, color: "#f87171" }, { text: 'type "help" for available commands', color: "#475569" }]);
+    out([{ text: `zsh: command not found: ${base}`, color: "#f87171" }, { text: 'type "help" for available commands', color: "#3d6645" }]);
   };
 
   const handleKeyDown = (e) => {
@@ -297,8 +297,8 @@ export default function Terminal() {
     else if (e.key === "ArrowUp") { e.preventDefault(); const n = Math.min(historyIndex + 1, history.length - 1); setHistoryIndex(n); setInput(history[n] || ""); }
     else if (e.key === "ArrowDown") { e.preventDefault(); const n = Math.max(historyIndex - 1, -1); setHistoryIndex(n); setInput(n === -1 ? "" : history[n]); }
     else if (e.key === "l" && e.ctrlKey) { e.preventDefault(); setLines([]); }
-    else if (e.key === "c" && e.ctrlKey) { e.preventDefault(); setLines((p) => [...p, { text: `arthur@arthur3 ${displayCwd} % ${input}^C`, color: "#a78bfa" }]); setInput(""); }
-    else if (e.key === "Tab") { e.preventDefault(); const partial = input.split(/\s+/).pop() || ""; if (!partial) return; const node = FS[cwd]; if (!node || node.type !== "dir") return; const matches = (node.children || []).filter((c) => c.startsWith(partial)); if (matches.length === 1) { const pp = input.split(/\s+/); pp[pp.length - 1] = matches[0]; const cp = cwd === "/" ? "/" + matches[0] : cwd + "/" + matches[0]; const cn = FS[cp]; if (cn && cn.type === "dir") pp[pp.length - 1] += "/"; setInput(pp.join(" ")); } else if (matches.length > 1) setLines((p) => [...p, { text: matches.join("  "), color: "#64748b" }]); }
+    else if (e.key === "c" && e.ctrlKey) { e.preventDefault(); setLines((p) => [...p, { text: `arthur@arthur3 ${displayCwd} % ${input}^C`, color: "#4ade80" }]); setInput(""); }
+    else if (e.key === "Tab") { e.preventDefault(); const partial = input.split(/\s+/).pop() || ""; if (!partial) return; const node = FS[cwd]; if (!node || node.type !== "dir") return; const matches = (node.children || []).filter((c) => c.startsWith(partial)); if (matches.length === 1) { const pp = input.split(/\s+/); pp[pp.length - 1] = matches[0]; const cp = cwd === "/" ? "/" + matches[0] : cwd + "/" + matches[0]; const cn = FS[cp]; if (cn && cn.type === "dir") pp[pp.length - 1] += "/"; setInput(pp.join(" ")); } else if (matches.length > 1) setLines((p) => [...p, { text: matches.join("  "), color: "#4a7a58" }]); }
   };
 
   const isMax = windowState === "maximized", isMin = windowState === "minimized", isClosed = windowState === "closed";
@@ -307,33 +307,33 @@ export default function Terminal() {
   return (
     <>
       <style>{`
-        .term-tab{position:fixed;right:24px;bottom:18px;z-index:9999;display:flex;align-items:center;gap:10px;padding:12px 16px 12px 14px;background:linear-gradient(135deg,rgba(125,247,197,.18),rgba(9,23,44,.96) 42%,rgba(5,13,24,.99));border:1px solid rgba(125,247,197,.24);border-radius:18px;cursor:pointer;transition:background .15s,border-color .15s,transform .15s,box-shadow .15s;box-shadow:0 18px 44px rgba(0,0,0,.42),0 0 0 1px rgba(125,247,197,.08),0 0 40px rgba(95,168,255,.12);user-select:none;-webkit-tap-highlight-color:transparent}
-        .term-tab:hover{background:linear-gradient(135deg,rgba(125,247,197,.24),rgba(12,28,53,.98) 42%,rgba(6,17,32,.99));border-color:rgba(125,247,197,.42);transform:translateY(-2px);box-shadow:0 24px 50px rgba(0,0,0,.48),0 0 0 1px rgba(125,247,197,.12),0 0 50px rgba(95,168,255,.18)}
-        .term-tab-dot{width:10px;height:10px;border-radius:50%;background:#7df7c5;box-shadow:0 0 12px rgba(125,247,197,.92);animation:tabpulse 1.6s ease-in-out infinite}
+        .term-tab{position:fixed;right:24px;bottom:18px;z-index:9999;display:flex;align-items:center;gap:10px;padding:12px 16px 12px 14px;background:rgba(2,10,4,0.96);border:1px solid rgba(74,222,128,.28);border-radius:18px;cursor:pointer;transition:background .15s,border-color .15s,transform .15s,box-shadow .15s;box-shadow:0 18px 44px rgba(0,0,0,.55),0 0 20px rgba(74,222,128,.07);user-select:none;-webkit-tap-highlight-color:transparent}
+        .term-tab:hover{background:rgba(4,18,6,0.98);border-color:rgba(74,222,128,.48);transform:translateY(-2px);box-shadow:0 24px 50px rgba(0,0,0,.65),0 0 28px rgba(74,222,128,.12)}
+        .term-tab-dot{width:10px;height:10px;border-radius:50%;background:#4ade80;box-shadow:0 0 10px rgba(74,222,128,.85);animation:tabpulse 1.6s ease-in-out infinite}
         @keyframes tabpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.88)}}
         .term-tab-copy{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
-        .term-tab-label{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#e2e8f0;letter-spacing:.03em;line-height:1}
-        .term-tab-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:#94a3b8;letter-spacing:.06em;text-transform:uppercase;line-height:1}
-        .term-tab-open{margin-left:4px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#7df7c5}
-        .term-overlay{position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.6);backdrop-filter:blur(2px)}
-        .term-window{position:fixed;right:24px;bottom:72px;z-index:9999;background:linear-gradient(180deg,rgba(9,23,44,.98),rgba(5,13,24,.98));border:1px solid rgba(125,247,197,.14);border-radius:18px;overflow:hidden;width:min(480px,calc(100vw - 2rem));height:min(420px,calc(100vh - 120px));display:flex;flex-direction:column;box-shadow:0 0 0 1px rgba(125,247,197,.06),0 25px 60px rgba(0,0,0,.6),0 0 80px rgba(95,168,255,.08);transition:box-shadow .2s,transform .2s}
-        .term-window.maximized{inset:40px;right:auto;bottom:auto;z-index:9999;border-radius:18px;width:auto;height:auto;box-shadow:0 0 0 1px rgba(125,247,197,.14),0 40px 100px rgba(0,0,0,.9),0 0 120px rgba(95,168,255,.1)}
-        .term-titlebar{display:flex;align-items:center;gap:7px;padding:11px 16px;background:rgba(7,18,34,.98);border-bottom:1px solid rgba(255,255,255,.06);position:relative;flex-shrink:0;user-select:none}
+        .term-tab-label{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#a7f3d0;letter-spacing:.03em;line-height:1}
+        .term-tab-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(167,243,208,0.45);letter-spacing:.06em;text-transform:uppercase;line-height:1}
+        .term-tab-open{margin-left:4px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#4ade80}
+        .term-overlay{position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.65);backdrop-filter:blur(2px)}
+        .term-window{position:fixed;right:24px;bottom:72px;z-index:9999;background:rgba(2,10,4,0.97);border:1px solid rgba(74,222,128,.18);border-radius:18px;overflow:hidden;width:min(480px,calc(100vw - 2rem));height:min(420px,calc(100vh - 120px));display:flex;flex-direction:column;box-shadow:0 0 0 1px rgba(74,222,128,.06),0 25px 60px rgba(0,0,0,.75),0 0 50px rgba(74,222,128,.04);transition:box-shadow .2s,transform .2s}
+        .term-window.maximized{inset:40px;right:auto;bottom:auto;z-index:9999;border-radius:18px;width:auto;height:auto;box-shadow:0 0 0 1px rgba(74,222,128,.14),0 40px 100px rgba(0,0,0,.9),0 0 80px rgba(74,222,128,.06)}
+        .term-titlebar{display:flex;align-items:center;gap:7px;padding:11px 16px;background:rgba(1,7,2,0.99);border-bottom:1px solid rgba(74,222,128,.1);position:relative;flex-shrink:0;user-select:none}
         .term-btn{width:28px;height:28px;border-radius:50%;flex-shrink:0;border:none;cursor:pointer;padding:8px;background-clip:content-box;transition:filter .15s;-webkit-tap-highlight-color:transparent}
         .term-btn:hover{filter:brightness(1.25)}
         .term-btn-close{background-color:#ff5f57}.term-btn-min{background-color:#febc2e}.term-btn-max{background-color:#28c840}
         .term-btn-group{display:flex;gap:4px;align-items:center}
-        .term-titlebar-label{position:absolute;left:50%;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(238,247,255,.34);letter-spacing:.05em;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:55%}
-        .term-body{padding:14px 16px 4px;flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:#173053 transparent}
+        .term-titlebar-label{position:absolute;left:50%;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(167,243,208,.32);letter-spacing:.05em;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:55%}
+        .term-body{padding:14px 16px 4px;flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:rgba(74,222,128,.2) transparent;background-image:repeating-linear-gradient(0deg,transparent,transparent 1px,rgba(0,0,0,.15) 1px,rgba(0,0,0,.15) 2px)}
         .term-window.maximized .term-body{flex:1;height:auto}
-        .term-body::-webkit-scrollbar{width:4px}.term-body::-webkit-scrollbar-thumb{background:#173053;border-radius:2px}
-        .term-line{font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.65;white-space:pre-wrap;word-break:break-word}
+        .term-body::-webkit-scrollbar{width:4px}.term-body::-webkit-scrollbar-thumb{background:rgba(74,222,128,.2);border-radius:2px}
+        .term-line{font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.65;white-space:pre-wrap;word-break:break-word;text-shadow:0 0 7px currentColor}
         .term-window.maximized .term-line{font-size:14px}
-        .term-input-row{display:flex;align-items:center;gap:6px;padding:10px 16px 14px;border-top:1px solid rgba(255,255,255,.05);flex-shrink:0}
-        .term-prompt{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#7df7c5;white-space:nowrap;user-select:none;flex-shrink:0}
+        .term-input-row{display:flex;align-items:center;gap:6px;padding:10px 16px 14px;border-top:1px solid rgba(74,222,128,.08);flex-shrink:0}
+        .term-prompt{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#4ade80;white-space:nowrap;user-select:none;flex-shrink:0;text-shadow:0 0 8px rgba(74,222,128,.55)}
         .term-prompt-short{display:none}
         .term-window.maximized .term-prompt{font-size:14px}
-        .term-input{flex:1;background:transparent;border:none;outline:none;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#e2e8f0;caret-color:#7df7c5;min-width:0}
+        .term-input{flex:1;background:transparent;border:none;outline:none;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#a7f3d0;caret-color:#4ade80;min-width:0;text-shadow:0 0 5px rgba(167,243,208,.28)}
         .term-window.maximized .term-input{font-size:14px}
         @media(max-width:640px){
           .term-tab{display:none}
@@ -367,7 +367,7 @@ export default function Terminal() {
             </div>
             <span className="term-titlebar-label">arthur@arthur3 {displayCwd}</span>
           </div>
-          <div className="term-body" ref={bodyRef}>{lines.map((l, i) => <div key={i} className="term-line" style={{ color: l.color || "#94a3b8" }}>{l.text}</div>)}</div>
+          <div className="term-body" ref={bodyRef}>{lines.map((l, i) => <div key={i} className="term-line" style={{ color: l.color || "#7fb992" }}>{l.text}</div>)}</div>
           <div className="term-input-row">
             <span className="term-prompt"><span className="term-prompt-full">arthur@arthur3 {displayCwd} %</span><span className="term-prompt-short">{displayCwd} %</span></span>
             <input ref={inputRef} className="term-input" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyDown} autoFocus spellCheck={false} autoComplete="off" autoCapitalize="off" disabled={!booted} />
