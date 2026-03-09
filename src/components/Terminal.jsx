@@ -34,10 +34,18 @@ const FS = {
   "/home/arthur/projects/beatmap/README.md": { type: "file", content: ["# BeatMap", "iOS app with secure OAuth, Keychain management, and API integration.", "", "## Status: In Progress — v1.1.0", "", "OAuth 2.0 PKCE built from scratch — code verifiers, SHA256", "with CryptoKit, Keychain token storage, silent refresh.", "No third-party auth libraries.", "", "## Tech", "OAuth 2.0 PKCE · CryptoKit · iOS Keychain · Swift · SwiftUI", "Core Data · MapKit · ShazamKit · Spotify API · AVFoundation"] },
   "/home/arthur/projects/beatmap/Package.swift": { type: "file", content: ['// swift-tools-version: 5.9', 'import PackageDescription', '', 'let package = Package(', '    name: "BeatMap",', '    platforms: [.iOS(.v17)],', ')'] },
   "/home/arthur/projects/beatmap/BeatMap.xcodeproj": { type: "file", content: ["[binary — Xcode project file]"] },
-  "/home/arthur/projects/arthur3-com": { type: "dir", children: ["README.md"] },
+  "/home/arthur/projects/arthur3-com": { type: "dir", url: "/projects/arthur3-com", children: ["README.md"] },
   "/home/arthur/projects/arthur3-com/README.md": { type: "file", content: ["# arthur3.com", "This website. Astro + Keystatic + Cloudflare Pages.", "The terminal you're using right now is part of it."] },
   "/home/arthur/lab": { type: "dir", url: "/lab", children: ["experiments"] },
-  "/home/arthur/lab/experiments": { type: "dir", children: [] },
+  "/home/arthur/lab/experiments": { type: "dir", children: ["prompt-sandwich", "local-llm-comparison", "shazam-benchmarks", "terminal-navigation"] },
+  "/home/arthur/lab/experiments/prompt-sandwich": { type: "dir", url: "/lab/prompt-sandwich", children: ["README.md"] },
+  "/home/arthur/lab/experiments/prompt-sandwich/README.md": { type: "file", content: ["# Prompt Sandwich", "Experiment note on reliable JSON extraction from LLM responses.", "", "Result: XML sandwich outperformed markdown fences and raw JSON prompts."] },
+  "/home/arthur/lab/experiments/local-llm-comparison": { type: "dir", url: "/lab/local-llm-comparison", children: ["README.md"] },
+  "/home/arthur/lab/experiments/local-llm-comparison/README.md": { type: "file", content: ["# Local LLM Comparison", "Benchmark note for llama3.2, mistral, and phi-3.", "", "Result: llama3.2:3b was the best speed/reliability tradeoff for RPtext."] },
+  "/home/arthur/lab/experiments/shazam-benchmarks": { type: "dir", url: "/lab/shazam-benchmarks", children: ["README.md"] },
+  "/home/arthur/lab/experiments/shazam-benchmarks/README.md": { type: "file", content: ["# Shazam vs Audio Fingerprinting", "Benchmark note on song recognition in noisy environments.", "", "Result: confidence and distance thresholds directly informed BeatMap UX."] },
+  "/home/arthur/lab/experiments/terminal-navigation": { type: "dir", url: "/lab/terminal-navigation", children: ["README.md"] },
+  "/home/arthur/lab/experiments/terminal-navigation/README.md": { type: "file", content: ["# Terminal as Navigation", "Prototype note on making the terminal a persistent site navigation layer.", "", "Result: the terminal became the site's primary interaction model."] },
   "/etc": { type: "dir", children: ["hostname", "motd"] },
   "/etc/hostname": { type: "file", content: ["arthur3.com"] },
   "/etc/motd": { type: "file", content: ["Welcome to arthur3-os 1.0.0", "Built with Astro · Hosted on Cloudflare"] },
@@ -109,7 +117,21 @@ function loadSession() { try { const l = sessionStorage.getItem(SK_LINES), h = s
 function clearSession() { try { sessionStorage.removeItem(SK_LINES); sessionStorage.removeItem(SK_HIST); } catch {} }
 function saveWindowState(windowState) { try { sessionStorage.setItem(SK_WINDOW, windowState); } catch {} }
 function loadWindowState() { try { const windowState = sessionStorage.getItem(SK_WINDOW); if (windowState === "normal" || windowState === "minimized" || windowState === "maximized" || windowState === "closed") return windowState; } catch {} return DEFAULT_WINDOW_STATE; }
-function cwdFromUrl() { if (typeof window === "undefined") return HOME; const p = window.location.pathname.replace(/\/+$/, "") || "/"; return URL_TO_PATH[p] || HOME; }
+function pathFromUrl(urlPath) {
+  if (URL_TO_PATH[urlPath]) return URL_TO_PATH[urlPath];
+  const projectMatch = urlPath.match(/^\/projects\/([^/]+)$/);
+  if (projectMatch) {
+    const projectPath = `/home/arthur/projects/${projectMatch[1]}`;
+    if (FS[projectPath]) return projectPath;
+  }
+  const labMatch = urlPath.match(/^\/lab\/([^/]+)$/);
+  if (labMatch) {
+    const labPath = `/home/arthur/lab/experiments/${labMatch[1]}`;
+    if (FS[labPath]) return labPath;
+  }
+  return HOME;
+}
+function cwdFromUrl() { if (typeof window === "undefined") return HOME; const p = window.location.pathname.replace(/\/+$/, "") || "/"; return pathFromUrl(p); }
 
 export default function Terminal() {
   const [lines, setLines] = useState([]);
@@ -119,6 +141,7 @@ export default function Terminal() {
   const [booted, setBooted] = useState(false);
   const [cwd, setCwd] = useState(HOME);
   const [windowState, setWindowState] = useState(DEFAULT_WINDOW_STATE);
+  const [windowStateReady, setWindowStateReady] = useState(false);
   const inputRef = useRef(null);
   const bodyRef = useRef(null);
   const linesRef = useRef([]);
@@ -127,10 +150,13 @@ export default function Terminal() {
   useEffect(() => { linesRef.current = lines; }, [lines]);
   useEffect(() => { histRef.current = history; }, [history]);
   useEffect(() => { if (booted) saveSession(lines, history); }, [lines, history, booted]);
-  useEffect(() => { saveWindowState(windowState); }, [windowState]);
+  useEffect(() => { if (windowStateReady) saveWindowState(windowState); }, [windowState, windowStateReady]);
 
   useEffect(() => {
-    const saved = loadSession(); setCwd(cwdFromUrl()); setWindowState(loadWindowState());
+    const saved = loadSession();
+    setCwd(cwdFromUrl());
+    setWindowState(loadWindowState());
+    setWindowStateReady(true);
     if (saved && saved.lines.length > 0) { setLines(saved.lines); setHistory(saved.history); setBooted(true); }
     else { const timers = BOOT.map(({ text, delay, color }) => setTimeout(() => setLines((p) => [...p, { text, color }]), delay)); const bt = setTimeout(() => setBooted(true), BOOT_READY); return () => { timers.forEach(clearTimeout); clearTimeout(bt); }; }
   }, []);
