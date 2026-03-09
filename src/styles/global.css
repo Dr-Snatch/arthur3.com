@@ -1,61 +1,52 @@
-/* ── Dark (green hacker) — default ── */
+/* Shared visual system */
 :root {
-	--bg:         #080C08;
-	--bg-alt:     #0C110C;
-	--bg-card:    #0E140E;
-	--nav-bg:     rgba(8, 12, 8, 0.92);
-	--fg:         #DFFFED;
-	--fg-rgb:     200, 255, 220;
-	--accent:     #00FF41;
-	--accent-dark:#00CC35;
-	--accent-rgb: 0, 255, 65;
-	--border:     rgba(0, 255, 65, 0.1);
-	--border-sub: rgba(0, 255, 65, 0.08);
-	--black: 220, 255, 230;
-	--gray: 100, 140, 110;
-	--gray-light: 20, 30, 22;
-	--gray-dark: 160, 220, 180;
-	--gray-gradient: rgba(8, 12, 8, 50%), #080C08;
-	--box-shadow: 0 2px 6px rgba(0, 0, 0, 0.8), 0 8px 24px rgba(0, 0, 0, 0.6);
-	--accent-glow: rgba(0, 255, 65, 0.12);
+	--nav-height: 6rem;
+	--page-max: 1160px;
+	--bg: #061120;
+	--bg-alt: #09172c;
+	--bg-card: #0d1d37;
+	--bg-card-strong: #102545;
+	--nav-bg: rgba(6, 17, 32, 0.78);
+	--fg: #eef7ff;
+	--fg-rgb: 238, 247, 255;
+	--accent: #7df7c5;
+	--accent-dark: #57dca9;
+	--accent-rgb: 125, 247, 197;
+	--accent-blue: #5fa8ff;
+	--accent-blue-rgb: 95, 168, 255;
+	--border: rgba(255, 255, 255, 0.08);
+	--border-strong: rgba(125, 247, 197, 0.2);
+	--border-sub: rgba(255, 255, 255, 0.05);
+	--muted: rgba(var(--fg-rgb), 0.7);
+	--muted-soft: rgba(var(--fg-rgb), 0.54);
+	--muted-faint: rgba(var(--fg-rgb), 0.36);
+	--box-shadow: 0 18px 60px rgba(0, 0, 0, 0.32);
+	--panel-shadow: 0 22px 70px rgba(0, 0, 0, 0.35);
 }
 
-@media (prefers-color-scheme: light) {
-	:root {
-		--bg:         #FAFAFA;
-		--bg-alt:     #F2F2F6;
-		--bg-card:    #FFFFFF;
-		--nav-bg:     rgba(250, 250, 250, 0.92);
-		--fg:         #111118;
-		--fg-rgb:     17, 17, 24;
-		--accent:     #6366F1;
-		--accent-dark:#4F46E5;
-		--accent-rgb: 99, 102, 241;
-		--border:     rgba(0, 0, 0, 0.09);
-		--border-sub: rgba(0, 0, 0, 0.07);
-		--black: 17, 17, 24;
-		--gray: 100, 100, 120;
-		--gray-light: 230, 230, 235;
-		--gray-dark: 60, 60, 80;
-		--gray-gradient: rgba(250, 250, 250, 50%), #FAFAFA;
-		--box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08), 0 8px 24px rgba(0, 0, 0, 0.06);
-		--accent-glow: rgba(99, 102, 241, 0.12);
-	}
+* {
+	box-sizing: border-box;
 }
 
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html {
+	scroll-behavior: smooth;
+	scroll-padding-top: calc(var(--nav-height) + 1rem);
+}
 
 body {
 	font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-	margin: 0; padding: 0;
+	margin: 0;
+	padding: 0;
 	text-align: left;
-	background: var(--bg);
 	color: var(--fg);
+	background:
+		radial-gradient(circle at top left, rgba(var(--accent-rgb), 0.17), transparent 32%),
+		radial-gradient(circle at top right, rgba(var(--accent-blue-rgb), 0.16), transparent 28%),
+		linear-gradient(180deg, #061120 0%, #071427 48%, #050d18 100%);
 	word-wrap: break-word;
 	overflow-wrap: break-word;
 	font-size: 18px;
-	line-height: 1.7;
+	line-height: 1.65;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	-webkit-text-size-adjust: 100%;
@@ -63,79 +54,155 @@ body {
 
 main {
 	width: 720px;
-	max-width: calc(100% - 2em);
-	margin: auto;
-	padding: 3em 1em;
+	max-width: calc(100% - 2rem);
+	margin: 0 auto;
+	padding: 3rem 0;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
 	font-family: 'Syne', sans-serif;
-	margin: 0 0 0.5rem 0;
+	margin: 0 0 0.5rem;
 	color: var(--fg);
-	line-height: 1.2;
-	letter-spacing: -0.02em;
+	line-height: 1.05;
+	letter-spacing: -0.04em;
 }
 
-h1 { font-size: 3.052em; }
-h2 { font-size: 2.441em; }
-h3 { font-size: 1.953em; }
-h4 { font-size: 1.563em; }
-h5 { font-size: 1.25em; }
+h1 {
+	font-size: 3.1rem;
+}
 
-strong, b { font-weight: 700; }
-a { color: var(--accent); }
-a:hover { color: var(--accent-dark); }
-p { margin-bottom: 1em; }
-.prose p { margin-bottom: 2em; }
-textarea { width: 100%; font-size: 16px; }
-input { font-size: 16px; }
-table { width: 100%; }
-img { max-width: 100%; height: auto; border-radius: 8px; }
+h2 {
+	font-size: 2.4rem;
+}
+
+h3 {
+	font-size: 1.85rem;
+}
+
+h4 {
+	font-size: 1.45rem;
+}
+
+h5 {
+	font-size: 1.15rem;
+}
+
+strong,
+b {
+	font-weight: 700;
+}
+
+a {
+	color: var(--accent);
+}
+
+a:hover {
+	color: var(--accent-dark);
+}
+
+p {
+	margin: 0 0 1rem;
+}
+
+.prose p {
+	margin-bottom: 1.5rem;
+}
+
+textarea,
+input {
+	font-size: 16px;
+}
+
+table {
+	width: 100%;
+}
+
+img {
+	display: block;
+	max-width: 100%;
+	height: auto;
+	border-radius: 18px;
+}
 
 code {
 	font-family: 'JetBrains Mono', 'Fira Code', monospace;
-	padding: 2px 6px;
-	background: rgba(var(--accent-rgb), 0.08);
-	border-radius: 4px;
+	padding: 0.15rem 0.45rem;
+	background: rgba(var(--accent-rgb), 0.1);
+	border: 1px solid rgba(var(--accent-rgb), 0.15);
+	border-radius: 6px;
 	font-size: 0.9em;
 	color: var(--accent);
 }
 
 pre {
 	font-family: 'JetBrains Mono', 'Fira Code', monospace;
-	padding: 1.5em;
-	border-radius: 12px;
-	background: var(--bg-alt);
+	padding: 1.25rem;
+	border-radius: 18px;
+	background: rgba(3, 9, 18, 0.72);
 	border: 1px solid var(--border);
 	overflow-x: auto;
 }
-pre > code { all: unset; font-family: 'JetBrains Mono', 'Fira Code', monospace; }
+
+pre > code {
+	all: unset;
+	font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
 
 blockquote {
 	border-left: 3px solid var(--accent);
-	padding: 0 0 0 20px;
+	padding-left: 1rem;
 	margin: 0;
-	font-size: 1.2em;
-	color: rgba(var(--fg-rgb), 0.6);
+	font-size: 1.05em;
+	color: rgba(var(--fg-rgb), 0.7);
 }
 
-hr { border: none; border-top: 1px solid var(--border); }
-
-@media (max-width: 720px) {
-	body { font-size: 16px; }
-	main { padding: 1em; }
-	h1 { font-size: 2.2em; }
-	h2 { font-size: 1.8em; }
-	h3 { font-size: 1.4em; }
+hr {
+	border: none;
+	border-top: 1px solid var(--border);
 }
 
 .sr-only {
-	border: 0; padding: 0; margin: 0;
+	border: 0;
+	padding: 0;
+	margin: 0;
 	position: absolute !important;
-	height: 1px; width: 1px;
+	height: 1px;
+	width: 1px;
 	overflow: hidden;
 	clip: rect(1px 1px 1px 1px);
 	clip: rect(1px, 1px, 1px, 1px);
 	clip-path: inset(50%);
 	white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+	:root {
+		--nav-height: 4.85rem;
+	}
+
+	body {
+		font-size: 16px;
+	}
+
+	main {
+		max-width: calc(100% - 1.5rem);
+		padding: 1.5rem 0;
+	}
+
+	h1 {
+		font-size: 2.45rem;
+	}
+
+	h2 {
+		font-size: 1.95rem;
+	}
+
+	h3 {
+		font-size: 1.45rem;
+	}
 }

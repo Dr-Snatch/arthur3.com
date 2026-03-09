@@ -1,0 +1,38 @@
+<svg width="900" height="1200" viewBox="0 0 900 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg2" x1="120" y1="90" x2="742" y2="1090" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0C1F3C"/>
+      <stop offset="1" stop-color="#07111F"/>
+    </linearGradient>
+    <linearGradient id="screen" x1="180" y1="170" x2="664" y2="976" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#122B51"/>
+      <stop offset="1" stop-color="#09172C"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="1200" rx="56" fill="url(#bg2)"/>
+  <rect x="86" y="88" width="728" height="1024" rx="48" fill="#030A15" fill-opacity="0.35" stroke="#FFFFFF" stroke-opacity="0.16"/>
+  <rect x="132" y="126" width="636" height="948" rx="42" fill="url(#screen)" stroke="#7DF7C5" stroke-opacity="0.18"/>
+  <rect x="282" y="154" width="336" height="28" rx="14" fill="#071325" stroke="#FFFFFF" stroke-opacity="0.08"/>
+  <text x="182" y="238" fill="#EFF7FF" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="700">Journal entry</text>
+  <text x="182" y="276" fill="#EFF7FF" fill-opacity="0.62" font-family="Inter, Arial, sans-serif" font-size="24">Track the track, the place, and the feeling.</text>
+  <rect x="182" y="324" width="516" height="270" rx="34" fill="#0A1730" stroke="#5FA8FF" stroke-opacity="0.22"/>
+  <text x="222" y="380" fill="#7DF7C5" font-family="JetBrains Mono, monospace" font-size="20">Friday night · Newcastle</text>
+  <text x="222" y="436" fill="#EFF7FF" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="700">Midnight City hit right</text>
+  <text x="222" y="482" fill="#EFF7FF" fill-opacity="0.62" font-family="Inter, Arial, sans-serif" font-size="24">Walking back through the city, headphones on,</text>
+  <text x="222" y="516" fill="#EFF7FF" fill-opacity="0.62" font-family="Inter, Arial, sans-serif" font-size="24">cold air, and one of those songs that freezes a moment.</text>
+  <rect x="222" y="544" width="118" height="34" rx="17" fill="#7DF7C5" fill-opacity="0.12"/>
+  <text x="249" y="566" fill="#7DF7C5" font-family="JetBrains Mono, monospace" font-size="17">Nostalgia</text>
+  <rect x="182" y="634" width="246" height="180" rx="28" fill="#0A1730" stroke="#7DF7C5" stroke-opacity="0.18"/>
+  <text x="216" y="682" fill="#EFF7FF" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700">Insights</text>
+  <text x="216" y="722" fill="#EFF7FF" fill-opacity="0.58" font-family="Inter, Arial, sans-serif" font-size="20">Your late-night entries lean reflective.</text>
+  <rect x="216" y="750" width="170" height="18" rx="9" fill="#7DF7C5" fill-opacity="0.16"/>
+  <rect x="216" y="750" width="122" height="18" rx="9" fill="#7DF7C5"/>
+  <rect x="452" y="634" width="246" height="180" rx="28" fill="#0A1730" stroke="#5FA8FF" stroke-opacity="0.18"/>
+  <text x="486" y="682" fill="#EFF7FF" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700">Recognition</text>
+  <text x="486" y="722" fill="#EFF7FF" fill-opacity="0.58" font-family="Inter, Arial, sans-serif" font-size="20">Shazam confidence guides the UX.</text>
+  <circle cx="520" cy="768" r="30" fill="#5FA8FF" fill-opacity="0.18"/>
+  <circle cx="520" cy="768" r="16" fill="#5FA8FF"/>
+  <rect x="182" y="854" width="516" height="154" rx="30" fill="#0A1730" stroke="#7DF7C5" stroke-opacity="0.16"/>
+  <text x="222" y="904" fill="#EFF7FF" font-family="Inter, Arial, sans-serif" font-size="30" font-weight="700">Core data, auth, and map state</text>
+  <text x="222" y="946" fill="#EFF7FF" fill-opacity="0.58" font-family="Inter, Arial, sans-serif" font-size="22">A product surface backed by durable on-device storage and a secure Spotify connection.</text>
+</svg>

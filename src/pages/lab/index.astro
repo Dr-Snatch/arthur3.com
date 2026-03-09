@@ -1,6 +1,6 @@
 ---
-import SectionPage from '../../layouts/SectionPage.astro';
 import { getCollection } from 'astro:content';
+import SectionPage from '../../layouts/SectionPage.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 
 const notes = await getCollection('lab');
@@ -10,76 +10,42 @@ const sorted = notes.sort((a, b) => {
 	return db - da;
 });
 
-const statusEmoji = {
-	'experiment': '🧪',
-	'prototype': '🔧',
-	'shipped': '🚀',
-	'abandoned': '💀',
-};
-
 function getTags(tagString) {
-	return tagString ? tagString.split(',').map(t => t.trim()) : [];
-}
-
-function getEmoji(status) {
-	return statusEmoji[status] || '🧪';
+	return tagString ? tagString.split(',').map((tag) => tag.trim()).slice(0, 3) : [];
 }
 ---
 
-<SectionPage title="Engineering Notes" description="Benchmarks, technical case studies, and experiments behind the shipped work.">
+<SectionPage title="Engineering Notes" description="Benchmarks, experiments, and technical write-ups behind the shipped work.">
 	<Fragment slot="eyebrow">~/lab</Fragment>
 	<Fragment slot="heading">Engineering Notes.</Fragment>
-	<Fragment slot="description">Benchmarks, prototypes, and technical write-ups that explain how the systems on this site were designed, tested, and improved.</Fragment>
+	<Fragment slot="description">
+		Benchmarks, prototypes, and case-study fragments that explain how the systems on this site were tested, improved, and made more reliable.
+	</Fragment>
 
 	<section class="section">
 		<div class="container">
 			{sorted.length === 0 ? (
 				<div class="empty-state">
-					<p class="empty-msg">No experiments yet. Add them via <a href="/keystatic" class="ks-link">/keystatic</a> → Lab Experiments.</p>
+					<p class="empty-msg">No notes yet. Add them via <a href="/keystatic" class="ks-link">/keystatic</a>.</p>
 				</div>
 			) : (
-				<div class="lab-grid">
-					{sorted.map((exp) => {
-						const tags = getTags(exp.data.tags);
-						const emoji = getEmoji(exp.data.status);
-						return (
-							<article class="lab-card">
-								<div class="lab-top">
-									<span class="lab-emoji" aria-hidden="true">{emoji}</span>
-									<div class="lab-meta">
-										<span class="lab-status">{exp.data.status}</span>
-										{exp.data.pubDate && (
-											<span class="lab-date"><FormattedDate date={exp.data.pubDate} /></span>
-										)}
-									</div>
-								</div>
-								<h3 class="lab-name">{exp.data.title}</h3>
-								<p class="lab-desc">{exp.data.description}</p>
-								{exp.data.problem && (
-									<div>
-										<p class="lab-label">Problem</p>
-										<p class="lab-detail">{exp.data.problem}</p>
-									</div>
+				<div class="note-grid">
+					{sorted.map((note) => (
+						<article class="note-card">
+							<div class="note-top">
+								<p class="card-kicker">{note.data.status}</p>
+								{note.data.pubDate && (
+									<p class="note-date"><FormattedDate date={note.data.pubDate} /></p>
 								)}
-								{exp.data.result && (
-									<div>
-										<p class="lab-label">Result</p>
-										<p class="lab-detail">{exp.data.result}</p>
-									</div>
-								)}
-								{tags.length > 0 && (
-									<div class="lab-tags">
-										{tags.map((t) => <span class="ltag">{t}</span>)}
-									</div>
-								)}
-								<div class="lab-links">
-									<a href={`/lab/${exp.id}`} class="llink">Read note ↗</a>
-									{exp.data.liveUrl && <a href={exp.data.liveUrl} target="_blank" rel="noopener noreferrer" class="llink">Demo ↗</a>}
-									{exp.data.repoUrl && <a href={exp.data.repoUrl} target="_blank" rel="noopener noreferrer" class="llink">Source ↗</a>}
-								</div>
-							</article>
-						);
-					})}
+							</div>
+							<h2 class="card-title">{note.data.title}</h2>
+							<p class="card-copy">{note.data.result ?? note.data.description}</p>
+							<div class="card-tag-row">
+								{getTags(note.data.tags).map((tag) => <span class="card-tag">{tag}</span>)}
+							</div>
+							<a href={`/lab/${note.id}`} class="card-link">Read note ↗</a>
+						</article>
+					))}
 				</div>
 			)}
 		</div>
@@ -87,28 +53,117 @@ function getEmoji(status) {
 </SectionPage>
 
 <style>
-	.container { max-width: 1060px; margin: 0 auto; padding: 0 2rem; }
-	.section { padding: 2rem 0 6rem; }
-	.empty-state { padding: 3rem 0; }
-	.empty-msg { font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: rgba(var(--fg-rgb),0.35); }
-	.ks-link { color: var(--accent); text-decoration: none; }
-	.ks-link:hover { text-decoration: underline; }
-	.lab-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.25rem; }
-	.lab-card { display: flex; flex-direction: column; gap: 0.6rem; padding: 1.5rem; background: var(--bg-card); border: 1px dashed rgba(var(--accent-rgb),0.15); border-radius: 12px; transition: border-color 0.22s ease, box-shadow 0.22s ease; }
-	.lab-card:hover { border-color: rgba(var(--accent-rgb),0.35); box-shadow: 0 4px 16px rgba(var(--accent-rgb),0.06); }
-	.lab-top { display: flex; align-items: flex-start; gap: 0.65rem; }
-	.lab-emoji { font-size: 1.1rem; }
-	.lab-meta { display: flex; flex-direction: column; gap: 0.2rem; }
-	.lab-status { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; color: rgba(var(--fg-rgb),0.3); text-transform: uppercase; letter-spacing: 0.1em; }
-	.lab-date { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: rgba(var(--fg-rgb),0.28); }
-	.lab-name { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--fg); margin: 0.15rem 0 0; }
-	.lab-desc { font-family: 'Inter', sans-serif; font-size: 0.85rem; color: rgba(var(--fg-rgb),0.5); line-height: 1.6; margin: 0; }
-	.lab-label { margin: 0; font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(var(--fg-rgb),0.3); }
-	.lab-detail { margin: 0.25rem 0 0; font-family: 'Inter', sans-serif; font-size: 0.84rem; color: rgba(var(--fg-rgb),0.55); line-height: 1.6; }
-	.lab-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: auto; }
-	.ltag { font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; padding: 0.15rem 0.45rem; background: rgba(var(--accent-rgb),0.05); color: rgba(var(--accent-rgb),0.7); border: 1px solid rgba(var(--accent-rgb),0.12); border-radius: 4px; }
-	.lab-links { display: flex; gap: 0.6rem; margin-top: 0.25rem; }
-	.llink { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: rgba(var(--fg-rgb),0.35); text-decoration: none; transition: color 0.2s ease; }
-	.llink:hover { color: var(--accent); }
-	@media (max-width: 640px) { .container { padding: 0 1.5rem; } .lab-grid { grid-template-columns: 1fr; } }
+	.container {
+		max-width: var(--page-max);
+		margin: 0 auto;
+		padding: 0 2rem;
+	}
+
+	.section {
+		padding: 0 0 5rem;
+	}
+
+	.empty-state {
+		padding: 1rem 0 0;
+	}
+
+	.empty-msg {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.76rem;
+		color: var(--muted-faint);
+	}
+
+	.ks-link {
+		text-decoration: none;
+	}
+
+	.note-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+	}
+
+	.note-card {
+		display: flex;
+		flex-direction: column;
+		gap: 0.8rem;
+		padding: 1.35rem;
+		border-radius: 24px;
+		border: 1px solid var(--border);
+		background: linear-gradient(180deg, rgba(13, 29, 55, 0.95), rgba(8, 18, 34, 0.96));
+		box-shadow: var(--box-shadow);
+	}
+
+	.note-top {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		align-items: center;
+	}
+
+	.card-kicker,
+	.card-tag,
+	.card-link,
+	.note-date {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.68rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+	}
+
+	.card-kicker,
+	.note-date {
+		margin: 0;
+		color: var(--muted-faint);
+	}
+
+	.card-title {
+		margin: 0;
+		font-family: 'Syne', sans-serif;
+		font-size: 1.45rem;
+		letter-spacing: -0.04em;
+	}
+
+	.card-copy {
+		margin: 0;
+		color: var(--muted-soft);
+		line-height: 1.75;
+	}
+
+	.card-tag-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+	}
+
+	.card-tag {
+		padding: 0.35rem 0.55rem;
+		border-radius: 999px;
+		background: rgba(var(--accent-rgb), 0.08);
+		color: var(--accent);
+	}
+
+	.card-link {
+		text-decoration: none;
+		color: rgba(var(--fg-rgb), 0.82);
+	}
+
+	@media (max-width: 768px) {
+		.container {
+			padding: 0 1rem;
+		}
+
+		.section {
+			padding-bottom: 4.5rem;
+		}
+
+		.note-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.note-card {
+			padding: 1.1rem;
+			border-radius: 20px;
+		}
+	}
 </style>

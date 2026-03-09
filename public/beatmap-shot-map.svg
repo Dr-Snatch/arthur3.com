@@ -1,0 +1,41 @@
+<svg width="900" height="1200" viewBox="0 0 900 1200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="120" y1="40" x2="760" y2="1140" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F2342"/>
+      <stop offset="1" stop-color="#071325"/>
+    </linearGradient>
+    <linearGradient id="card" x1="190" y1="170" x2="650" y2="960" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#132B52"/>
+      <stop offset="1" stop-color="#0A1A33"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="196" y1="306" x2="699" y2="306" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7DF7C5"/>
+      <stop offset="1" stop-color="#5FA8FF"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="1200" rx="56" fill="url(#bg)"/>
+  <rect x="86" y="88" width="728" height="1024" rx="48" fill="#030A15" fill-opacity="0.35" stroke="#FFFFFF" stroke-opacity="0.16"/>
+  <rect x="132" y="126" width="636" height="948" rx="42" fill="url(#card)" stroke="#7DF7C5" stroke-opacity="0.18"/>
+  <rect x="282" y="154" width="336" height="28" rx="14" fill="#071325" stroke="#FFFFFF" stroke-opacity="0.08"/>
+  <text x="182" y="240" fill="#EFF7FF" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="700">BeatMap</text>
+  <text x="182" y="278" fill="#EFF7FF" fill-opacity="0.62" font-family="Inter, Arial, sans-serif" font-size="24">Map songs to places, moods, and memories.</text>
+  <rect x="182" y="318" width="516" height="74" rx="24" fill="url(#accent)"/>
+  <text x="222" y="364" fill="#04101F" font-family="JetBrains Mono, monospace" font-size="24" font-weight="700">Now playing • Midnight City</text>
+  <rect x="182" y="432" width="516" height="340" rx="32" fill="#0B1830" stroke="#5FA8FF" stroke-opacity="0.22"/>
+  <path d="M248 682C302 632 330 598 390 604C452 610 460 710 540 702C600 696 624 618 698 600" stroke="#5FA8FF" stroke-width="14" stroke-linecap="round"/>
+  <circle cx="286" cy="648" r="18" fill="#7DF7C5"/>
+  <circle cx="430" cy="640" r="18" fill="#5FA8FF"/>
+  <circle cx="578" cy="694" r="18" fill="#7DF7C5"/>
+  <rect x="218" y="458" width="140" height="34" rx="17" fill="#7DF7C5" fill-opacity="0.12"/>
+  <text x="242" y="481" fill="#7DF7C5" font-family="JetBrains Mono, monospace" font-size="18">MapKit view</text>
+  <rect x="182" y="806" width="250" height="202" rx="28" fill="#0B1830" stroke="#7DF7C5" stroke-opacity="0.18"/>
+  <text x="214" y="852" fill="#EFF7FF" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700">Mood</text>
+  <text x="214" y="892" fill="#EFF7FF" fill-opacity="0.56" font-family="Inter, Arial, sans-serif" font-size="20">nostalgic • focused</text>
+  <rect x="214" y="922" width="150" height="18" rx="9" fill="#7DF7C5" fill-opacity="0.18"/>
+  <rect x="214" y="922" width="108" height="18" rx="9" fill="#7DF7C5"/>
+  <rect x="448" y="806" width="250" height="202" rx="28" fill="#0B1830" stroke="#7DF7C5" stroke-opacity="0.18"/>
+  <text x="480" y="852" fill="#EFF7FF" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700">Secure auth</text>
+  <text x="480" y="892" fill="#EFF7FF" fill-opacity="0.56" font-family="Inter, Arial, sans-serif" font-size="20">Spotify PKCE + Keychain</text>
+  <rect x="480" y="922" width="180" height="18" rx="9" fill="#5FA8FF" fill-opacity="0.18"/>
+  <rect x="480" y="922" width="148" height="18" rx="9" fill="#5FA8FF"/>
+</svg>

@@ -1,0 +1,206 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Nav from '../components/Nav.astro';
+import TerminalBar from '../components/TerminalBar.astro';
+import { CONTACT_TEXT, SITE_TITLE, SOCIAL_LINKS } from '../consts';
+
+const contactBlocks = [
+	{
+		title: 'Recruiters',
+		copy: 'Best fit: AI systems, secure native apps, and product-focused engineering roles where technical depth matters.',
+	},
+	{
+		title: 'Founders',
+		copy: 'Good match for MVPs or early products that need reliable AI workflows, mobile systems, or difficult integrations.',
+	},
+	{
+		title: 'How I work',
+		copy: 'Clear scope, fast iteration, and direct technical communication without fluff or vague hand-waving.',
+	},
+];
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`Contact — ${SITE_TITLE}`} description={CONTACT_TEXT} />
+	</head>
+	<body>
+		<Nav />
+		<TerminalBar />
+
+		<main>
+			<section class="contact-hero">
+				<div class="container">
+					<p class="eyebrow">Contact</p>
+					<h1 class="hero-title">Let&apos;s work.</h1>
+					<p class="hero-copy">
+						I&apos;m most useful on product-minded technical work: AI systems, secure native apps, and tools that need to survive real constraints instead of just looking impressive in a demo.
+					</p>
+				</div>
+			</section>
+
+			<section class="section">
+				<div class="container contact-layout">
+					<div class="contact-links">
+						{SOCIAL_LINKS.map((link) => {
+							const isEmail = link.href.startsWith('mailto:');
+							return (
+								<a
+									href={link.href}
+									target={isEmail ? undefined : '_blank'}
+									rel={isEmail ? undefined : 'noopener noreferrer'}
+									class="contact-card"
+								>
+									<p class="card-label">{link.label}</p>
+									<p class="card-value">{link.href.replace('mailto:', '')}</p>
+									<span class="card-link">{isEmail ? 'Email direct' : 'Open link'} ↗</span>
+								</a>
+							);
+						})}
+					</div>
+
+					<div class="contact-notes">
+						{contactBlocks.map((block) => (
+							<article class="note-card">
+								<p class="card-label">{block.title}</p>
+								<p class="note-copy">{block.copy}</p>
+							</article>
+						))}
+					</div>
+				</div>
+			</section>
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	body {
+		padding-top: 0;
+	}
+
+	main {
+		width: 100%;
+		max-width: 100%;
+		margin: 0;
+		padding: 0;
+	}
+
+	.container {
+		max-width: var(--page-max);
+		margin: 0 auto;
+		padding: 0 2rem;
+	}
+
+	.contact-hero {
+		padding: 1.25rem 0 2.4rem;
+	}
+
+	.section {
+		padding: 0 0 5rem;
+	}
+
+	.eyebrow,
+	.card-label,
+	.card-link {
+		font-family: 'JetBrains Mono', monospace;
+		text-transform: uppercase;
+	}
+
+	.eyebrow,
+	.card-label {
+		margin: 0 0 0.9rem;
+		font-size: 0.7rem;
+		letter-spacing: 0.14em;
+		color: var(--muted-faint);
+	}
+
+	.hero-title {
+		font-size: clamp(2.8rem, 7vw, 5rem);
+		margin-bottom: 1rem;
+	}
+
+	.hero-copy,
+	.note-copy,
+	.card-value {
+		color: var(--muted-soft);
+		line-height: 1.75;
+	}
+
+	.hero-copy {
+		max-width: 44rem;
+		font-size: 1.02rem;
+		margin: 0;
+	}
+
+	.contact-layout,
+	.contact-links,
+	.contact-notes {
+		display: grid;
+		gap: 1rem;
+	}
+
+	.contact-layout {
+		grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
+		align-items: start;
+	}
+
+	.contact-card,
+	.note-card {
+		padding: 1.25rem;
+		border-radius: 24px;
+		border: 1px solid var(--border);
+		background: linear-gradient(180deg, rgba(13, 29, 55, 0.95), rgba(8, 18, 34, 0.96));
+		box-shadow: var(--box-shadow);
+		text-decoration: none;
+	}
+
+	.contact-card {
+		display: block;
+	}
+
+	.card-value {
+		margin: 0 0 1rem;
+		font-size: 1.02rem;
+		color: var(--fg);
+		word-break: break-word;
+	}
+
+	.card-link {
+		font-size: 0.68rem;
+		letter-spacing: 0.12em;
+		color: var(--accent);
+	}
+
+	.note-copy {
+		margin: 0;
+	}
+
+	@media (max-width: 900px) {
+		.contact-layout {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (max-width: 768px) {
+		.container {
+			padding: 0 1rem;
+		}
+
+		.contact-hero {
+			padding: 0.8rem 0 2rem;
+		}
+
+		.section {
+			padding-bottom: 4.5rem;
+		}
+
+		.contact-card,
+		.note-card {
+			padding: 1.05rem;
+			border-radius: 20px;
+		}
+	}
+</style>

@@ -2,78 +2,392 @@
 const navLinks = [
 	{ href: '/', label: 'Home' },
 	{ href: '/projects', label: 'Projects' },
-	{ href: '/lab', label: 'Lab' },
-	{ href: '/#contact', label: 'Contact' },
+	{ href: '/lab', label: 'Notes' },
+	{ href: '/contact', label: 'Contact' },
 ];
 ---
 
 <nav class="navbar">
 	<div class="nav-container">
-		<a href="/" class="logo" data-home-reset>
+		<a href="/" class="brand" data-home-reset>
 			<img src="/logo.png" alt="arthur3" class="logo-image" />
+			<div class="brand-copy">
+				<span class="brand-name">arthur3</span>
+				<span class="brand-tag">AI Systems Developer</span>
+			</div>
 		</a>
-		<ul class="nav-links desktop-nav">
-			{navLinks.map((link) => (
-				<li><a href={link.href} data-nav-link={link.label === 'Home' ? 'home' : undefined}>{link.label}</a></li>
-			))}
-		</ul>
-		<button class="mobile-menu-btn" aria-label="Toggle menu">
-			<span class="hamburger"></span>
-		</button>
+
+		<div class="nav-actions desktop-only">
+			<ul class="nav-links">
+				{navLinks.map((link) => (
+					<li>
+						<a href={link.href} data-nav-link={link.label === 'Home' ? 'home' : undefined}>{link.label}</a>
+					</li>
+				))}
+			</ul>
+			<button type="button" class="terminal-trigger" data-terminal-open>Open Terminal</button>
+			<a href="/contact" class="work-cta">Let's Work</a>
+		</div>
+
+		<div class="mobile-controls mobile-only">
+			<button type="button" class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
+				<span class="hamburger"></span>
+			</button>
+		</div>
 	</div>
-	<div class="mobile-dropdown">
+
+	<div class="mobile-dropdown" aria-hidden="true">
 		<ul class="mobile-nav-links">
 			{navLinks.map((link) => (
-				<li><a href={link.href} data-nav-link={link.label === 'Home' ? 'home' : undefined}>{link.label}</a></li>
+				<li>
+					<a href={link.href} data-nav-link={link.label === 'Home' ? 'home' : undefined}>{link.label}</a>
+				</li>
 			))}
 		</ul>
+		<div class="mobile-utility-row">
+			<button type="button" class="terminal-trigger mobile-terminal" data-terminal-open>Open Terminal</button>
+			<a href="/contact" class="work-cta mobile-work-cta">Let's Work</a>
+		</div>
 	</div>
 </nav>
 
 <script is:inline>
 	document.addEventListener('DOMContentLoaded', () => {
-		function resetTerminal() { try { sessionStorage.removeItem('a3t-lines'); sessionStorage.removeItem('a3t-hist'); } catch {} }
-		document.querySelectorAll('[data-home-reset], [data-nav-link="home"]').forEach(el => { el.addEventListener('click', () => resetTerminal()); });
+		function resetTerminal() {
+			try {
+				sessionStorage.removeItem('a3t-lines');
+				sessionStorage.removeItem('a3t-hist');
+			} catch {}
+		}
+
+		function openTerminal() {
+			window.dispatchEvent(new CustomEvent('a3t:open'));
+		}
+
+		document.querySelectorAll('[data-home-reset], [data-nav-link="home"]').forEach((el) => {
+			el.addEventListener('click', () => resetTerminal());
+		});
+
+		document.querySelectorAll('[data-terminal-open]').forEach((button) => {
+			button.addEventListener('click', () => openTerminal());
+		});
+
 		const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
 		const mobileDropdown = document.querySelector('.mobile-dropdown');
 		if (mobileMenuBtn && mobileDropdown) {
-			mobileMenuBtn.addEventListener('click', (e) => { e.stopPropagation(); mobileMenuBtn.classList.toggle('active'); mobileDropdown.classList.toggle('active'); });
-			document.querySelectorAll('.mobile-nav-links a').forEach(link => { link.addEventListener('click', () => { mobileMenuBtn.classList.remove('active'); mobileDropdown.classList.remove('active'); }); });
-			document.addEventListener('click', (e) => { if (!mobileDropdown.contains(e.target) && !mobileMenuBtn.contains(e.target)) { mobileMenuBtn.classList.remove('active'); mobileDropdown.classList.remove('active'); } });
+			function setMenuState(isOpen) {
+				mobileMenuBtn.classList.toggle('active', isOpen);
+				mobileDropdown.classList.toggle('active', isOpen);
+				mobileMenuBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+				mobileDropdown.setAttribute('aria-hidden', isOpen ? 'false' : 'true');
+			}
+
+			mobileMenuBtn.addEventListener('click', (event) => {
+				event.stopPropagation();
+				setMenuState(!mobileDropdown.classList.contains('active'));
+			});
+
+			document.querySelectorAll('.mobile-nav-links a, .mobile-utility-row .terminal-trigger, .mobile-utility-row .work-cta').forEach((link) => {
+				link.addEventListener('click', () => setMenuState(false));
+			});
+
+			document.addEventListener('click', (event) => {
+				if (!mobileDropdown.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
+					setMenuState(false);
+				}
+			});
 		}
 	});
 </script>
 
 <style>
-	.navbar { position: fixed; top: 0; left: 0; right: 0; background: var(--nav-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-bottom: 1px solid var(--border-sub); z-index: 1000; padding: 0.75rem 0; }
-	.nav-container { max-width: 1200px; margin: 0 auto; padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
-	.logo { display: flex; align-items: center; text-decoration: none; z-index: 1001; }
-	.logo-image { height: 107px; width: auto; display: block; border-radius: 12px; transition: transform 0.3s ease, opacity 0.3s ease; }
-	.logo-image:hover { transform: scale(1.05); opacity: 0.85; }
-	.nav-links { display: flex; gap: 0.25rem; list-style: none; margin: 0; padding: 0; }
-	.nav-links a { color: rgba(var(--fg-rgb), 0.55); text-decoration: none; font-weight: 500; font-size: 0.95rem; padding: 0.5rem 1rem; border-radius: 8px; transition: color 0.2s ease, background 0.2s ease; }
-	.nav-links a:hover { color: var(--fg); background: rgba(var(--fg-rgb), 0.06); }
-	.mobile-menu-btn { display: none; flex-direction: column; justify-content: center; width: 44px; height: 44px; background: transparent; border: none; cursor: pointer; padding: 0; z-index: 1001; -webkit-tap-highlight-color: transparent; }
-	.hamburger, .hamburger::before, .hamburger::after { width: 24px; height: 2px; background: rgba(var(--fg-rgb), 0.7); border-radius: 2px; transition: all 0.3s ease; }
-	.hamburger { position: relative; }
-	.hamburger::before, .hamburger::after { content: ''; position: absolute; left: 0; }
-	.hamburger::before { top: -7px; } .hamburger::after { top: 7px; }
-	.mobile-menu-btn.active .hamburger { background: transparent; }
-	.mobile-menu-btn.active .hamburger::before { transform: rotate(45deg); top: 0; }
-	.mobile-menu-btn.active .hamburger::after { transform: rotate(-45deg); top: 0; }
-	.mobile-dropdown { position: fixed; top: calc(107px + 1.5rem + 2px); right: 1.5rem; background: var(--bg-alt); border: 1px solid var(--border); border-radius: 14px; box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4); opacity: 0; visibility: hidden; transform: translateY(-8px); transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); z-index: 998; min-width: 200px; }
-	.mobile-dropdown.active { opacity: 1; visibility: visible; transform: translateY(0); }
-	.mobile-nav-links { list-style: none; margin: 0; padding: 0.5rem; }
-	.mobile-nav-links li { margin: 0; }
-	.mobile-nav-links a { color: rgba(var(--fg-rgb), 0.65); text-decoration: none; font-size: 1rem; font-weight: 500; padding: 0.85rem 1.25rem; display: block; border-radius: 10px; transition: color 0.2s ease, background 0.2s ease; -webkit-tap-highlight-color: transparent; }
-	.mobile-nav-links a:hover { color: var(--fg); background: rgba(var(--fg-rgb), 0.06); }
+	.navbar {
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		z-index: 1000;
+		background: var(--nav-bg);
+		border-bottom: 1px solid var(--border-sub);
+		backdrop-filter: blur(18px);
+		-webkit-backdrop-filter: blur(18px);
+	}
+
+	.nav-container {
+		max-width: var(--page-max);
+		height: var(--nav-height);
+		margin: 0 auto;
+		padding: 0 2rem;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.brand {
+		display: flex;
+		align-items: center;
+		gap: 0.9rem;
+		text-decoration: none;
+		color: inherit;
+		min-width: 0;
+	}
+
+	.logo-image {
+		height: 3.4rem;
+		width: auto;
+		border-radius: 14px;
+		box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+	}
+
+	.brand-copy {
+		display: flex;
+		flex-direction: column;
+		min-width: 0;
+	}
+
+	.brand-name {
+		font-family: 'Syne', sans-serif;
+		font-size: 1rem;
+		font-weight: 700;
+		letter-spacing: -0.03em;
+		color: var(--fg);
+	}
+
+	.brand-tag {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.68rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--muted-faint);
+	}
+
+	.nav-actions {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
+	.nav-links {
+		display: flex;
+		align-items: center;
+		gap: 0.2rem;
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+
+	.nav-links a,
+	.terminal-trigger,
+	.work-cta {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		border-radius: 999px;
+		text-decoration: none;
+		font-size: 0.88rem;
+		font-weight: 500;
+		transition: transform 0.18s ease, border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+	}
+
+	.nav-links a {
+		padding: 0.7rem 1rem;
+		color: rgba(var(--fg-rgb), 0.72);
+	}
+
+	.nav-links a:hover {
+		color: var(--fg);
+		background: rgba(255, 255, 255, 0.05);
+	}
+
+	.terminal-trigger {
+		padding: 0.75rem 1rem;
+		border: 1px solid rgba(var(--accent-blue-rgb), 0.22);
+		background: rgba(var(--accent-blue-rgb), 0.08);
+		color: rgba(var(--fg-rgb), 0.88);
+		cursor: pointer;
+		font-family: 'JetBrains Mono', monospace;
+	}
+
+	.terminal-trigger:hover {
+		transform: translateY(-1px);
+		border-color: rgba(var(--accent-blue-rgb), 0.4);
+		background: rgba(var(--accent-blue-rgb), 0.12);
+	}
+
+	.work-cta {
+		padding: 0.78rem 1.15rem;
+		background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.92), rgba(var(--accent-blue-rgb), 0.78));
+		color: #04101f;
+		font-weight: 700;
+		box-shadow: 0 12px 30px rgba(var(--accent-rgb), 0.2);
+	}
+
+	.work-cta:hover {
+		color: #04101f;
+		transform: translateY(-1px);
+	}
+
+	.mobile-controls,
+	.mobile-dropdown {
+		display: none;
+	}
+
+	.mobile-menu-btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 3rem;
+		height: 3rem;
+		border-radius: 999px;
+		border: 1px solid var(--border);
+		background: rgba(255, 255, 255, 0.04);
+		cursor: pointer;
+		padding: 0;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	.hamburger,
+	.hamburger::before,
+	.hamburger::after {
+		width: 1.2rem;
+		height: 2px;
+		border-radius: 999px;
+		background: rgba(var(--fg-rgb), 0.88);
+		transition: transform 0.25s ease, opacity 0.25s ease;
+	}
+
+	.hamburger {
+		position: relative;
+	}
+
+	.hamburger::before,
+	.hamburger::after {
+		content: '';
+		position: absolute;
+		left: 0;
+	}
+
+	.hamburger::before {
+		top: -0.4rem;
+	}
+
+	.hamburger::after {
+		top: 0.4rem;
+	}
+
+	.mobile-menu-btn.active .hamburger {
+		background: transparent;
+	}
+
+	.mobile-menu-btn.active .hamburger::before {
+		transform: translateY(0.4rem) rotate(45deg);
+	}
+
+	.mobile-menu-btn.active .hamburger::after {
+		transform: translateY(-0.4rem) rotate(-45deg);
+	}
+
+	.mobile-dropdown {
+		position: fixed;
+		top: calc(var(--nav-height) - 0.3rem);
+		left: 1rem;
+		right: 1rem;
+		padding: 1rem;
+		border: 1px solid var(--border);
+		border-radius: 24px;
+		background:
+			linear-gradient(180deg, rgba(12, 28, 53, 0.98), rgba(8, 18, 34, 0.98));
+		box-shadow: var(--panel-shadow);
+		opacity: 0;
+		visibility: hidden;
+		transform: translateY(-0.6rem);
+		transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+	}
+
+	.mobile-dropdown.active {
+		opacity: 1;
+		visibility: visible;
+		transform: translateY(0);
+	}
+
+	.mobile-nav-links {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 0.4rem;
+	}
+
+	.mobile-nav-links a {
+		display: block;
+		padding: 0.95rem 1rem;
+		border-radius: 16px;
+		text-decoration: none;
+		color: rgba(var(--fg-rgb), 0.84);
+		background: rgba(255, 255, 255, 0.03);
+	}
+
+	.mobile-utility-row {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 0.75rem;
+		margin-top: 1rem;
+	}
+
+	.mobile-terminal,
+	.mobile-work-cta {
+		width: 100%;
+	}
+
+	.mobile-work-cta {
+		padding: 0.95rem 1rem;
+	}
+
+	.mobile-only {
+		display: none;
+	}
+
+	.desktop-only {
+		display: flex;
+	}
 
 	@media (max-width: 768px) {
-		.navbar { padding: 0.5rem 0; }
-		.nav-container { padding: 0 1rem; }
-		.logo-image { height: 56px; border-radius: 8px; }
-		.desktop-nav { display: none; }
-		.mobile-menu-btn { display: flex; }
-		.mobile-dropdown { top: calc(56px + 1rem + 2px); right: 1rem; left: 1rem; min-width: unset; }
+		.nav-container {
+			padding: 0 1rem;
+		}
+
+		.logo-image {
+			height: 2.9rem;
+			border-radius: 12px;
+		}
+
+		.brand-tag {
+			font-size: 0.6rem;
+		}
+
+		.desktop-only {
+			display: none;
+		}
+
+		.mobile-only {
+			display: flex;
+		}
+
+		.mobile-dropdown {
+			display: block;
+		}
+	}
+
+	@media (max-width: 460px) {
+		.brand-copy {
+			max-width: 10rem;
+		}
+
+		.brand-tag {
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
 	}
 </style>

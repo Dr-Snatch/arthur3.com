@@ -7,7 +7,7 @@ import Terminal from './Terminal.jsx';
 
 <style is:global>
 	.terminal-shell-offset {
-		height: 8rem;
+		height: var(--nav-height);
 	}
 
 	body {
@@ -15,12 +15,8 @@ import Terminal from './Terminal.jsx';
 	}
 
 	@media (max-width: 640px) {
-		.terminal-shell-offset {
-			height: 4.5rem;
-		}
-
 		body {
-			padding-bottom: 4.5rem;
+			padding-bottom: 0;
 		}
 	}
 </style>

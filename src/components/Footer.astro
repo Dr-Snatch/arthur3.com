@@ -1,70 +1,112 @@
 ---
 import { SOCIAL_LINKS } from '../consts';
+
 const year = new Date().getFullYear();
 ---
 
-<footer>
+<footer class="site-footer">
 	<div class="footer-inner">
-		<span class="copyright">© {year} Arthur Wheildon</span>
-		<div class="links">
-			{SOCIAL_LINKS.map((link) => {
-				const isEmail = link.href.startsWith('mailto:');
-				return (
-					<a
-						href={link.href}
-						target={isEmail ? undefined : '_blank'}
-						rel={isEmail ? undefined : 'noopener noreferrer'}
-					>
-						{link.label}
-					</a>
-				);
-			})}
+		<div class="footer-copy">
+			<p class="footer-title">Arthur Wheildon</p>
+			<p class="footer-text">AI systems, secure native apps, and product-minded technical work.</p>
+		</div>
+		<div class="footer-meta">
+			<span class="copyright">© {year}</span>
+			<div class="links">
+				{SOCIAL_LINKS.map((link) => {
+					const isEmail = link.href.startsWith('mailto:');
+					return (
+						<a
+							href={link.href}
+							target={isEmail ? undefined : '_blank'}
+							rel={isEmail ? undefined : 'noopener noreferrer'}
+						>
+							{link.label}
+						</a>
+					);
+				})}
+			</div>
 		</div>
 	</div>
 </footer>
 
 <style>
-	footer {
+	.site-footer {
 		border-top: 1px solid var(--border-sub);
-		padding: 2rem;
+		padding: 2rem 1.5rem 2.4rem;
+		background: rgba(3, 8, 15, 0.45);
 	}
 
 	.footer-inner {
-		max-width: 1200px;
+		max-width: var(--page-max);
 		margin: 0 auto;
 		display: flex;
 		justify-content: space-between;
-		align-items: center;
-		gap: 1rem;
-		flex-wrap: wrap;
+		align-items: flex-end;
+		gap: 1.5rem;
 	}
 
-	.copyright {
-		font-size: 0.875rem;
-		color: rgba(var(--fg-rgb), 0.35);
+	.footer-title {
+		margin: 0 0 0.4rem;
+		font-family: 'Syne', sans-serif;
+		font-size: 1rem;
+		font-weight: 700;
+		letter-spacing: -0.03em;
+	}
+
+	.footer-text,
+	.copyright,
+	.links a {
 		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.72rem;
+		line-height: 1.7;
+		color: var(--muted-faint);
+	}
+
+	.footer-text {
+		margin: 0;
+		max-width: 24rem;
+	}
+
+	.footer-meta {
+		display: flex;
+		flex-direction: column;
+		align-items: flex-end;
+		gap: 0.7rem;
 	}
 
 	.links {
 		display: flex;
-		gap: 1.5rem;
+		flex-wrap: wrap;
+		justify-content: flex-end;
+		gap: 1rem;
 	}
 
 	.links a {
-		font-size: 0.875rem;
-		color: rgba(var(--fg-rgb), 0.45);
 		text-decoration: none;
-		transition: color 0.2s ease;
+		transition: color 0.18s ease;
 	}
 
 	.links a:hover {
 		color: var(--fg);
 	}
 
-	@media (max-width: 600px) {
+	@media (max-width: 768px) {
+		.site-footer {
+			padding: 1.8rem 1rem 2.2rem;
+		}
+
+		.footer-inner,
+		.footer-meta {
+			align-items: flex-start;
+		}
+
 		.footer-inner {
 			flex-direction: column;
-			align-items: flex-start;
+		}
+
+		.links {
+			justify-content: flex-start;
 		}
 	}
 </style>

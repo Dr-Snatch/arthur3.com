@@ -5,7 +5,7 @@ const FS = {
   "/home": { type: "dir", children: ["arthur"] },
   "/home/arthur": {
     type: "dir", url: "/",
-    children: ["projects", "lab", "README.md", ".profile", ".secrets", ".bashrc"],
+    children: ["projects", "lab", "contact", "README.md", ".profile", ".secrets", ".bashrc"],
   },
   "/home/arthur/README.md": {
     type: "file",
@@ -18,8 +18,8 @@ const FS = {
       "  → Native   Secure iOS/macOS app systems with SwiftUI",
       "  → Tools    Automation, APIs, and developer tooling", "",
       "## Currently shipping",
-      "  → RPtext   AI narrative engine with structured state extraction",
-      "  → BeatMap  iOS app with OAuth 2.0 PKCE + Keychain security", "",
+      "  → BeatMap  iOS journaling system with hardened Spotify auth",
+      "  → RPtext   AI narrative engine with structured state extraction", "",
       '"I build things to understand how they break."',
     ],
   },
@@ -37,6 +37,8 @@ const FS = {
   "/home/arthur/projects/arthur3-com": { type: "dir", url: "/projects/arthur3-com", children: ["README.md"] },
   "/home/arthur/projects/arthur3-com/README.md": { type: "file", content: ["# arthur3.com", "This website. Astro + Keystatic + Cloudflare Pages.", "The terminal you're using right now is part of it."] },
   "/home/arthur/lab": { type: "dir", url: "/lab", children: ["experiments"] },
+  "/home/arthur/contact": { type: "dir", url: "/contact", children: ["README.md"] },
+  "/home/arthur/contact/README.md": { type: "file", content: ["# contact", "Recruiters, founders, and teams can reach me via:", "", "  → Email     arthurwheildon0@gmail.com", "  → GitHub    github.com/Dr-Snatch", "  → LinkedIn  linkedin.com/in/arthurwheildon", "", "Best fit: AI systems, secure native apps, and product-minded tooling."] },
   "/home/arthur/lab/experiments": { type: "dir", children: ["prompt-sandwich", "local-llm-comparison", "shazam-benchmarks", "terminal-navigation"] },
   "/home/arthur/lab/experiments/prompt-sandwich": { type: "dir", url: "/lab/prompt-sandwich", children: ["README.md"] },
   "/home/arthur/lab/experiments/prompt-sandwich/README.md": { type: "file", content: ["# Prompt Sandwich", "Experiment note on reliable JSON extraction from LLM responses.", "", "Result: XML sandwich outperformed markdown fences and raw JSON prompts."] },
@@ -116,7 +118,11 @@ function saveSession(lines, history) { try { sessionStorage.setItem(SK_LINES, JS
 function loadSession() { try { const l = sessionStorage.getItem(SK_LINES), h = sessionStorage.getItem(SK_HIST); if (l) return { lines: JSON.parse(l), history: h ? JSON.parse(h) : [] }; } catch {} return null; }
 function clearSession() { try { sessionStorage.removeItem(SK_LINES); sessionStorage.removeItem(SK_HIST); } catch {} }
 function saveWindowState(windowState) { try { sessionStorage.setItem(SK_WINDOW, windowState); } catch {} }
-function loadWindowState() { try { const windowState = sessionStorage.getItem(SK_WINDOW); if (windowState === "normal" || windowState === "minimized" || windowState === "maximized" || windowState === "closed") return windowState; } catch {} return DEFAULT_WINDOW_STATE; }
+function loadWindowState() { try { const windowState = sessionStorage.getItem(SK_WINDOW); if (windowState === "normal" || windowState === "minimized" || windowState === "maximized" || windowState === "closed") return windowState; } catch {} return null; }
+function defaultWindowStateForViewport() {
+  if (typeof window !== "undefined" && window.matchMedia("(max-width: 640px)").matches) return "closed";
+  return DEFAULT_WINDOW_STATE;
+}
 function pathFromUrl(urlPath) {
   if (URL_TO_PATH[urlPath]) return URL_TO_PATH[urlPath];
   const projectMatch = urlPath.match(/^\/projects\/([^/]+)$/);
@@ -155,7 +161,8 @@ export default function Terminal() {
   useEffect(() => {
     const saved = loadSession();
     setCwd(cwdFromUrl());
-    setWindowState(loadWindowState());
+    const savedWindowState = loadWindowState();
+    setWindowState(savedWindowState || defaultWindowStateForViewport());
     setWindowStateReady(true);
     if (saved && saved.lines.length > 0) { setLines(saved.lines); setHistory(saved.history); setBooted(true); }
     else { const timers = BOOT.map(({ text, delay, color }) => setTimeout(() => setLines((p) => [...p, { text, color }]), delay)); const bt = setTimeout(() => setBooted(true), BOOT_READY); return () => { timers.forEach(clearTimeout); clearTimeout(bt); }; }
@@ -163,6 +170,16 @@ export default function Terminal() {
 
   useEffect(() => { if ((windowState === "normal" || windowState === "maximized") && bodyRef.current) bodyRef.current.scrollTop = bodyRef.current.scrollHeight; }, [lines, windowState]);
   useEffect(() => { if (windowState === "normal" || windowState === "maximized") setTimeout(() => inputRef.current?.focus(), 50); }, [windowState]);
+  useEffect(() => {
+    function handleOpen() { setWindowState("normal"); }
+    function handleClose() { setWindowState("closed"); }
+    window.addEventListener("a3t:open", handleOpen);
+    window.addEventListener("a3t:close", handleClose);
+    return () => {
+      window.removeEventListener("a3t:open", handleOpen);
+      window.removeEventListener("a3t:close", handleClose);
+    };
+  }, []);
 
   const displayCwd = toDisplayPath(cwd);
   const out = useCallback((newLines) => setLines((p) => [...p, ...newLines]), []);
@@ -234,8 +251,8 @@ export default function Terminal() {
 
     if (base === "about") { out([{ text: "arthur@arthur3.com", color: "#6366f1" }, { text: "──────────────────" }, { text: "AI systems developer @ Northumbria University" }, { text: "" }, { text: "I build reliable LLM-powered software, secure native apps," }, { text: "and automation systems with Swift and Python." }, { text: "" }, { text: "Currently shipping:" }, { text: "  → RPtext   — real-time AI game engine with structured state" }, { text: "  → BeatMap  — iOS journaling app with hardened Spotify auth" }, { text: "" }, { text: "I build things to understand how they break." }]); return; }
     if (base === "skills") { out([{ text: "SYSTEMS I BUILD", color: "#6366f1" }, { text: "───────────────" }, { text: "AI systems   structured output pipelines · streaming · evals" }, { text: "Native apps  OAuth 2.0 PKCE · Keychain · Core Data · SwiftUI" }, { text: "Tooling      automation · API integrations · CLI workflows" }, { text: "Languages    Python · Swift · TypeScript · JavaScript" }, { text: "Infra        Linux · Git · Docker · Cloudflare" }, { text: "" }, { text: "Research     local LLMs · prompt design · applied security" }]); return; }
-    if (base === "contact") { out([{ text: "CONTACT", color: "#6366f1" }, { text: "───────" }, { text: "GitHub    github.com/Dr-Snatch" }, { text: "Email     arthurwheildon0@gmail.com" }, { text: "Twitter   x.com/ExpoArturo" }, { text: "LinkedIn  linkedin.com/in/arthurwheildon" }]); return; }
-    if (base === "projects") { out([{ text: "SELECTED SYSTEMS", color: "#6366f1" }, { text: "────────────────" }, { text: "RPtext     AI game engine — resilient structured state" }, { text: "BeatMap    iOS product — hardened OAuth + durable local data" }, { text: "" }, { text: "cd ~/projects to explore, or 'open' to visit the page", color: "#475569" }]); return; }
+    if (base === "contact") { out([{ text: "CONTACT", color: "#6366f1" }, { text: "───────" }, { text: "GitHub    github.com/Dr-Snatch" }, { text: "Email     arthurwheildon0@gmail.com" }, { text: "Twitter   x.com/ExpoArturo" }, { text: "LinkedIn  linkedin.com/in/arthurwheildon" }, { text: "" }, { text: "or open /contact for the full page", color: "#475569" }]); return; }
+    if (base === "projects") { out([{ text: "SELECTED SYSTEMS", color: "#6366f1" }, { text: "────────────────" }, { text: "BeatMap    iOS product — hardened OAuth + durable local data" }, { text: "RPtext     AI game engine — resilient structured state" }, { text: "" }, { text: "cd ~/projects to explore, or 'open' to visit the page", color: "#475569" }]); return; }
 
     if (base === "neofetch") { out(NEOFETCH); return; }
     if (base === "cowsay") { out(cowsay(rawArgs || COWMSGS[Math.floor(Math.random() * COWMSGS.length)])); return; }
@@ -290,38 +307,38 @@ export default function Terminal() {
   return (
     <>
       <style>{`
-        .term-tab{position:fixed;right:24px;bottom:18px;z-index:9999;display:flex;align-items:center;gap:10px;padding:12px 16px 12px 14px;background:linear-gradient(135deg,rgba(99,102,241,.2),rgba(15,15,15,.96) 45%,rgba(15,15,15,.98));border:1px solid rgba(99,102,241,.34);border-radius:16px;cursor:pointer;transition:background .15s,border-color .15s,transform .15s,box-shadow .15s;box-shadow:0 14px 32px rgba(0,0,0,.42),0 0 0 1px rgba(99,102,241,.08),0 0 34px rgba(99,102,241,.18);user-select:none;-webkit-tap-highlight-color:transparent}
-        .term-tab:hover{background:linear-gradient(135deg,rgba(99,102,241,.28),rgba(22,22,31,.98) 45%,rgba(22,22,31,.98));border-color:rgba(99,102,241,.55);transform:translateY(-2px);box-shadow:0 18px 40px rgba(0,0,0,.5),0 0 0 1px rgba(99,102,241,.16),0 0 48px rgba(99,102,241,.24)}
-        .term-tab-dot{width:10px;height:10px;border-radius:50%;background:#818cf8;box-shadow:0 0 10px rgba(129,140,248,.85);animation:tabpulse 1.6s ease-in-out infinite}
+        .term-tab{position:fixed;right:24px;bottom:18px;z-index:9999;display:flex;align-items:center;gap:10px;padding:12px 16px 12px 14px;background:linear-gradient(135deg,rgba(125,247,197,.18),rgba(9,23,44,.96) 42%,rgba(5,13,24,.99));border:1px solid rgba(125,247,197,.24);border-radius:18px;cursor:pointer;transition:background .15s,border-color .15s,transform .15s,box-shadow .15s;box-shadow:0 18px 44px rgba(0,0,0,.42),0 0 0 1px rgba(125,247,197,.08),0 0 40px rgba(95,168,255,.12);user-select:none;-webkit-tap-highlight-color:transparent}
+        .term-tab:hover{background:linear-gradient(135deg,rgba(125,247,197,.24),rgba(12,28,53,.98) 42%,rgba(6,17,32,.99));border-color:rgba(125,247,197,.42);transform:translateY(-2px);box-shadow:0 24px 50px rgba(0,0,0,.48),0 0 0 1px rgba(125,247,197,.12),0 0 50px rgba(95,168,255,.18)}
+        .term-tab-dot{width:10px;height:10px;border-radius:50%;background:#7df7c5;box-shadow:0 0 12px rgba(125,247,197,.92);animation:tabpulse 1.6s ease-in-out infinite}
         @keyframes tabpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.88)}}
         .term-tab-copy{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
         .term-tab-label{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#e2e8f0;letter-spacing:.03em;line-height:1}
         .term-tab-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:#94a3b8;letter-spacing:.06em;text-transform:uppercase;line-height:1}
-        .term-tab-open{margin-left:4px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#a5b4fc}
+        .term-tab-open{margin-left:4px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#7df7c5}
         .term-overlay{position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.6);backdrop-filter:blur(2px)}
-        .term-window{position:fixed;right:24px;bottom:72px;z-index:9999;background:#0f0f0f;border:1px solid #1e1e2e;border-radius:14px;overflow:hidden;width:min(480px,calc(100vw - 2rem));height:min(420px,calc(100vh - 120px));display:flex;flex-direction:column;box-shadow:0 0 0 1px rgba(99,102,241,.08),0 25px 60px rgba(0,0,0,.6),0 0 80px rgba(99,102,241,.05);transition:box-shadow .2s,transform .2s}
-        .term-window.maximized{inset:40px;right:auto;bottom:auto;z-index:9999;border-radius:14px;width:auto;height:auto;box-shadow:0 0 0 1px rgba(99,102,241,.15),0 40px 100px rgba(0,0,0,.9),0 0 120px rgba(99,102,241,.1)}
-        .term-titlebar{display:flex;align-items:center;gap:7px;padding:11px 16px;background:#111118;border-bottom:1px solid #1a1a2e;position:relative;flex-shrink:0;user-select:none}
+        .term-window{position:fixed;right:24px;bottom:72px;z-index:9999;background:linear-gradient(180deg,rgba(9,23,44,.98),rgba(5,13,24,.98));border:1px solid rgba(125,247,197,.14);border-radius:18px;overflow:hidden;width:min(480px,calc(100vw - 2rem));height:min(420px,calc(100vh - 120px));display:flex;flex-direction:column;box-shadow:0 0 0 1px rgba(125,247,197,.06),0 25px 60px rgba(0,0,0,.6),0 0 80px rgba(95,168,255,.08);transition:box-shadow .2s,transform .2s}
+        .term-window.maximized{inset:40px;right:auto;bottom:auto;z-index:9999;border-radius:18px;width:auto;height:auto;box-shadow:0 0 0 1px rgba(125,247,197,.14),0 40px 100px rgba(0,0,0,.9),0 0 120px rgba(95,168,255,.1)}
+        .term-titlebar{display:flex;align-items:center;gap:7px;padding:11px 16px;background:rgba(7,18,34,.98);border-bottom:1px solid rgba(255,255,255,.06);position:relative;flex-shrink:0;user-select:none}
         .term-btn{width:28px;height:28px;border-radius:50%;flex-shrink:0;border:none;cursor:pointer;padding:8px;background-clip:content-box;transition:filter .15s;-webkit-tap-highlight-color:transparent}
         .term-btn:hover{filter:brightness(1.25)}
         .term-btn-close{background-color:#ff5f57}.term-btn-min{background-color:#febc2e}.term-btn-max{background-color:#28c840}
         .term-btn-group{display:flex;gap:4px;align-items:center}
-        .term-titlebar-label{position:absolute;left:50%;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:11px;color:#334155;letter-spacing:.05em;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:55%}
-        .term-body{padding:14px 16px 4px;flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:#1e293b transparent}
+        .term-titlebar-label{position:absolute;left:50%;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(238,247,255,.34);letter-spacing:.05em;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:55%}
+        .term-body{padding:14px 16px 4px;flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:#173053 transparent}
         .term-window.maximized .term-body{flex:1;height:auto}
-        .term-body::-webkit-scrollbar{width:4px}.term-body::-webkit-scrollbar-thumb{background:#1e293b;border-radius:2px}
+        .term-body::-webkit-scrollbar{width:4px}.term-body::-webkit-scrollbar-thumb{background:#173053;border-radius:2px}
         .term-line{font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.65;white-space:pre-wrap;word-break:break-word}
         .term-window.maximized .term-line{font-size:14px}
-        .term-input-row{display:flex;align-items:center;gap:6px;padding:10px 16px 14px;border-top:1px solid #111;flex-shrink:0}
-        .term-prompt{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#6366f1;white-space:nowrap;user-select:none;flex-shrink:0}
+        .term-input-row{display:flex;align-items:center;gap:6px;padding:10px 16px 14px;border-top:1px solid rgba(255,255,255,.05);flex-shrink:0}
+        .term-prompt{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#7df7c5;white-space:nowrap;user-select:none;flex-shrink:0}
         .term-prompt-short{display:none}
         .term-window.maximized .term-prompt{font-size:14px}
-        .term-input{flex:1;background:transparent;border:none;outline:none;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#e2e8f0;caret-color:#6366f1;min-width:0}
+        .term-input{flex:1;background:transparent;border:none;outline:none;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#e2e8f0;caret-color:#7df7c5;min-width:0}
         .term-window.maximized .term-input{font-size:14px}
         @media(max-width:640px){
-          .term-tab{right:12px;bottom:12px;left:auto;max-width:calc(100vw - 24px);padding:11px 14px 11px 13px;border-radius:14px}
-          .term-window{right:12px;left:12px;bottom:64px;width:auto;height:min(380px,calc(100vh - 96px));border-radius:10px}
-          .term-window.maximized{inset:8px;border-radius:10px}
+          .term-tab{display:none}
+          .term-window{right:12px;left:12px;bottom:12px;width:auto;height:min(440px,calc(100vh - 100px));border-radius:14px}
+          .term-window.maximized{inset:8px;border-radius:14px}
           .term-titlebar{padding:9px 12px}
           .term-titlebar-label{font-size:10px;max-width:40%}
           .term-body{padding:10px 10px 4px}
