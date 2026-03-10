@@ -107,7 +107,7 @@ const contactBlocks = [
 		margin: 0 0 0.9rem;
 		font-size: 0.7rem;
 		letter-spacing: 0.14em;
-		color: var(--muted-faint);
+		color: var(--fg-faint);
 	}
 
 	.hero-title {
@@ -118,13 +118,13 @@ const contactBlocks = [
 	.hero-copy,
 	.note-copy,
 	.card-value {
-		color: var(--muted-soft);
+		color: var(--fg-muted);
 		line-height: 1.75;
 	}
 
 	.hero-copy {
 		max-width: 44rem;
-		font-size: 1.02rem;
+		font-size: 1rem;
 		margin: 0;
 	}
 
@@ -143,26 +143,25 @@ const contactBlocks = [
 	.contact-card,
 	.note-card {
 		padding: 1.25rem;
-		border-radius: 24px;
+		border-radius: 12px;
 		border: 1px solid var(--border);
-		background: var(--surface-card);
-		box-shadow: var(--box-shadow);
+		background: var(--surface);
 		text-decoration: none;
+		transition: border-color 0.15s ease, background 0.15s ease;
 	}
 
 	.contact-card {
 		display: block;
-		transition: transform 0.18s ease, border-color 0.18s ease;
 	}
 
 	.contact-card:hover {
-		transform: translateY(-2px);
-		border-color: rgba(var(--accent-blue-rgb), 0.2);
+		border-color: var(--border-strong);
+		background: var(--surface-hover);
 	}
 
 	.card-value {
 		margin: 0 0 1rem;
-		font-size: 1.02rem;
+		font-size: 1rem;
 		color: var(--fg);
 		word-break: break-word;
 	}
@@ -170,7 +169,7 @@ const contactBlocks = [
 	.card-link {
 		font-size: 0.68rem;
 		letter-spacing: 0.12em;
-		color: var(--accent-blue-dark);
+		color: var(--accent);
 	}
 
 	.note-copy {
@@ -193,13 +192,12 @@ const contactBlocks = [
 		}
 
 		.section {
-			padding-bottom: 4.5rem;
+			padding-bottom: 4rem;
 		}
 
 		.contact-card,
 		.note-card {
-			padding: 1.05rem;
-			border-radius: 20px;
+			padding: 1.1rem;
 		}
 	}
 </style>

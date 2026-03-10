@@ -66,7 +66,7 @@ function getTags(tagString) {
 	.empty-msg {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.76rem;
-		color: var(--muted-faint);
+		color: var(--fg-faint);
 	}
 
 	.ks-link {
@@ -82,25 +82,23 @@ function getTags(tagString) {
 	.project-card {
 		display: flex;
 		flex-direction: column;
-		gap: 0.8rem;
-		padding: 1.35rem;
-		border-radius: 24px;
+		gap: 0.75rem;
+		padding: 1.25rem;
+		border-radius: 12px;
 		border: 1px solid var(--border);
-		background: var(--surface-card);
-		box-shadow: var(--box-shadow);
+		background: var(--surface);
 		text-decoration: none;
-		transition: transform 0.18s ease, border-color 0.18s ease;
+		transition: border-color 0.15s ease, background 0.15s ease;
 	}
 
 	.project-card:hover {
-		transform: translateY(-2px);
-		border-color: rgba(var(--accent-blue-rgb), 0.2);
+		border-color: var(--border-strong);
+		background: var(--surface-hover);
 	}
 
 	.project-card-flagship {
-		background:
-			linear-gradient(135deg, rgba(var(--accent-rgb), 0.08), transparent 44%),
-			var(--surface-card-strong);
+		border-color: var(--accent-border);
+		background: var(--accent-dim);
 	}
 
 	.card-kicker,
@@ -114,20 +112,20 @@ function getTags(tagString) {
 
 	.card-kicker {
 		margin: 0;
-		color: var(--muted-faint);
+		color: var(--fg-faint);
 	}
 
 	.card-title {
 		margin: 0;
-		font-family: 'Fraunces', serif;
-		font-size: 1.55rem;
-		letter-spacing: -0.04em;
+		font-family: 'Syne', sans-serif;
+		font-size: 1.5rem;
+		letter-spacing: -0.03em;
 		color: var(--fg);
 	}
 
 	.card-copy {
 		margin: 0;
-		color: var(--muted-soft);
+		color: var(--fg-muted);
 		line-height: 1.75;
 	}
 
@@ -138,15 +136,15 @@ function getTags(tagString) {
 	}
 
 	.card-tag {
-		padding: 0.35rem 0.55rem;
-		border-radius: 999px;
-		border: 1px solid rgba(var(--accent-rgb), 0.14);
-		background: rgba(var(--accent-rgb), 0.08);
-		color: var(--accent-dark);
+		padding: 0.3rem 0.55rem;
+		border-radius: 6px;
+		border: 1px solid var(--accent-border);
+		background: var(--accent-dim);
+		color: var(--accent);
 	}
 
 	.card-link {
-		color: var(--accent-blue-dark);
+		color: var(--accent);
 	}
 
 	@media (max-width: 768px) {
@@ -155,7 +153,7 @@ function getTags(tagString) {
 		}
 
 		.section {
-			padding-bottom: 4.5rem;
+			padding-bottom: 4rem;
 		}
 
 		.project-grid {
@@ -164,7 +162,6 @@ function getTags(tagString) {
 
 		.project-card {
 			padding: 1.1rem;
-			border-radius: 20px;
 		}
 	}
 </style>

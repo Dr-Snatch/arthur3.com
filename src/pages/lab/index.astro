@@ -70,7 +70,7 @@ function getTags(tagString) {
 	.empty-msg {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.76rem;
-		color: var(--muted-faint);
+		color: var(--fg-faint);
 	}
 
 	.ks-link {
@@ -86,12 +86,17 @@ function getTags(tagString) {
 	.note-card {
 		display: flex;
 		flex-direction: column;
-		gap: 0.8rem;
-		padding: 1.35rem;
-		border-radius: 24px;
+		gap: 0.75rem;
+		padding: 1.25rem;
+		border-radius: 12px;
 		border: 1px solid var(--border);
-		background: var(--surface-card);
-		box-shadow: var(--box-shadow);
+		background: var(--surface);
+		transition: border-color 0.15s ease, background 0.15s ease;
+	}
+
+	.note-card:hover {
+		border-color: var(--border-strong);
+		background: var(--surface-hover);
 	}
 
 	.note-top {
@@ -114,19 +119,19 @@ function getTags(tagString) {
 	.card-kicker,
 	.note-date {
 		margin: 0;
-		color: var(--muted-faint);
+		color: var(--fg-faint);
 	}
 
 	.card-title {
 		margin: 0;
-		font-family: 'Fraunces', serif;
-		font-size: 1.45rem;
-		letter-spacing: -0.04em;
+		font-family: 'Syne', sans-serif;
+		font-size: 1.4rem;
+		letter-spacing: -0.03em;
 	}
 
 	.card-copy {
 		margin: 0;
-		color: var(--muted-soft);
+		color: var(--fg-muted);
 		line-height: 1.75;
 	}
 
@@ -137,16 +142,16 @@ function getTags(tagString) {
 	}
 
 	.card-tag {
-		padding: 0.35rem 0.55rem;
-		border-radius: 999px;
-		border: 1px solid rgba(var(--accent-rgb), 0.14);
-		background: rgba(var(--accent-rgb), 0.08);
-		color: var(--accent-dark);
+		padding: 0.3rem 0.55rem;
+		border-radius: 6px;
+		border: 1px solid var(--accent-border);
+		background: var(--accent-dim);
+		color: var(--accent);
 	}
 
 	.card-link {
 		text-decoration: none;
-		color: var(--accent-blue-dark);
+		color: var(--accent);
 	}
 
 	@media (max-width: 768px) {
@@ -155,7 +160,7 @@ function getTags(tagString) {
 		}
 
 		.section {
-			padding-bottom: 4.5rem;
+			padding-bottom: 4rem;
 		}
 
 		.note-grid {
@@ -164,7 +169,6 @@ function getTags(tagString) {
 
 		.note-card {
 			padding: 1.1rem;
-			border-radius: 20px;
 		}
 	}
 </style>

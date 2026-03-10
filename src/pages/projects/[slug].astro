@@ -127,19 +127,14 @@ const isBeatMap = project.id === 'beatmap';
 		margin-bottom: 1rem;
 		font-size: 0.72rem;
 		text-decoration: none;
-		color: var(--accent-blue-dark);
-	}
-
-	.hero-card,
-	.summary-card {
-		border-radius: 28px;
-		border: 1px solid var(--border);
-		background: var(--surface-card-strong);
-		box-shadow: var(--box-shadow);
+		color: var(--accent);
 	}
 
 	.hero-card {
 		padding: 1.5rem;
+		border-radius: 12px;
+		border: 1px solid var(--border);
+		background: var(--surface);
 	}
 
 	.hero-top {
@@ -151,10 +146,10 @@ const isBeatMap = project.id === 'beatmap';
 
 	.eyebrow {
 		margin: 0 0 0.8rem;
-		font-size: 0.68rem;
+		font-size: 0.7rem;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
-		color: var(--muted-faint);
+		color: var(--fg-faint);
 	}
 
 	.project-title {
@@ -164,13 +159,13 @@ const isBeatMap = project.id === 'beatmap';
 
 	.project-headline,
 	.summary-text {
-		color: var(--muted-soft);
+		color: var(--fg-muted);
 		line-height: 1.75;
 	}
 
 	.project-headline {
 		max-width: 44rem;
-		font-size: 1.02rem;
+		font-size: 1rem;
 		margin: 1rem 0 1.25rem;
 	}
 
@@ -185,24 +180,32 @@ const isBeatMap = project.id === 'beatmap';
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		padding: 0.78rem 1rem;
+		padding: 0.65rem 1rem;
 		border-radius: 999px;
-		border: 1px solid rgba(var(--accent-blue-rgb), 0.16);
-		background: rgba(var(--paper-rgb), 0.72);
+		border: 1px solid var(--border);
+		background: transparent;
 		font-size: 0.72rem;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
 		text-decoration: none;
-		color: var(--accent-blue-dark);
+		color: var(--fg-muted);
+		transition: border-color 0.15s ease, color 0.15s ease;
+	}
+
+	.hero-link:hover {
+		border-color: var(--border-strong);
+		color: var(--fg);
 	}
 
 	.tag {
-		padding: 0.35rem 0.55rem;
-		border-radius: 999px;
-		font-size: 0.68rem;
+		padding: 0.3rem 0.55rem;
+		border-radius: 6px;
+		font-size: 0.65rem;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
-		border: 1px solid rgba(var(--accent-rgb), 0.14);
-		background: rgba(var(--accent-rgb), 0.08);
-		color: var(--accent-dark);
+		border: 1px solid var(--accent-border);
+		background: var(--accent-dim);
+		color: var(--accent);
 	}
 
 	.summary-grid {
@@ -214,15 +217,17 @@ const isBeatMap = project.id === 'beatmap';
 
 	.summary-card {
 		padding: 1rem;
-		background: var(--surface-card);
+		border-radius: 8px;
+		border: 1px solid var(--border);
+		background: var(--bg-alt);
 	}
 
 	.summary-label {
 		margin: 0 0 0.5rem;
-		font-size: 0.68rem;
+		font-size: 0.7rem;
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
-		color: var(--muted-faint);
+		color: var(--fg-faint);
 	}
 
 	.summary-text {
@@ -241,25 +246,26 @@ const isBeatMap = project.id === 'beatmap';
 
 	.showcase-shot {
 		width: 100%;
+		border-radius: 12px;
 		border: 1px solid var(--border);
-		box-shadow: 0 24px 60px rgba(37, 27, 14, 0.16);
 	}
 
 	.project-content {
-		padding: 0 0 5.5rem;
+		padding: 0 0 5rem;
 	}
 
 	.prose {
 		max-width: 46rem;
-		font-family: 'Atkinson', sans-serif;
-		font-size: 0.98rem;
-		line-height: 1.8;
-		color: rgba(var(--fg-rgb), 0.84);
+		font-family: 'Inter', sans-serif;
+		font-size: 1rem;
+		line-height: 1.7;
+		color: var(--fg-muted);
 	}
 
 	.prose :global(h2) {
-		font-size: 1.55rem;
+		font-size: 1.5rem;
 		margin: 2.4rem 0 1rem;
+		color: var(--fg);
 	}
 
 	.prose :global(a) {
@@ -279,17 +285,17 @@ const isBeatMap = project.id === 'beatmap';
 	}
 
 	.prose :global(.diagram-step) {
-		padding: 0.8rem 0.95rem;
-		border-radius: 14px;
-		background: rgba(var(--accent-blue-rgb), 0.06);
-		border: 1px solid rgba(var(--accent-blue-rgb), 0.14);
+		padding: 0.7rem 0.85rem;
+		border-radius: 8px;
+		background: var(--accent-dim);
+		border: 1px solid var(--accent-border);
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.76rem;
-		color: rgba(var(--fg-rgb), 0.82);
+		color: var(--fg-muted);
 	}
 
 	.prose :global(.diagram-arrow) {
-		color: var(--accent-blue-dark);
+		color: var(--accent);
 	}
 
 	@media (max-width: 900px) {
@@ -312,17 +318,12 @@ const isBeatMap = project.id === 'beatmap';
 			padding: 0.8rem 0 1.3rem;
 		}
 
-		.hero-card,
-		.summary-card {
-			border-radius: 22px;
-		}
-
 		.hero-card {
 			padding: 1.15rem;
 		}
 
 		.project-content {
-			padding-bottom: 4.5rem;
+			padding-bottom: 4rem;
 		}
 	}
 </style>

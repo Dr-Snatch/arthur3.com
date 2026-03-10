@@ -99,6 +99,7 @@ const beatMapSummary = beatMapProject
 		<TerminalBar />
 
 		<main>
+			<!-- ── Hero ── -->
 			<section class="hero-section">
 				<div class="container hero-layout">
 					<div class="hero-copy">
@@ -122,22 +123,22 @@ const beatMapSummary = beatMapProject
 					</div>
 
 					<div class="hero-rail">
-						<article class="hero-panel hero-panel-strong">
-							<p class="panel-label">Operating mode</p>
-							<h2 class="panel-title">Product-minded engineering with the sharp edges left visible.</h2>
-							<p class="panel-copy">
+						<article class="card card-accent">
+							<p class="label">Operating mode</p>
+							<h2 class="card-heading">Product-minded engineering with the sharp edges left visible.</h2>
+							<p class="card-body">
 								The goal is not just fast prototypes. It is software with strong defaults, careful tradeoffs, and enough rigor to keep working under actual pressure.
 							</p>
-							<div class="mini-matrix">
+							<div class="chip-row">
 								{heroModes.map((mode) => (
-									<span class="matrix-cell">{mode}</span>
+									<span class="chip chip-accent">{mode}</span>
 								))}
 							</div>
 						</article>
 
-						<article class="hero-panel">
-							<p class="panel-label">Quick read</p>
-							<div class="hero-ledger">
+						<article class="card">
+							<p class="label">Quick read</p>
+							<div class="ledger-grid">
 								{studioLedger.map((item) => (
 									<article class="ledger-item">
 										<p class="ledger-label">{item.label}</p>
@@ -145,16 +146,17 @@ const beatMapSummary = beatMapProject
 									</article>
 								))}
 							</div>
-							<div class="command-row">
-								<span class="command-chip">help</span>
-								<span class="command-chip">projects</span>
-								<span class="command-chip">contact</span>
+							<div class="chip-row">
+								<span class="chip">help</span>
+								<span class="chip">projects</span>
+								<span class="chip">contact</span>
 							</div>
 						</article>
 					</div>
 				</div>
 			</section>
 
+			<!-- ── Systems I Build ── -->
 			<section class="section">
 				<div class="container">
 					<div class="section-head">
@@ -163,30 +165,31 @@ const beatMapSummary = beatMapProject
 					</div>
 					<div class="area-grid">
 						{buildAreas.map((area) => (
-							<article class="area-card">
-								<h3 class="area-title">{area.title}</h3>
-								<p class="area-copy">{area.copy}</p>
+							<article class="card">
+								<h3 class="card-heading-sm">{area.title}</h3>
+								<p class="card-body">{area.copy}</p>
 							</article>
 						))}
 					</div>
 				</div>
 			</section>
 
+			<!-- ── BeatMap Flagship ── -->
 			{beatMapProject && (
 				<section class="section flagship-section" id="beatmap">
-					<div class="container flagship-grid">
+					<div class="container flagship-panel">
 						<div class="flagship-copy">
 							<p class="eyebrow">Flagship Product</p>
 							<span class="product-badge">BeatMap · iOS</span>
 							<h2 class="section-title">Music journaling with hardened Spotify auth and durable on-device data.</h2>
-							<p class="flagship-description">
+							<p class="card-body">
 								{beatMapProject.data.headline ?? beatMapProject.data.description}
 							</p>
 							<div class="summary-grid">
 								{beatMapSummary.map((item) => (
 									<article class="summary-card">
-										<p class="summary-label">{item.label}</p>
-										<p class="summary-copy">{item.value}</p>
+										<p class="label">{item.label}</p>
+										<p class="summary-text">{item.value}</p>
 									</article>
 								))}
 							</div>
@@ -214,8 +217,8 @@ const beatMapSummary = beatMapProject
 									class="product-shot product-shot-secondary"
 								/>
 							</div>
-							<article class="proof-card">
-								<p class="proof-label">What matters</p>
+							<article class="summary-card">
+								<p class="label">What matters</p>
 								<ul class="proof-list">
 									<li>OAuth 2.0 PKCE built without third-party auth libraries</li>
 									<li>Core Data migration and durable offline-friendly storage</li>
@@ -227,6 +230,7 @@ const beatMapSummary = beatMapProject
 				</section>
 			)}
 
+			<!-- ── More Work ── -->
 			<section class="section">
 				<div class="container work-layout">
 					<div class="section-head section-head-inline">
@@ -239,15 +243,13 @@ const beatMapSummary = beatMapProject
 
 					<div class="work-grid">
 						{supportingProjects.map((project) => (
-							<article class="project-card">
-								<div class="card-top">
-									<p class="card-kicker">{project.data.status.replace('-', ' ')}</p>
-									<p class="card-title">{project.data.title}</p>
-								</div>
-								<p class="card-copy">{project.data.headline ?? project.data.description}</p>
-								<div class="card-tag-row">
+							<article class="card">
+								<p class="label">{project.data.status.replace('-', ' ')}</p>
+								<p class="card-heading-sm">{project.data.title}</p>
+								<p class="card-body">{project.data.headline ?? project.data.description}</p>
+								<div class="chip-row">
 									{getTags(project.data.tags).map((tag) => (
-										<span class="card-tag">{tag}</span>
+										<span class="tag">{tag}</span>
 									))}
 								</div>
 								<a href={`/projects/${project.id}`} class="text-link">Read case study ↗</a>
@@ -257,10 +259,10 @@ const beatMapSummary = beatMapProject
 
 					<div class="notes-grid">
 						{homeNotes.map((note) => (
-							<article class="note-card">
-								<p class="card-kicker">{note.data.status}</p>
-								<p class="card-title">{note.data.title}</p>
-								<p class="card-copy">{note.data.result ?? note.data.description}</p>
+							<article class="card">
+								<p class="label">{note.data.status}</p>
+								<p class="card-heading-sm">{note.data.title}</p>
+								<p class="card-body">{note.data.result ?? note.data.description}</p>
 								<a href={`/lab/${note.id}`} class="text-link">Read note ↗</a>
 							</article>
 						))}
@@ -268,6 +270,7 @@ const beatMapSummary = beatMapProject
 				</div>
 			</section>
 
+			<!-- ── Principles ── -->
 			<section class="section">
 				<div class="container">
 					<div class="section-head">
@@ -282,13 +285,14 @@ const beatMapSummary = beatMapProject
 				</div>
 			</section>
 
-			<section class="section cta-section">
+			<!-- ── CTA ── -->
+			<section class="section">
 				<div class="container">
 					<div class="cta-panel">
 						<div>
 							<p class="eyebrow">Contact</p>
 							<h2 class="section-title">Recruiters, founders, and teams building AI products.</h2>
-							<p class="cta-copy">
+							<p class="card-body cta-copy">
 								Best fit: AI systems, secure mobile experiences, and technical product work that needs careful engineering rather than shallow demos.
 							</p>
 						</div>
@@ -320,66 +324,202 @@ const beatMapSummary = beatMapProject
 	}
 
 	.section {
-		padding: 0 0 5.75rem;
+		padding: 0 0 5rem;
 	}
+
+	/* ── Shared text styles ── */
 
 	.eyebrow {
 		margin: 0 0 1rem;
-		display: inline-flex;
-		align-items: center;
-		gap: 0.7rem;
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.72rem;
+		font-size: 0.7rem;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
-		color: var(--muted-faint);
+		color: var(--fg-faint);
 	}
 
-	.eyebrow::before {
-		content: '';
-		width: 2.5rem;
-		height: 1px;
-		background: rgba(var(--accent-blue-rgb), 0.34);
+	.label {
+		margin: 0 0 0.6rem;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.7rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--fg-faint);
 	}
+
+	.card-heading {
+		margin: 0 0 0.75rem;
+		font-family: 'Syne', sans-serif;
+		font-size: 1.6rem;
+		letter-spacing: -0.03em;
+		line-height: 1.1;
+	}
+
+	.card-heading-sm {
+		margin: 0 0 0.75rem;
+		font-family: 'Syne', sans-serif;
+		font-size: 1.3rem;
+		letter-spacing: -0.025em;
+		line-height: 1.15;
+		color: var(--fg);
+	}
+
+	.card-body {
+		color: var(--fg-muted);
+		line-height: 1.75;
+		margin: 0 0 1rem;
+	}
+
+	/* ── Cards (Level 1 surface) ── */
+
+	.card {
+		padding: 1.25rem;
+		background: var(--surface);
+		border: 1px solid var(--border);
+		border-radius: 12px;
+		transition: border-color 0.15s ease, background 0.15s ease;
+	}
+
+	.card:hover {
+		border-color: var(--border-strong);
+		background: var(--surface-hover);
+	}
+
+	.card-accent {
+		background: var(--bg-raised);
+		border-color: var(--border-strong);
+	}
+
+	.card-accent .label {
+		color: var(--fg-faint);
+	}
+
+	/* ── Buttons ── */
+
+	.btn {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.65rem 1.1rem;
+		border-radius: 999px;
+		border: none;
+		text-decoration: none;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		transition: opacity 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+	}
+
+	.btn-primary {
+		background: var(--accent);
+		color: #0d0d0d;
+	}
+
+	.btn-primary:hover {
+		color: #0d0d0d;
+		opacity: 0.88;
+	}
+
+	.btn-secondary {
+		background: transparent;
+		color: var(--fg-muted);
+		border: 1px solid var(--border);
+	}
+
+	.btn-secondary:hover {
+		border-color: var(--border-strong);
+		color: var(--fg);
+	}
+
+	.text-link {
+		display: inline-flex;
+		align-items: center;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.74rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		text-decoration: none;
+		color: var(--accent);
+		transition: opacity 0.15s ease;
+	}
+
+	.text-link:hover {
+		opacity: 0.75;
+	}
+
+	/* ── Chips & Tags ── */
+
+	.chip, .tag {
+		display: inline-flex;
+		padding: 0.3rem 0.55rem;
+		border-radius: 6px;
+		background: var(--surface);
+		border: 1px solid var(--border);
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.65rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--fg-faint);
+	}
+
+	.chip-accent {
+		background: var(--accent-dim);
+		border-color: var(--accent-border);
+		color: var(--accent);
+	}
+
+	.tag {
+		background: var(--accent-dim);
+		border-color: var(--accent-border);
+		color: var(--accent);
+	}
+
+	.chip-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-top: 1rem;
+	}
+
+	.signal-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.5rem;
+		margin-top: 1.25rem;
+	}
+
+	.signal-pill {
+		padding: 0.4rem 0.65rem;
+		border-radius: 6px;
+		background: var(--surface);
+		border: 1px solid var(--border);
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.65rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--fg-faint);
+	}
+
+	/* ── Hero ── */
 
 	.hero-section {
 		padding: 1.45rem 0 4.75rem;
 	}
 
-	.hero-layout,
-	.flagship-grid {
+	.hero-layout {
 		display: grid;
 		grid-template-columns: minmax(0, 1.14fr) minmax(330px, 0.86fr);
-		gap: 1.25rem;
+		gap: 1rem;
 		align-items: stretch;
 	}
 
 	.hero-copy {
-		position: relative;
-		padding: 2rem 2rem 2.15rem;
-		border-radius: 42px;
+		padding: 2rem;
+		border-radius: 12px;
 		border: 1px solid var(--border);
-		background: var(--surface-card-strong);
-		box-shadow: var(--panel-shadow);
-		overflow: hidden;
-	}
-
-	.hero-copy::after {
-		content: '';
-		position: absolute;
-		top: -4rem;
-		right: -2rem;
-		width: 15rem;
-		height: 15rem;
-		border-radius: 40% 60% 55% 45% / 45% 38% 62% 55%;
-		background: radial-gradient(circle, rgba(var(--accent-rgb), 0.24), transparent 62%);
-		transform: rotate(18deg);
-		opacity: 0.85;
-	}
-
-	.hero-copy > * {
-		position: relative;
-		z-index: 1;
+		background: var(--surface);
 	}
 
 	.hero-title {
@@ -389,32 +529,23 @@ const beatMapSummary = beatMapProject
 		text-wrap: balance;
 	}
 
-	.hero-description,
-	.flagship-description,
-	.panel-copy,
-	.area-copy,
-	.card-copy,
-	.summary-copy,
-	.cta-copy {
-		color: var(--muted-soft);
-		line-height: 1.75;
-	}
-
 	.hero-description {
 		max-width: 36rem;
-		font-size: 1.14rem;
+		font-size: 1.1rem;
+		color: var(--fg-muted);
+		line-height: 1.75;
 		margin-bottom: 1rem;
 	}
 
 	.hero-manifesto {
 		max-width: 34rem;
-		margin: 0 0 1.7rem;
+		margin: 0 0 1.5rem;
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.78rem;
+		font-size: 0.75rem;
 		line-height: 1.85;
 		letter-spacing: 0.06em;
 		text-transform: uppercase;
-		color: rgba(var(--fg-rgb), 0.58);
+		color: var(--fg-faint);
 	}
 
 	.hero-actions {
@@ -423,224 +554,46 @@ const beatMapSummary = beatMapProject
 		gap: 0.8rem;
 	}
 
-	.btn,
-	.text-link {
-		display: inline-flex;
-		align-items: center;
-		justify-content: center;
-		text-decoration: none;
-		transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease;
-	}
-
-	.btn {
-		padding: 0.95rem 1.22rem;
-		border-radius: 18px;
-		border: 1px solid transparent;
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.74rem;
-		font-weight: 600;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-	}
-
-	.btn-primary {
-		background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.96), rgba(245, 151, 111, 0.94));
-		color: var(--paper);
-		box-shadow: 0 16px 34px rgba(var(--accent-rgb), 0.18);
-	}
-
-	.btn-primary:hover {
-		color: var(--paper);
-		transform: translateY(-1px);
-	}
-
-	.btn-secondary {
-		border-color: rgba(var(--accent-blue-rgb), 0.16);
-		background: rgba(var(--paper-rgb), 0.65);
-		color: var(--accent-blue-dark);
-	}
-
-	.btn-secondary:hover,
-	.text-link:hover {
-		transform: translateY(-1px);
-		color: var(--accent-blue-dark);
-		border-color: rgba(var(--accent-blue-rgb), 0.28);
-	}
-
-	.signal-row {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.65rem;
-		margin-top: 1.35rem;
-	}
-
-	.signal-pill,
-	.command-chip,
-	.card-tag,
-	.product-badge {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.68rem;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-	}
-
-	.signal-pill {
-		padding: 0.55rem 0.8rem;
-		border-radius: 18px;
-		background: rgba(var(--paper-rgb), 0.72);
-		border: 1px solid rgba(var(--fg-rgb), 0.08);
-		color: rgba(var(--fg-rgb), 0.82);
-	}
-
 	.hero-rail {
 		display: grid;
 		gap: 1rem;
 	}
 
-	.hero-panel,
-	.area-card,
-	.summary-card,
-	.project-card,
-	.note-card,
-	.proof-card,
-	.cta-panel {
-		position: relative;
-		overflow: hidden;
-		border-radius: 28px;
-		border: 1px solid var(--border);
-		background: var(--surface-card);
-		box-shadow: var(--box-shadow);
-	}
+	/* ── Ledger ── */
 
-	.hero-panel,
-	.area-card,
-	.project-card,
-	.note-card,
-	.proof-card {
-		padding: 1.35rem;
-	}
-
-	.hero-panel-strong {
-		background: var(--surface-card-contrast);
-		color: var(--paper);
-	}
-
-	.panel-label,
-	.summary-label,
-	.proof-label,
-	.card-kicker {
-		margin: 0 0 0.65rem;
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.68rem;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		color: var(--muted-faint);
-	}
-
-	.hero-panel-strong .panel-label,
-	.flagship-grid .summary-label,
-	.flagship-grid .proof-label,
-	.flagship-grid .eyebrow {
-		color: rgba(var(--paper-rgb), 0.62);
-	}
-
-	.panel-title,
-	.card-title,
-	.area-title {
-		margin: 0 0 0.75rem;
-		font-family: 'Fraunces', serif;
-		font-size: 1.6rem;
-		letter-spacing: -0.04em;
-	}
-
-	.hero-panel-strong .panel-title,
-	.flagship-grid .section-title {
-		color: var(--paper);
-	}
-
-	.hero-panel-strong .panel-copy,
-	.flagship-grid .flagship-description,
-	.flagship-grid .summary-copy,
-	.flagship-grid .proof-list {
-		color: rgba(var(--paper-rgb), 0.8);
-	}
-
-	.mini-matrix,
-	.hero-ledger {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.65rem;
-	}
-
-	.mini-matrix {
-		margin-top: 1rem;
-	}
-
-	.hero-ledger {
+	.ledger-grid {
 		display: grid;
-		gap: 0.75rem;
-	}
-
-	.matrix-cell,
-	.ledger-label,
-	.ledger-copy {
-		font-family: 'JetBrains Mono', monospace;
-	}
-
-	.matrix-cell {
-		padding: 0.55rem 0.7rem;
-		border-radius: 14px;
-		border: 1px solid rgba(var(--paper-rgb), 0.16);
-		background: rgba(var(--paper-rgb), 0.08);
-		font-size: 0.68rem;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: rgba(var(--paper-rgb), 0.88);
+		gap: 0.6rem;
 	}
 
 	.ledger-item {
-		padding: 0.85rem 0.95rem;
-		border-radius: 18px;
-		border: 1px solid rgba(var(--fg-rgb), 0.08);
-		background: rgba(var(--paper-rgb), 0.66);
+		padding: 0.8rem;
+		border-radius: 8px;
+		border: 1px solid var(--border);
+		background: var(--bg-alt);
 	}
 
 	.ledger-label {
-		margin: 0 0 0.4rem;
-		font-size: 0.66rem;
+		margin: 0 0 0.35rem;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.65rem;
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
-		color: var(--accent-blue-dark);
+		color: var(--accent);
 	}
 
 	.ledger-copy {
 		margin: 0;
-		font-size: 0.8rem;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.78rem;
 		line-height: 1.7;
-		color: rgba(var(--fg-rgb), 0.72);
+		color: var(--fg-muted);
 	}
 
-	.command-row,
-	.card-tag-row {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-	}
-
-	.command-row {
-		margin-top: 1rem;
-	}
-
-	.command-chip {
-		padding: 0.4rem 0.65rem;
-		border-radius: 999px;
-		border: 1px solid rgba(var(--accent-blue-rgb), 0.14);
-		background: rgba(var(--accent-blue-rgb), 0.08);
-		color: var(--accent-blue-dark);
-	}
+	/* ── Sections ── */
 
 	.section-head {
-		margin-bottom: 1.6rem;
+		margin-bottom: 1.5rem;
 	}
 
 	.section-head-inline {
@@ -651,73 +604,42 @@ const beatMapSummary = beatMapProject
 	}
 
 	.section-title {
-		max-width: 13ch;
-		font-size: clamp(2.4rem, 4.5vw, 4rem);
-	}
-
-	.area-grid,
-	.work-grid,
-	.notes-grid,
-	.principles-grid {
-		display: grid;
-		gap: 1rem;
+		max-width: 16ch;
 	}
 
 	.area-grid {
-		grid-template-columns: repeat(12, minmax(0, 1fr));
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 1rem;
 	}
 
-	.area-card:nth-child(1) {
-		grid-column: span 5;
-	}
-
-	.area-card:nth-child(2) {
-		grid-column: span 3;
-		margin-top: 1.25rem;
-	}
-
-	.area-card:nth-child(3) {
-		grid-column: span 4;
-	}
+	/* ── Flagship ── */
 
 	.flagship-section {
-		padding-bottom: 6rem;
+		padding-bottom: 5.5rem;
 	}
 
-	.flagship-grid {
-		position: relative;
+	.flagship-panel {
+		display: grid;
+		grid-template-columns: minmax(0, 1.14fr) minmax(330px, 0.86fr);
+		gap: 1.5rem;
 		padding: 2rem;
-		border: 1px solid rgba(var(--paper-rgb), 0.1);
-		border-radius: 40px;
-		background: var(--surface-card-contrast);
-		box-shadow: 0 30px 90px rgba(14, 22, 39, 0.24);
-		overflow: hidden;
-	}
-
-	.flagship-grid::after {
-		content: '';
-		position: absolute;
-		right: -4rem;
-		bottom: -6rem;
-		width: 20rem;
-		height: 20rem;
-		border-radius: 50%;
-		background: radial-gradient(circle, rgba(var(--accent-rgb), 0.18), transparent 70%);
-	}
-
-	.flagship-copy,
-	.shot-rail {
-		position: relative;
-		z-index: 1;
+		border: 1px solid var(--border-strong);
+		border-radius: 12px;
+		background: var(--bg-raised);
 	}
 
 	.product-badge {
 		display: inline-flex;
-		padding: 0.5rem 0.75rem;
-		border-radius: 999px;
-		border: 1px solid rgba(var(--paper-rgb), 0.16);
-		background: rgba(var(--paper-rgb), 0.08);
-		color: rgba(var(--paper-rgb), 0.88);
+		padding: 0.35rem 0.6rem;
+		border-radius: 6px;
+		border: 1px solid var(--accent-border);
+		background: var(--accent-dim);
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.65rem;
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+		color: var(--accent);
 		margin-bottom: 1rem;
 	}
 
@@ -725,18 +647,21 @@ const beatMapSummary = beatMapProject
 		display: grid;
 		grid-template-columns: repeat(3, minmax(0, 1fr));
 		gap: 0.8rem;
-		margin: 1.4rem 0 1.6rem;
+		margin: 1.25rem 0 1.5rem;
 	}
 
 	.summary-card {
 		padding: 1rem;
+		border-radius: 8px;
+		border: 1px solid var(--border);
+		background: var(--surface);
 	}
 
-	.flagship-grid .summary-card,
-	.flagship-grid .proof-card {
-		background: rgba(var(--paper-rgb), 0.08);
-		border: 1px solid rgba(var(--paper-rgb), 0.12);
-		box-shadow: none;
+	.summary-text {
+		margin: 0;
+		color: var(--fg-muted);
+		line-height: 1.7;
+		font-size: 0.92rem;
 	}
 
 	.shot-rail {
@@ -746,18 +671,17 @@ const beatMapSummary = beatMapProject
 
 	.shot-stack {
 		position: relative;
-		min-height: 36rem;
+		min-height: 34rem;
 	}
 
 	.product-shot {
-		border-radius: 28px;
-		box-shadow: 0 28px 70px rgba(0, 0, 0, 0.22);
-		border: 1px solid rgba(var(--paper-rgb), 0.12);
+		border-radius: 12px;
+		border: 1px solid var(--border);
 	}
 
 	.product-shot-primary {
 		width: min(26rem, 100%);
-		transform: rotate(-3deg);
+		transform: rotate(-2deg);
 	}
 
 	.product-shot-secondary {
@@ -765,17 +689,21 @@ const beatMapSummary = beatMapProject
 		right: 0;
 		bottom: 0;
 		width: min(18rem, 56%);
-		transform: rotate(4deg);
+		transform: rotate(3deg);
 	}
 
 	.proof-list {
 		margin: 0;
 		padding-left: 1.1rem;
+		color: var(--fg-muted);
+		line-height: 1.75;
 	}
 
 	.proof-list li + li {
-		margin-top: 0.65rem;
+		margin-top: 0.5rem;
 	}
+
+	/* ── Work + Notes grids ── */
 
 	.work-layout {
 		display: grid;
@@ -783,107 +711,62 @@ const beatMapSummary = beatMapProject
 	}
 
 	.work-grid {
-		grid-template-columns: repeat(12, minmax(0, 1fr));
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
 	}
 
 	.notes-grid {
-		grid-template-columns: repeat(12, minmax(0, 1fr));
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
 	}
 
-	.work-grid .project-card:nth-child(1) {
-		grid-column: span 7;
-	}
-
-	.work-grid .project-card:nth-child(2) {
-		grid-column: span 5;
-		margin-top: 1.2rem;
-	}
-
-	.notes-grid .note-card:nth-child(1) {
-		grid-column: span 5;
-	}
-
-	.notes-grid .note-card:nth-child(2) {
-		grid-column: span 7;
-		margin-top: 1.2rem;
-	}
-
-	.card-copy {
-		margin-bottom: 1rem;
-	}
-
-	.card-tag {
-		padding: 0.35rem 0.55rem;
-		border-radius: 999px;
-		border: 1px solid rgba(var(--accent-rgb), 0.14);
-		background: rgba(var(--accent-rgb), 0.08);
-		color: var(--accent-dark);
-	}
-
-	.text-link {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.74rem;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: var(--accent-blue-dark);
-	}
+	/* ── Principles ── */
 
 	.principles-grid {
+		display: grid;
 		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
 	}
 
 	.principle-card {
-		padding: 1.15rem 1.2rem;
-		border-radius: 24px;
+		padding: 1.1rem 1.2rem;
+		border-radius: 12px;
 		border: 1px solid var(--border);
-		background: var(--surface-card);
+		background: var(--surface);
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.8rem;
 		line-height: 1.7;
-		color: rgba(var(--fg-rgb), 0.82);
-		box-shadow: var(--box-shadow);
+		color: var(--fg-muted);
 	}
 
+	/* ── CTA ── */
+
 	.cta-panel {
-		padding: 1.8rem;
+		padding: 1.75rem;
+		border-radius: 12px;
+		border: 1px solid var(--border);
+		background: var(--surface);
 		display: flex;
 		align-items: end;
 		justify-content: space-between;
-		gap: 1rem;
-		background: var(--surface-card-strong);
+		gap: 1.5rem;
 	}
 
 	.cta-copy {
 		max-width: 38rem;
-		margin: 0;
 	}
+
+	/* ── Responsive ── */
 
 	@media (max-width: 980px) {
 		.hero-layout,
-		.flagship-grid,
+		.flagship-panel,
 		.area-grid,
-		.work-grid,
-		.notes-grid,
-		.principles-grid,
 		.summary-grid,
 		.cta-panel {
 			grid-template-columns: 1fr;
-		}
-
-		.hero-layout,
-		.flagship-grid {
-			grid-template-columns: 1fr;
-		}
-
-		.area-card:nth-child(1),
-		.area-card:nth-child(2),
-		.area-card:nth-child(3),
-		.work-grid .project-card:nth-child(1),
-		.work-grid .project-card:nth-child(2),
-		.notes-grid .note-card:nth-child(1),
-		.notes-grid .note-card:nth-child(2) {
-			grid-column: span 1;
-			margin-top: 0;
 		}
 
 		.section-head-inline,
@@ -916,7 +799,7 @@ const beatMapSummary = beatMapProject
 		}
 
 		.section {
-			padding-bottom: 4.5rem;
+			padding-bottom: 4rem;
 		}
 
 		.hero-section {
@@ -933,38 +816,18 @@ const beatMapSummary = beatMapProject
 		}
 
 		.hero-copy {
-			padding: 1.35rem 1.15rem 1.3rem;
-			border-radius: 28px;
+			padding: 1.25rem;
 		}
 
-		.hero-panel,
-		.area-card,
-		.summary-card,
-		.project-card,
-		.note-card,
-		.proof-card,
-		.cta-panel {
-			border-radius: 22px;
+		.flagship-panel {
+			padding: 1.25rem;
 		}
 
-		.hero-panel,
-		.area-card,
-		.project-card,
-		.note-card,
-		.proof-card,
-		.cta-panel {
-			padding: 1.1rem;
-		}
-
-		.flagship-grid {
-			padding: 1.1rem;
-			border-radius: 28px;
-		}
-
-		.product-shot-primary,
-		.product-shot-secondary {
-			width: 100%;
-			justify-self: stretch;
+		.area-grid,
+		.work-grid,
+		.notes-grid,
+		.principles-grid {
+			grid-template-columns: 1fr;
 		}
 	}
 </style>

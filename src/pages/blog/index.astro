@@ -62,12 +62,12 @@ const posts = (await getCollection('blog')).sort(
 	.empty-msg {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.76rem;
-		color: var(--muted-faint);
+		color: var(--fg-faint);
 	}
 
 	.ks-link {
 		text-decoration: none;
-		color: var(--accent-blue-dark);
+		color: var(--accent);
 	}
 
 	.post-grid {
@@ -79,19 +79,18 @@ const posts = (await getCollection('blog')).sort(
 	.post-card {
 		display: flex;
 		flex-direction: column;
-		gap: 0.8rem;
-		padding: 1.35rem;
-		border-radius: 24px;
+		gap: 0.75rem;
+		padding: 1.25rem;
+		border-radius: 12px;
 		border: 1px solid var(--border);
-		background: var(--surface-card);
-		box-shadow: var(--box-shadow);
+		background: var(--surface);
 		text-decoration: none;
-		transition: transform 0.18s ease, border-color 0.18s ease;
+		transition: border-color 0.15s ease, background 0.15s ease;
 	}
 
 	.post-card:hover {
-		transform: translateY(-2px);
-		border-color: rgba(var(--accent-blue-rgb), 0.2);
+		border-color: var(--border-strong);
+		background: var(--surface-hover);
 	}
 
 	.post-top {
@@ -113,25 +112,25 @@ const posts = (await getCollection('blog')).sort(
 	.card-kicker,
 	.post-date {
 		margin: 0;
-		color: var(--muted-faint);
+		color: var(--fg-faint);
 	}
 
 	.card-title {
 		margin: 0;
-		font-family: 'Fraunces', serif;
-		font-size: 1.45rem;
-		letter-spacing: -0.04em;
+		font-family: 'Syne', sans-serif;
+		font-size: 1.4rem;
+		letter-spacing: -0.03em;
 		color: var(--fg);
 	}
 
 	.card-copy {
 		margin: 0;
-		color: var(--muted-soft);
+		color: var(--fg-muted);
 		line-height: 1.75;
 	}
 
 	.card-link {
-		color: var(--accent-blue-dark);
+		color: var(--accent);
 	}
 
 	@media (max-width: 768px) {
@@ -140,7 +139,7 @@ const posts = (await getCollection('blog')).sort(
 		}
 
 		.section {
-			padding-bottom: 4.5rem;
+			padding-bottom: 4rem;
 		}
 
 		.post-grid {
@@ -149,7 +148,6 @@ const posts = (await getCollection('blog')).sort(
 
 		.post-card {
 			padding: 1.1rem;
-			border-radius: 20px;
 		}
 	}
 </style>

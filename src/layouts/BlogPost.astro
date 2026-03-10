@@ -64,24 +64,23 @@ const { title, description, pubDate, updatedDate } = Astro.props;
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.72rem;
 		text-decoration: none;
-		color: var(--accent-blue-dark);
+		color: var(--accent);
 	}
 
 	.hero-card {
 		padding: 1.5rem;
-		border-radius: 28px;
+		border-radius: 12px;
 		border: 1px solid var(--border);
-		background: var(--surface-card-strong);
-		box-shadow: var(--box-shadow);
+		background: var(--surface);
 	}
 
 	.eyebrow {
 		margin: 0 0 0.8rem;
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.68rem;
+		font-size: 0.7rem;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
-		color: var(--muted-faint);
+		color: var(--fg-faint);
 	}
 
 	.post-title {
@@ -95,25 +94,26 @@ const { title, description, pubDate, updatedDate } = Astro.props;
 		font-size: 0.72rem;
 		letter-spacing: 0.1em;
 		text-transform: uppercase;
-		color: var(--muted-faint);
+		color: var(--fg-faint);
 		margin: 0;
 	}
 
 	.post-content {
-		padding: 0 0 5.5rem;
+		padding: 0 0 5rem;
 	}
 
 	.prose {
 		max-width: 46rem;
-		font-family: 'Atkinson', sans-serif;
-		font-size: 0.98rem;
-		line-height: 1.8;
-		color: rgba(var(--fg-rgb), 0.84);
+		font-family: 'Inter', sans-serif;
+		font-size: 1rem;
+		line-height: 1.7;
+		color: var(--fg-muted);
 	}
 
 	.prose :global(h2) {
-		font-size: 1.55rem;
+		font-size: 1.5rem;
 		margin: 2.4rem 0 1rem;
+		color: var(--fg);
 	}
 
 	.prose :global(a) {
@@ -134,12 +134,11 @@ const { title, description, pubDate, updatedDate } = Astro.props;
 		}
 
 		.hero-card {
-			border-radius: 22px;
 			padding: 1.15rem;
 		}
 
 		.post-content {
-			padding-bottom: 4.5rem;
+			padding-bottom: 4rem;
 		}
 	}
 </style>

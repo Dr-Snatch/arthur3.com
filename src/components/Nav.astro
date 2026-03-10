@@ -3,6 +3,7 @@ const navLinks = [
 	{ href: '/', label: 'Home' },
 	{ href: '/projects', label: 'Projects' },
 	{ href: '/lab', label: 'Notes' },
+	{ href: '/blog', label: 'Blog' },
 	{ href: '/contact', label: 'Contact' },
 ];
 
@@ -125,7 +126,6 @@ function isActive(href: string): boolean {
 		right: 0;
 		z-index: 1000;
 		padding: 0.75rem 0 0;
-		background: linear-gradient(180deg, rgba(249, 240, 222, 0.88), rgba(249, 240, 222, 0));
 	}
 
 	.nav-container {
@@ -139,10 +139,10 @@ function isActive(href: string): boolean {
 		gap: 1rem;
 		border: 1px solid var(--border);
 		border-radius: 999px;
-		background: var(--surface-glass);
-		box-shadow: var(--box-shadow);
-		backdrop-filter: blur(20px);
-		-webkit-backdrop-filter: blur(20px);
+		background: var(--bg-raised);
+		box-shadow: var(--shadow-md);
+		backdrop-filter: blur(16px);
+		-webkit-backdrop-filter: blur(16px);
 	}
 
 	.brand {
@@ -155,11 +155,10 @@ function isActive(href: string): boolean {
 	}
 
 	.logo-image {
-		height: 3.4rem;
+		height: 3.2rem;
 		width: auto;
-		border-radius: 16px;
-		border: 1px solid rgba(var(--fg-rgb), 0.08);
-		box-shadow: 0 12px 22px rgba(87, 57, 20, 0.16);
+		border-radius: 12px;
+		border: 1px solid var(--border);
 	}
 
 	.brand-copy {
@@ -169,7 +168,7 @@ function isActive(href: string): boolean {
 	}
 
 	.brand-name {
-		font-family: 'Fraunces', serif;
+		font-family: 'Syne', sans-serif;
 		font-size: 1rem;
 		font-weight: 700;
 		letter-spacing: -0.035em;
@@ -181,7 +180,7 @@ function isActive(href: string): boolean {
 		font-size: 0.68rem;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
-		color: var(--muted-faint);
+		color: var(--fg-faint);
 	}
 
 	.nav-actions {
@@ -207,65 +206,71 @@ function isActive(href: string): boolean {
 		justify-content: center;
 		border-radius: 999px;
 		text-decoration: none;
-		font-size: 0.88rem;
+		font-size: 0.85rem;
 		font-weight: 500;
-		transition: transform 0.18s ease, border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
+		transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease, opacity 0.15s ease;
 	}
 
 	.nav-links a {
-		padding: 0.7rem 1rem;
-		color: rgba(var(--fg-rgb), 0.74);
+		padding: 0.65rem 0.9rem;
+		color: var(--fg-muted);
 	}
 
-	.nav-links a:hover,
-	.nav-links a.nav-active {
-		color: var(--accent-blue-dark);
-		background: rgba(var(--accent-blue-rgb), 0.08);
+	.nav-links a:hover {
+		color: var(--fg);
 	}
 
 	.nav-links a.nav-active {
-		color: var(--accent-blue-dark);
+		color: var(--accent);
 		position: relative;
 	}
 
 	.nav-links a.nav-active::after {
 		content: '';
 		position: absolute;
-		bottom: 0.45rem;
+		bottom: 0.35rem;
 		left: 50%;
 		transform: translateX(-50%);
-		width: 1.2rem;
-		height: 3px;
-		border-radius: 999px;
+		width: 4px;
+		height: 4px;
+		border-radius: 50%;
 		background: var(--accent);
 	}
 
+	/* Ghost button */
 	.terminal-trigger {
-		padding: 0.75rem 1rem;
-		border: 1px solid rgba(var(--fg-rgb), 0.12);
-		background: rgba(var(--paper-rgb), 0.7);
-		color: rgba(var(--fg-rgb), 0.88);
+		padding: 0.65rem 1rem;
+		border: 1px solid var(--border);
+		background: transparent;
+		color: var(--fg-muted);
 		cursor: pointer;
 		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.75rem;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
 	}
 
 	.terminal-trigger:hover {
-		transform: translateY(-1px);
-		border-color: rgba(var(--accent-blue-rgb), 0.3);
-		background: rgba(var(--accent-blue-rgb), 0.08);
+		border-color: var(--border-strong);
+		color: var(--fg);
 	}
 
+	/* Primary CTA */
 	.work-cta {
-		padding: 0.78rem 1.15rem;
-		background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.94), rgba(245, 151, 111, 0.92));
-		color: var(--paper);
-		font-weight: 700;
-		box-shadow: 0 14px 28px rgba(var(--accent-rgb), 0.2);
+		padding: 0.65rem 1.1rem;
+		background: var(--accent);
+		color: #0d0d0d;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		border: none;
 	}
 
 	.work-cta:hover {
-		color: var(--paper);
-		transform: translateY(-1px);
+		color: #0d0d0d;
+		opacity: 0.88;
 	}
 
 	.mobile-controls,
@@ -277,11 +282,11 @@ function isActive(href: string): boolean {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: 3rem;
-		height: 3rem;
+		width: 2.8rem;
+		height: 2.8rem;
 		border-radius: 999px;
 		border: 1px solid var(--border);
-		background: rgba(var(--paper-rgb), 0.84);
+		background: transparent;
 		cursor: pointer;
 		padding: 0;
 		-webkit-tap-highlight-color: transparent;
@@ -293,7 +298,7 @@ function isActive(href: string): boolean {
 		width: 1.2rem;
 		height: 2px;
 		border-radius: 999px;
-		background: rgba(var(--fg-rgb), 0.88);
+		background: var(--fg-muted);
 		transition: transform 0.25s ease, opacity 0.25s ease;
 	}
 
@@ -334,10 +339,10 @@ function isActive(href: string): boolean {
 		left: 1rem;
 		right: 1rem;
 		padding: 1rem;
-		border: 1px solid var(--border);
-		border-radius: 28px;
-		background: var(--surface-card);
-		box-shadow: var(--panel-shadow);
+		border: 1px solid var(--border-strong);
+		border-radius: 12px;
+		background: var(--bg-raised);
+		box-shadow: var(--shadow-md);
 		opacity: 0;
 		visibility: hidden;
 		transform: translateY(-0.6rem);
@@ -355,22 +360,21 @@ function isActive(href: string): boolean {
 		margin: 0;
 		padding: 0;
 		display: grid;
-		gap: 0.4rem;
+		gap: 0.35rem;
 	}
 
 	.mobile-nav-links a {
 		display: block;
-		padding: 0.95rem 1rem;
-		border-radius: 16px;
+		padding: 0.85rem 1rem;
+		border-radius: 8px;
 		text-decoration: none;
-		color: rgba(var(--fg-rgb), 0.84);
-		background: rgba(var(--paper-rgb), 0.74);
+		color: var(--fg-muted);
 	}
 
 	.mobile-nav-links a.nav-active {
-		color: var(--accent-blue-dark);
-		background: rgba(var(--accent-blue-rgb), 0.08);
-		border: 1px solid rgba(var(--accent-blue-rgb), 0.16);
+		color: var(--accent);
+		background: var(--accent-dim);
+		border: 1px solid var(--accent-border);
 	}
 
 	.mobile-utility-row {
@@ -386,7 +390,7 @@ function isActive(href: string): boolean {
 	}
 
 	.mobile-work-cta {
-		padding: 0.95rem 1rem;
+		padding: 0.85rem 1rem;
 	}
 
 	.mobile-only {
@@ -404,8 +408,8 @@ function isActive(href: string): boolean {
 		}
 
 		.logo-image {
-			height: 2.9rem;
-			border-radius: 12px;
+			height: 2.8rem;
+			border-radius: 10px;
 		}
 
 		.brand-tag {

@@ -33,11 +33,8 @@ const year = new Date().getFullYear();
 <style>
 	.site-footer {
 		position: relative;
-		border-top: 1px solid var(--border-sub);
-		padding: 2.2rem 1.5rem 2.6rem;
-		background:
-			linear-gradient(180deg, rgba(255, 250, 241, 0.5), rgba(255, 250, 241, 0)),
-			linear-gradient(180deg, rgba(245, 230, 204, 0.5), rgba(245, 230, 204, 0.8));
+		border-top: 1px solid var(--border-faint);
+		padding: 2rem 1.5rem 2.5rem;
 	}
 
 	.footer-inner {
@@ -47,19 +44,18 @@ const year = new Date().getFullYear();
 		justify-content: space-between;
 		align-items: flex-end;
 		gap: 1.5rem;
-		padding: 1.35rem 1.5rem;
+		padding: 1.25rem;
 		border: 1px solid var(--border);
-		border-radius: 28px;
-		background: var(--surface-card);
-		box-shadow: var(--box-shadow);
+		border-radius: 12px;
+		background: var(--surface);
 	}
 
 	.footer-title {
 		margin: 0 0 0.4rem;
-		font-family: 'Fraunces', serif;
+		font-family: 'Syne', sans-serif;
 		font-size: 1rem;
 		font-weight: 700;
-		letter-spacing: -0.035em;
+		letter-spacing: -0.03em;
 	}
 
 	.footer-text,
@@ -68,7 +64,7 @@ const year = new Date().getFullYear();
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.72rem;
 		line-height: 1.7;
-		color: var(--muted-faint);
+		color: var(--fg-faint);
 	}
 
 	.footer-text {
@@ -92,11 +88,11 @@ const year = new Date().getFullYear();
 
 	.links a {
 		text-decoration: none;
-		transition: color 0.18s ease;
+		transition: color 0.15s ease;
 	}
 
 	.links a:hover {
-		color: var(--accent-blue-dark);
+		color: var(--accent);
 	}
 
 	@media (max-width: 768px) {
