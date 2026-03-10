@@ -40,7 +40,7 @@ const FS = {
   "/home/arthur/blog": { type: "dir", url: "/blog", children: ["README.md"] },
   "/home/arthur/blog/README.md": { type: "file", content: ["# blog", "Devlogs, technical opinions, and notes from building in public.", "", "cd here and 'open' to visit the blog page."] },
   "/home/arthur/contact": { type: "dir", url: "/contact", children: ["README.md"] },
-  "/home/arthur/contact/README.md": { type: "file", content: ["# contact", "Recruiters, founders, and teams can reach me via:", "", "  → Email     arthurwheildon0@gmail.com", "  → GitHub    github.com/Dr-Snatch", "  → LinkedIn  linkedin.com/in/arthurwheildon", "", "Best fit: AI systems, secure native apps, and product-minded tooling."] },
+  "/home/arthur/contact/README.md": { type: "file", content: ["# contact", "Founders, dev teams, and technical leads can reach me via:", "", "  → Email     arthurwheildon0@gmail.com", "  → GitHub    github.com/Dr-Snatch", "  → LinkedIn  linkedin.com/in/arthurwheildon", "", "Best fit for founders, dev teams, and technical leads shipping AI products."] },
   "/home/arthur/lab/experiments": { type: "dir", children: ["prompt-sandwich", "local-llm-comparison", "shazam-benchmarks", "terminal-navigation"] },
   "/home/arthur/lab/experiments/prompt-sandwich": { type: "dir", url: "/lab/prompt-sandwich", children: ["README.md"] },
   "/home/arthur/lab/experiments/prompt-sandwich/README.md": { type: "file", content: ["# Prompt Sandwich", "Experiment note on reliable JSON extraction from LLM responses.", "", "Result: XML sandwich outperformed markdown fences and raw JSON prompts."] },
@@ -96,7 +96,7 @@ const BOOT = [
 const BOOT_READY = 500;
 
 const NEOFETCH = [
-  { text: "        .--.         arthur@arthur3.com", color: "#3dd68c" },
+  { text: "        .--.         user@arthur3.com", color: "#3dd68c" },
   { text: "       |o_o |        ──────────────────", color: "#3dd68c" },
   { text: "       |:_/ |        OS: arthur3-os 1.0.0 x86_64" },
   { text: "      //   \\ \\       Host: Cloudflare Pages" },
@@ -188,7 +188,7 @@ export default function Terminal() {
 
   const handleCommand = (raw) => {
     const trimmed = raw.trim();
-    const prompt = { text: `arthur@arthur3 ${displayCwd} % ${raw}`, color: "#3dd68c" };
+    const prompt = { text: `user@arthur3 ${displayCwd} % ${raw}`, color: "#3dd68c" };
     setLines((p) => [...p, prompt]);
     if (!trimmed) return;
     setHistory((p) => [raw, ...p]); setHistoryIndex(-1);
@@ -251,9 +251,9 @@ export default function Terminal() {
       { text: "└────────────────────────────────────────────────────┘" },
     ]); return; }
 
-    if (base === "about") { out([{ text: "arthur@arthur3.com", color: "#3dd68c" }, { text: "──────────────────" }, { text: "AI systems developer @ Northumbria University" }, { text: "" }, { text: "I build reliable LLM-powered software, secure native apps," }, { text: "and automation systems with Swift and Python." }, { text: "" }, { text: "Currently shipping:" }, { text: "  → RPtext   — real-time AI game engine with structured state" }, { text: "  → BeatMap  — iOS journaling app with hardened Spotify auth" }, { text: "" }, { text: "I build things to understand how they break." }]); return; }
+    if (base === "about") { out([{ text: "user@arthur3.com", color: "#3dd68c" }, { text: "──────────────────" }, { text: "AI systems developer @ Northumbria University" }, { text: "" }, { text: "I build reliable LLM-powered software, secure native apps," }, { text: "and automation systems with Swift and Python." }, { text: "" }, { text: "Currently shipping:" }, { text: "  → RPtext   — real-time AI game engine with structured state" }, { text: "  → BeatMap  — iOS journaling app with hardened Spotify auth" }, { text: "" }, { text: "I build things to understand how they break." }]); return; }
     if (base === "skills") { out([{ text: "SYSTEMS I BUILD", color: "#3dd68c" }, { text: "───────────────" }, { text: "AI systems   structured output pipelines · streaming · evals" }, { text: "Native apps  OAuth 2.0 PKCE · Keychain · Core Data · SwiftUI" }, { text: "Tooling      automation · API integrations · CLI workflows" }, { text: "Languages    Python · Swift · TypeScript · JavaScript" }, { text: "Infra        Linux · Git · Docker · Cloudflare" }, { text: "" }, { text: "Research     local LLMs · prompt design · applied security" }]); return; }
-    if (base === "contact") { out([{ text: "CONTACT", color: "#3dd68c" }, { text: "───────" }, { text: "GitHub    github.com/Dr-Snatch" }, { text: "Email     arthurwheildon0@gmail.com" }, { text: "Twitter   x.com/ExpoArturo" }, { text: "LinkedIn  linkedin.com/in/arthurwheildon" }, { text: "" }, { text: "or open /contact for the full page", color: "#2a5e3e" }]); return; }
+    if (base === "contact") { out([{ text: "CONTACT", color: "#3dd68c" }, { text: "───────" }, { text: "GitHub    github.com/Dr-Snatch" }, { text: "Email     arthurwheildon0@gmail.com" }, { text: "Twitter   x.com/ExpoArturo" }, { text: "LinkedIn  linkedin.com/in/arthurwheildon" }, { text: "" }, { text: "founders and dev teams — open /contact for the full page", color: "#2a5e3e" }]); return; }
     if (base === "projects") { out([{ text: "SELECTED SYSTEMS", color: "#3dd68c" }, { text: "────────────────" }, { text: "BeatMap    iOS product — hardened OAuth + durable local data" }, { text: "RPtext     AI game engine — resilient structured state" }, { text: "" }, { text: "cd ~/projects to explore, or 'open' to visit the page", color: "#2a5e3e" }]); return; }
 
     if (base === "neofetch") { out(NEOFETCH); return; }
@@ -299,7 +299,7 @@ export default function Terminal() {
     else if (e.key === "ArrowUp") { e.preventDefault(); const n = Math.min(historyIndex + 1, history.length - 1); setHistoryIndex(n); setInput(history[n] || ""); }
     else if (e.key === "ArrowDown") { e.preventDefault(); const n = Math.max(historyIndex - 1, -1); setHistoryIndex(n); setInput(n === -1 ? "" : history[n]); }
     else if (e.key === "l" && e.ctrlKey) { e.preventDefault(); setLines([]); }
-    else if (e.key === "c" && e.ctrlKey) { e.preventDefault(); setLines((p) => [...p, { text: `arthur@arthur3 ${displayCwd} % ${input}^C`, color: "#3dd68c" }]); setInput(""); }
+    else if (e.key === "c" && e.ctrlKey) { e.preventDefault(); setLines((p) => [...p, { text: `user@arthur3 ${displayCwd} % ${input}^C`, color: "#3dd68c" }]); setInput(""); }
     else if (e.key === "Tab") { e.preventDefault(); const partial = input.split(/\s+/).pop() || ""; if (!partial) return; const node = FS[cwd]; if (!node || node.type !== "dir") return; const matches = (node.children || []).filter((c) => c.startsWith(partial)); if (matches.length === 1) { const pp = input.split(/\s+/); pp[pp.length - 1] = matches[0]; const cp = cwd === "/" ? "/" + matches[0] : cwd + "/" + matches[0]; const cn = FS[cp]; if (cn && cn.type === "dir") pp[pp.length - 1] += "/"; setInput(pp.join(" ")); } else if (matches.length > 1) setLines((p) => [...p, { text: matches.join("  "), color: "#2a5e3e" }]); }
   };
 
@@ -367,11 +367,11 @@ export default function Terminal() {
               <button className="term-btn term-btn-min" onClick={(e) => { e.stopPropagation(); setWindowState("minimized"); }} title="Minimise" />
               <button className="term-btn term-btn-max" onClick={(e) => { e.stopPropagation(); setWindowState((s) => s === "maximized" ? "normal" : "maximized"); }} title={isMax ? "Restore" : "Maximise"} />
             </div>
-            <span className="term-titlebar-label">arthur@arthur3 {displayCwd}</span>
+            <span className="term-titlebar-label">user@arthur3 {displayCwd}</span>
           </div>
           <div className="term-body" ref={bodyRef}>{lines.map((l, i) => <div key={i} className="term-line" style={{ color: l.color || "rgba(232,232,230,0.6)" }}>{l.text}</div>)}</div>
           <div className="term-input-row">
-            <span className="term-prompt"><span className="term-prompt-full">arthur@arthur3 {displayCwd} %</span><span className="term-prompt-short">{displayCwd} %</span></span>
+            <span className="term-prompt"><span className="term-prompt-full">user@arthur3 {displayCwd} %</span><span className="term-prompt-short">{displayCwd} %</span></span>
             <input ref={inputRef} className="term-input" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyDown} autoFocus spellCheck={false} autoComplete="off" autoCapitalize="off" disabled={!booted} />
           </div>
         </div>
