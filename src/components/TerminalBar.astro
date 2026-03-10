@@ -3,7 +3,13 @@ import Terminal from './Terminal.jsx';
 ---
 
 <div class="terminal-shell-offset" aria-hidden="true"></div>
-<Terminal client:load />
+<Terminal client:load transition:persist />
+
+<!-- Expose Astro navigate for the Terminal's cd/open commands -->
+<script>
+	import { navigate } from 'astro:transitions/client';
+	window.__astro_navigate = navigate;
+</script>
 
 <style is:global>
 	.terminal-shell-offset {

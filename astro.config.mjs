@@ -11,9 +11,13 @@ export default defineConfig({
   output: 'server',
   adapter: cloudflare(),
   integrations: [mdx(), sitemap(), react(), keystatic()],
+  markdown: {
+    shikiConfig: {
+      theme: 'github-dark',
+    },
+  },
   vite: {
     build: {
-      // Transpile the client bundle below ES2020 so older iPhone Safari can parse it.
       target: 'es2019',
     },
   },
