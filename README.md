@@ -1,61 +1,60 @@
 # arthur3.com
 
-Personal portfolio and blog. Built with Astro, deployed on Cloudflare Pages.
+Portfolio, case-study site, and technical notes for Arthur Wheildon.
+
+Built with Astro and deployed to Cloudflare. Content is file-based and editable through Keystatic.
 
 ## Stack
 
-- [Astro](https://astro.build) — static site framework
-- [Cloudflare Pages](https://pages.cloudflare.com) — hosting, auto-deploys on push to `main`
-- Fonts: Syne (headings), Inter (body), JetBrains Mono (code/labels) via Google Fonts
-- No JS frameworks — plain Astro components
+- Astro 5
+- Cloudflare adapter for server output
+- MDX content collections
+- React for the persistent terminal UI
+- Keystatic for Git-backed content editing
 
-## Theme
+## Main Sections
 
-Adapts automatically to the OS/browser preference:
-- **Dark** — green hacker (`#080C08` bg, `#00FF41` accent)
-- **Light** — clean indigo (`#FAFAFA` bg, `#6366F1` accent)
+- `/` home and flagship case-study surface
+- `/projects` project index and individual case studies
+- `/lab` engineering notes and experiments
+- `/blog` blog index and post pages
+- `/contact` contact page
+- `/keystatic` CMS
 
-All colours are CSS custom properties defined in `src/styles/global.css`.
+## Content Model
 
-## Customising
+Content lives under `src/content/`:
 
-Most editable content lives in two files:
+- `blog/` for blog posts
+- `projects/` for project case studies
+- `lab/` for engineering notes
 
-**`src/consts.ts`** — site title, description, social links
+Schemas are defined in `src/content.config.ts` and the Keystatic editor mirrors those fields in `keystatic.config.ts`.
 
-**`src/data/projects.ts`** — the "other projects" cards below the featured section
+## Key Files
 
-Featured projects (BeatMap, RPtext) are defined inline in `src/pages/index.astro`.
+- `src/pages/index.astro` home page and homepage content wiring
+- `src/components/Terminal.jsx` persistent terminal shell and virtual filesystem
+- `src/components/Nav.astro` navigation, terminal launcher, and mobile menu
+- `src/layouts/SectionPage.astro` shared section landing-page layout
+- `src/layouts/BlogPost.astro` blog post layout
+- `src/styles/global.css` design tokens and global typography/surface rules
+- `src/consts.ts` site metadata and contact links
 
-## Commands
+## Development
 
-| Command           | Action                              |
-| :---------------- | :---------------------------------- |
-| `npm install`     | Install dependencies                |
-| `npm run dev`     | Start dev server at localhost:4321  |
-| `npm run build`   | Build to `./dist/`                  |
-| `npm run preview` | Preview build locally               |
-
-## Structure
-
+```bash
+npm install
+npm run dev
 ```
-src/
-  components/
-    Nav.astro
-    Footer.astro
-    portfolio/
-      ProjectCard.astro
-  consts.ts          — site-wide config
-  data/
-    projects.ts      — other projects list
-  pages/
-    index.astro      — main portfolio page
-    blog/            — blog index and posts
-  styles/
-    global.css       — CSS variables + base styles
-  layouts/
-    BlogPost.astro
-public/
-  favicon.png
-  logo.png
-```
+
+Other useful commands:
+
+- `npm run build` build the site
+- `npm run preview` preview the production build
+
+## Notes
+
+- The site runs in Astro `output: "server"` mode for Cloudflare.
+- The terminal is a React island loaded through `src/components/TerminalBar.astro`.
+- Keystatic stores content in the GitHub repo configured in `keystatic.config.ts`.

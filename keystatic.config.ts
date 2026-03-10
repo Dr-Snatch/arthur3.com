@@ -16,6 +16,7 @@ export default config({
         description: fields.text({ label: 'Description' }),
         pubDate: fields.date({ label: 'Publish Date' }),
         heroImage: fields.image({ label: 'Hero Image', directory: 'src/assets', publicPath: '/_astro/' }),
+        draft: fields.checkbox({ label: 'Draft', defaultValue: false }),
         content: fields.mdx({ label: 'Content' }),
       },
     }),

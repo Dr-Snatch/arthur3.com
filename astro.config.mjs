@@ -9,8 +9,11 @@ import cloudflare from '@astrojs/cloudflare';
 export default defineConfig({
   site: 'https://arthur3.com',
   output: 'server',
-  adapter: cloudflare(),
+  adapter: cloudflare({ imageService: 'compile' }),
   integrations: [mdx(), sitemap(), react(), keystatic()],
+  session: {
+    driver: 'memory',
+  },
   markdown: {
     shikiConfig: {
       theme: 'github-dark',
@@ -19,6 +22,7 @@ export default defineConfig({
   vite: {
     build: {
       target: 'es2019',
+      chunkSizeWarningLimit: 3000,
     },
   },
 });
