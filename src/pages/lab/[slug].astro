@@ -104,16 +104,14 @@ const summaryCards = [
 		margin-bottom: 1rem;
 		font-size: 0.72rem;
 		text-decoration: none;
-		color: var(--muted-faint);
+		color: var(--accent-blue-dark);
 	}
 
 	.hero-card,
 	.summary-card {
 		border-radius: 28px;
 		border: 1px solid var(--border);
-		background:
-			radial-gradient(circle at top right, rgba(var(--accent-rgb), 0.16), transparent 34%),
-			linear-gradient(180deg, rgba(15, 34, 66, 0.98), rgba(8, 18, 34, 0.96));
+		background: var(--surface-card-strong);
 		box-shadow: var(--box-shadow);
 	}
 
@@ -174,8 +172,9 @@ const summaryCards = [
 		font-size: 0.68rem;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
+		border: 1px solid rgba(var(--accent-rgb), 0.14);
 		background: rgba(var(--accent-rgb), 0.08);
-		color: var(--accent);
+		color: var(--accent-dark);
 	}
 
 	.summary-grid {
@@ -187,7 +186,7 @@ const summaryCards = [
 
 	.summary-card {
 		padding: 1rem;
-		background: linear-gradient(180deg, rgba(13, 29, 55, 0.9), rgba(8, 18, 34, 0.95));
+		background: var(--surface-card);
 	}
 
 	.summary-text {
@@ -200,10 +199,10 @@ const summaryCards = [
 
 	.prose {
 		max-width: 46rem;
-		font-family: 'Inter', sans-serif;
+		font-family: 'Atkinson', sans-serif;
 		font-size: 0.98rem;
 		line-height: 1.8;
-		color: rgba(var(--fg-rgb), 0.82);
+		color: rgba(var(--fg-rgb), 0.84);
 	}
 
 	.prose :global(h2) {

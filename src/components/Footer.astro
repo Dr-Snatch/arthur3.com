@@ -32,9 +32,12 @@ const year = new Date().getFullYear();
 
 <style>
 	.site-footer {
+		position: relative;
 		border-top: 1px solid var(--border-sub);
-		padding: 2rem 1.5rem 2.4rem;
-		background: rgba(3, 8, 15, 0.45);
+		padding: 2.2rem 1.5rem 2.6rem;
+		background:
+			linear-gradient(180deg, rgba(255, 250, 241, 0.5), rgba(255, 250, 241, 0)),
+			linear-gradient(180deg, rgba(245, 230, 204, 0.5), rgba(245, 230, 204, 0.8));
 	}
 
 	.footer-inner {
@@ -44,14 +47,19 @@ const year = new Date().getFullYear();
 		justify-content: space-between;
 		align-items: flex-end;
 		gap: 1.5rem;
+		padding: 1.35rem 1.5rem;
+		border: 1px solid var(--border);
+		border-radius: 28px;
+		background: var(--surface-card);
+		box-shadow: var(--box-shadow);
 	}
 
 	.footer-title {
 		margin: 0 0 0.4rem;
-		font-family: 'Syne', sans-serif;
+		font-family: 'Fraunces', serif;
 		font-size: 1rem;
 		font-weight: 700;
-		letter-spacing: -0.03em;
+		letter-spacing: -0.035em;
 	}
 
 	.footer-text,
@@ -88,7 +96,7 @@ const year = new Date().getFullYear();
 	}
 
 	.links a:hover {
-		color: var(--fg);
+		color: var(--accent-blue-dark);
 	}
 
 	@media (max-width: 768px) {

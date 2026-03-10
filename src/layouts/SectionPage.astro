@@ -48,17 +48,36 @@ const { title, description } = Astro.props;
 	}
 
 	.page-hero {
-		padding: 1.2rem 0 2.2rem;
+		padding: 1.4rem 0 2.4rem;
 	}
 
 	.hero-panel {
-		padding: 1.4rem;
+		position: relative;
+		padding: 1.6rem;
 		border-radius: 28px;
 		border: 1px solid var(--border);
-		background:
-			radial-gradient(circle at top right, rgba(var(--accent-rgb), 0.18), transparent 34%),
-			linear-gradient(180deg, rgba(15, 34, 66, 0.98), rgba(8, 18, 34, 0.96));
+		background: var(--surface-card-strong);
 		box-shadow: var(--box-shadow);
+		overflow: hidden;
+	}
+
+	.hero-panel::after {
+		content: '';
+		position: absolute;
+		top: 1rem;
+		right: 1rem;
+		width: 7rem;
+		height: 7rem;
+		border-radius: 24px;
+		border: 1px solid rgba(var(--accent-blue-rgb), 0.12);
+		background:
+			linear-gradient(135deg, rgba(var(--accent-blue-rgb), 0.1), transparent 70%);
+		transform: rotate(14deg);
+	}
+
+	.hero-panel > * {
+		position: relative;
+		z-index: 1;
 	}
 
 	.eyebrow {
@@ -78,7 +97,7 @@ const { title, description } = Astro.props;
 	.page-desc {
 		margin: 0;
 		max-width: 40rem;
-		font-size: 1rem;
+		font-size: 1.02rem;
 		line-height: 1.75;
 		color: var(--muted-soft);
 	}

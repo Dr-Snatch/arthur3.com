@@ -67,7 +67,7 @@ const posts = (await getCollection('blog')).sort(
 
 	.ks-link {
 		text-decoration: none;
-		color: var(--accent);
+		color: var(--accent-blue-dark);
 	}
 
 	.post-grid {
@@ -83,7 +83,7 @@ const posts = (await getCollection('blog')).sort(
 		padding: 1.35rem;
 		border-radius: 24px;
 		border: 1px solid var(--border);
-		background: linear-gradient(180deg, rgba(13, 29, 55, 0.95), rgba(8, 18, 34, 0.96));
+		background: var(--surface-card);
 		box-shadow: var(--box-shadow);
 		text-decoration: none;
 		transition: transform 0.18s ease, border-color 0.18s ease;
@@ -91,7 +91,7 @@ const posts = (await getCollection('blog')).sort(
 
 	.post-card:hover {
 		transform: translateY(-2px);
-		border-color: rgba(var(--accent-rgb), 0.2);
+		border-color: rgba(var(--accent-blue-rgb), 0.2);
 	}
 
 	.post-top {
@@ -118,7 +118,7 @@ const posts = (await getCollection('blog')).sort(
 
 	.card-title {
 		margin: 0;
-		font-family: 'Syne', sans-serif;
+		font-family: 'Fraunces', serif;
 		font-size: 1.45rem;
 		letter-spacing: -0.04em;
 		color: var(--fg);
@@ -131,7 +131,7 @@ const posts = (await getCollection('blog')).sort(
 	}
 
 	.card-link {
-		color: rgba(var(--fg-rgb), 0.82);
+		color: var(--accent-blue-dark);
 	}
 
 	@media (max-width: 768px) {
