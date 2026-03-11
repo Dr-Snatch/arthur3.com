@@ -32,8 +32,8 @@ function getTags(tagString: string | undefined, limit = 3) {
 
 		<main>
 			<section class="hero-section">
-				<div class="container">
-					<div class="hero-panel">
+				<div class="container hero-grid">
+					<div class="hero-copy">
 						<p class="eyebrow">Arthur Wheildon / AI Systems Developer</p>
 						<h1 class="hero-title">Software for messy reality.</h1>
 						<p class="hero-description">
@@ -44,6 +44,26 @@ function getTags(tagString: string | undefined, limit = 3) {
 							{githubLink && (
 								<a href={githubLink.href} target="_blank" rel="noopener noreferrer" class="btn btn-secondary">GitHub</a>
 							)}
+						</div>
+					</div>
+
+					<div class="term-preview" data-term-preview>
+						<div class="term-preview-bar">
+							<span class="term-dot term-dot-red"></span>
+							<span class="term-dot term-dot-yellow"></span>
+							<span class="term-dot term-dot-green"></span>
+							<span class="term-preview-title">~/</span>
+						</div>
+						<div class="term-preview-body">
+							<div class="term-preview-line">
+								<span class="term-prompt">user@arthur3 ~ %</span>
+								<span class="term-typed" data-typed></span><span class="term-cursor">█</span>
+							</div>
+							<div class="term-preview-output" data-output></div>
+							<p class="term-preview-hint">
+								<button type="button" class="term-open-btn" data-terminal-open>Open terminal ↗</button>
+								 — try <code>help</code>, <code>cd ~/projects</code>, or <code>cat .secrets</code>
+							</p>
 						</div>
 					</div>
 				</div>
@@ -88,6 +108,51 @@ function getTags(tagString: string | undefined, limit = 3) {
 	</body>
 </html>
 
+<script>
+	function initTermPreview() {
+		const preview = document.querySelector('[data-term-preview]');
+		if (!preview) return;
+
+		const typed = preview.querySelector('[data-typed]') as HTMLElement;
+		const output = preview.querySelector('[data-output]') as HTMLElement;
+		const cursor = preview.querySelector('.term-cursor') as HTMLElement;
+		if (!typed || !output || !cursor) return;
+
+		// Don't replay if already ran this session
+		if (preview.getAttribute('data-played') === '1') return;
+		preview.setAttribute('data-played', '1');
+
+		const command = 'ls ~/projects';
+		const response = [
+			{ text: 'rptext/', color: '#3dd68c' },
+			{ text: 'beatmap/', color: '#3dd68c' },
+			{ text: 'arthur3-com/', color: '#3dd68c' },
+		];
+
+		let i = 0;
+		const typeInterval = setInterval(() => {
+			if (i < command.length) {
+				typed.textContent += command[i];
+				i++;
+			} else {
+				clearInterval(typeInterval);
+				// Pause, then show output
+				setTimeout(() => {
+					cursor.style.display = 'none';
+					const lines = response.map(r =>
+						`<div class="term-preview-line term-preview-result" style="color:${r.color}">${r.text}</div>`
+					).join('');
+					output.innerHTML = lines;
+				}, 400);
+			}
+		}, 65);
+	}
+
+	// Run on initial load and after view transitions
+	initTermPreview();
+	document.addEventListener('astro:page-load', initTermPreview);
+</script>
+
 <style>
 	body {
 		padding-top: 0;
@@ -114,7 +179,14 @@ function getTags(tagString: string | undefined, limit = 3) {
 		padding: 1.5rem 0 5rem;
 	}
 
-	.hero-panel {
+	.hero-grid {
+		display: grid;
+		grid-template-columns: 1fr minmax(280px, 380px);
+		gap: 1.25rem;
+		align-items: start;
+	}
+
+	.hero-copy {
 		padding: 2.5rem 2rem;
 		border-radius: 12px;
 		border: 1px solid var(--border);
@@ -140,6 +212,121 @@ function getTags(tagString: string | undefined, limit = 3) {
 		flex-wrap: wrap;
 		gap: 0.8rem;
 	}
+
+	/* ── Terminal preview ── */
+
+	.term-preview {
+		border-radius: 12px;
+		border: 1px solid var(--border-strong);
+		background: #0d0d0d;
+		overflow: hidden;
+		position: sticky;
+		top: calc(var(--nav-height) + 1rem);
+	}
+
+	.term-preview-bar {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		padding: 10px 14px;
+		background: #0a0a0a;
+		border-bottom: 1px solid rgba(255,255,255,0.06);
+	}
+
+	.term-dot {
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
+	}
+
+	.term-dot-red { background: #ff5f57; }
+	.term-dot-yellow { background: #febc2e; }
+	.term-dot-green { background: #28c840; }
+
+	.term-preview-title {
+		margin-left: auto;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.68rem;
+		color: rgba(232,232,230,0.25);
+		letter-spacing: 0.04em;
+	}
+
+	.term-preview-body {
+		padding: 14px 16px 16px;
+	}
+
+	.term-preview-line {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.78rem;
+		line-height: 1.6;
+		white-space: pre-wrap;
+		word-break: break-word;
+	}
+
+	.term-prompt {
+		color: #3dd68c;
+		margin-right: 0.5rem;
+	}
+
+	.term-typed {
+		color: #e8e8e6;
+	}
+
+	.term-cursor {
+		color: #3dd68c;
+		animation: blink 1s step-end infinite;
+	}
+
+	@keyframes blink {
+		50% { opacity: 0; }
+	}
+
+	.term-preview-result {
+		padding-left: 0;
+		margin-top: 2px;
+	}
+
+	.term-preview-output {
+		min-height: 1.5rem;
+		margin-top: 0.25rem;
+	}
+
+	.term-preview-hint {
+		margin: 1.25rem 0 0;
+		padding-top: 0.85rem;
+		border-top: 1px solid rgba(255,255,255,0.06);
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.68rem;
+		color: rgba(232,232,230,0.3);
+		line-height: 1.7;
+	}
+
+	.term-preview-hint code {
+		background: rgba(61,214,140,0.1);
+		border: 1px solid rgba(61,214,140,0.18);
+		border-radius: 3px;
+		padding: 0.1em 0.3em;
+		font-size: 0.92em;
+		color: #3dd68c;
+	}
+
+	.term-open-btn {
+		background: none;
+		border: none;
+		padding: 0;
+		cursor: pointer;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: inherit;
+		color: #3dd68c;
+		text-decoration: none;
+		transition: opacity 0.15s;
+	}
+
+	.term-open-btn:hover {
+		opacity: 0.75;
+	}
+
+	/* ── Buttons ── */
 
 	.btn {
 		display: inline-flex;
@@ -277,6 +464,14 @@ function getTags(tagString: string | undefined, limit = 3) {
 	/* ── Responsive ── */
 
 	@media (max-width: 980px) {
+		.hero-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.term-preview {
+			position: static;
+		}
+
 		.project-grid {
 			grid-template-columns: 1fr;
 		}
@@ -291,7 +486,7 @@ function getTags(tagString: string | undefined, limit = 3) {
 			padding: 1rem 0 4rem;
 		}
 
-		.hero-panel {
+		.hero-copy {
 			padding: 1.5rem 1.25rem;
 		}
 
