@@ -6,87 +6,19 @@ import Nav from '../components/Nav.astro';
 import TerminalBar from '../components/TerminalBar.astro';
 import { SITE_DESCRIPTION, SITE_TITLE, SOCIAL_LINKS } from '../consts';
 
-const allProjects = await getCollection('projects');
-const beatMapProject = allProjects.find((project) => project.id === 'beatmap');
-const supportingProjects = allProjects
-	.filter((project) => project.id !== 'beatmap')
-	.sort((a, b) => {
-		const da = a.data.pubDate ? new Date(a.data.pubDate).getTime() : 0;
-		const db = b.data.pubDate ? new Date(b.data.pubDate).getTime() : 0;
-		return db - da;
-	})
-	.slice(0, 2);
-
-const allNotes = (await getCollection('lab')).sort((a, b) => {
+const allProjects = (await getCollection('projects')).sort((a, b) => {
+	const flagshipDelta = Number(b.data.flagship) - Number(a.data.flagship);
+	if (flagshipDelta !== 0) return flagshipDelta;
 	const da = a.data.pubDate ? new Date(a.data.pubDate).getTime() : 0;
 	const db = b.data.pubDate ? new Date(b.data.pubDate).getTime() : 0;
 	return db - da;
 });
 
-const highlightedNotes = ['shazam-benchmarks', 'prompt-sandwich']
-	.map((id) => allNotes.find((note) => note.id === id))
-	.filter(Boolean);
-
-const homeNotes = highlightedNotes.length === 2 ? highlightedNotes : allNotes.slice(0, 2);
-
-const heroSignals = [
-	'Newcastle, UK / remote',
-	'Available for selected product work',
-	'Terminal-led portfolio experience',
-];
-
-const heroModes = ['Structured LLM pipelines', 'Secure mobile auth', 'Product-grade tooling'];
-
-const studioLedger = [
-	{
-		label: 'Best fit',
-		copy: 'Founders, dev teams, and technical leads building AI products with real constraints.',
-	},
-	{
-		label: 'Bias',
-		copy: 'Reliable systems, direct communication, and products that still feel good after the first release.',
-	},
-	{
-		label: 'Why this site',
-		copy: 'Editorial presentation up top, terminal navigation underneath. Product thinking and systems thinking in one place.',
-	},
-];
-
-const buildAreas = [
-	{
-		title: 'AI systems',
-		copy: 'Structured output pipelines, streaming UX, and model-driven software that stays reliable under real input.',
-	},
-	{
-		title: 'Secure native apps',
-		copy: 'Mobile products with hardened auth, durable local storage, and careful handling of lifecycle edge cases.',
-	},
-	{
-		title: 'Product-minded tooling',
-		copy: 'Developer tools and integrations that make brittle workflows repeatable, inspectable, and faster to ship.',
-	},
-];
-
-const principles = [
-	'Reliability over novelty',
-	'Security has to survive real use',
-	'Structured outputs beat vague automation',
-	'Small systems should still feel like products',
-];
-
 const githubLink = SOCIAL_LINKS.find((link) => link.label === 'GitHub');
 
-function getTags(tagString, limit = 3) {
-	return tagString ? tagString.split(',').map((tag) => tag.trim()).slice(0, limit) : [];
+function getTags(tagString: string | undefined, limit = 3) {
+	return tagString ? tagString.split(',').map((tag: string) => tag.trim()).slice(0, limit) : [];
 }
-
-const beatMapSummary = beatMapProject
-	? [
-			{ label: 'Problem', value: beatMapProject.data.problem },
-			{ label: 'System', value: beatMapProject.data.system },
-			{ label: 'Result', value: beatMapProject.data.result },
-		].filter((item) => item.value)
-	: [];
 ---
 
 <!doctype html>
@@ -99,211 +31,55 @@ const beatMapSummary = beatMapProject
 		<TerminalBar />
 
 		<main>
-			<!-- ── Hero ── -->
 			<section class="hero-section">
-				<div class="container hero-layout">
-					<div class="hero-copy">
+				<div class="container">
+					<div class="hero-panel">
 						<p class="eyebrow">Arthur Wheildon / AI Systems Developer</p>
 						<h1 class="hero-title">Software for messy reality.</h1>
 						<p class="hero-description">
-							I build structured LLM workflows, secure native apps, and product-grade tooling for teams that care what happens after the demo.
-						</p>
-						<p class="hero-manifesto">
-							Clear systems, sharp interfaces, and engineering choices that can survive contact with actual users.
+							Structured LLM workflows, secure native apps, and product-grade tooling for founders and dev teams shipping under real constraints.
 						</p>
 						<div class="hero-actions">
 							<a href="/contact" class="btn btn-primary">Start a Project</a>
-							<a href="#beatmap" class="btn btn-secondary">See BeatMap</a>
+							{githubLink && (
+								<a href={githubLink.href} target="_blank" rel="noopener noreferrer" class="btn btn-secondary">GitHub</a>
+							)}
 						</div>
-						<div class="signal-row">
-							{heroSignals.map((signal) => (
-								<span class="signal-pill">{signal}</span>
-							))}
-						</div>
-					</div>
-
-					<div class="hero-rail">
-						<article class="card card-accent">
-							<p class="label">Operating mode</p>
-							<h2 class="card-heading">Product-minded engineering with the sharp edges left visible.</h2>
-							<p class="card-body">
-								The goal is not just fast prototypes. It is software with strong defaults, careful tradeoffs, and enough rigor to keep working under actual pressure.
-							</p>
-							<div class="chip-row">
-								{heroModes.map((mode) => (
-									<span class="chip chip-accent">{mode}</span>
-								))}
-							</div>
-						</article>
-
-						<article class="card">
-							<p class="label">Quick read</p>
-							<div class="ledger-grid">
-								{studioLedger.map((item) => (
-									<article class="ledger-item">
-										<p class="ledger-label">{item.label}</p>
-										<p class="ledger-copy">{item.copy}</p>
-									</article>
-								))}
-							</div>
-							<div class="chip-row">
-								<span class="chip">help</span>
-								<span class="chip">projects</span>
-								<span class="chip">contact</span>
-							</div>
-						</article>
 					</div>
 				</div>
 			</section>
 
-			<!-- ── Systems I Build ── -->
 			<section class="section">
 				<div class="container">
 					<div class="section-head">
-						<p class="eyebrow">Systems I Build</p>
-						<h2 class="section-title">Clear product positioning instead of a tool list.</h2>
+						<p class="eyebrow">Projects</p>
+						<h2 class="section-title">What I've built.</h2>
 					</div>
-					<div class="area-grid">
-						{buildAreas.map((area) => (
-							<article class="card">
-								<h3 class="card-heading-sm">{area.title}</h3>
-								<p class="card-body">{area.copy}</p>
-							</article>
-						))}
-					</div>
-				</div>
-			</section>
-
-			<!-- ── BeatMap Flagship ── -->
-			{beatMapProject && (
-				<section class="section flagship-section" id="beatmap">
-					<div class="container flagship-panel">
-						<div class="flagship-copy">
-							<p class="eyebrow">Flagship Product</p>
-							<span class="product-badge">BeatMap · iOS</span>
-							<h2 class="section-title">Music journaling with hardened Spotify auth and durable on-device data.</h2>
-							<p class="card-body">
-								{beatMapProject.data.headline ?? beatMapProject.data.description}
-							</p>
-							<div class="summary-grid">
-								{beatMapSummary.map((item) => (
-									<article class="summary-card">
-										<p class="label">{item.label}</p>
-										<p class="summary-text">{item.value}</p>
-									</article>
-								))}
-							</div>
-							<div class="hero-actions">
-								<a href={`/projects/${beatMapProject.id}`} class="btn btn-primary">Read Case Study</a>
-								{beatMapProject.data.repoUrl && (
-									<a href={beatMapProject.data.repoUrl} target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
-										GitHub
-									</a>
-								)}
-							</div>
-						</div>
-
-						<div class="shot-rail">
-							<div class="shot-stack">
-								<img
-									src="/beatmap-shot-map.svg"
-									alt="BeatMap placeholder showing a music map and secure auth card"
-									class="product-shot product-shot-primary"
-									loading="eager"
-								/>
-								<img
-									src="/beatmap-shot-journal.svg"
-									alt="BeatMap placeholder showing a journal entry and insights cards"
-									class="product-shot product-shot-secondary"
-								/>
-							</div>
-							<article class="summary-card">
-								<p class="label">What matters</p>
-								<ul class="proof-list">
-									<li>OAuth 2.0 PKCE built without third-party auth libraries</li>
-									<li>Core Data migration and durable offline-friendly storage</li>
-									<li>ShazamKit benchmarking that directly shaped the UX</li>
-								</ul>
-							</article>
-						</div>
-					</div>
-				</section>
-			)}
-
-			<!-- ── More Work ── -->
-			<section class="section">
-				<div class="container work-layout">
-					<div class="section-head section-head-inline">
-						<div>
-							<p class="eyebrow">More Work</p>
-							<h2 class="section-title">Supporting systems and technical notes.</h2>
-						</div>
-						<a href="/projects" class="text-link">Browse all projects ↗</a>
-					</div>
-
-					<div class="work-grid">
-						{supportingProjects.map((project) => (
-							<article class="card">
-								<p class="label">{project.data.status.replace('-', ' ')}</p>
-								<p class="card-heading-sm">{project.data.title}</p>
+					<div class="project-grid">
+						{allProjects.map((project) => (
+							<a href={`/projects/${project.id}`} class="project-card">
+								<p class="card-label">{project.data.flagship ? 'Flagship' : project.data.status.replace('-', ' ')}</p>
+								<h3 class="card-title">{project.data.title}</h3>
 								<p class="card-body">{project.data.headline ?? project.data.description}</p>
-								<div class="chip-row">
-									{getTags(project.data.tags).map((tag) => (
+								<div class="tag-row">
+									{getTags(project.data.tags).map((tag: string) => (
 										<span class="tag">{tag}</span>
 									))}
 								</div>
-								<a href={`/projects/${project.id}`} class="text-link">Read case study ↗</a>
-							</article>
-						))}
-					</div>
-
-					<div class="notes-grid">
-						{homeNotes.map((note) => (
-							<article class="card">
-								<p class="label">{note.data.status}</p>
-								<p class="card-heading-sm">{note.data.title}</p>
-								<p class="card-body">{note.data.result ?? note.data.description}</p>
-								<a href={`/lab/${note.id}`} class="text-link">Read note ↗</a>
-							</article>
+							</a>
 						))}
 					</div>
 				</div>
 			</section>
 
-			<!-- ── Principles ── -->
-			<section class="section">
-				<div class="container">
-					<div class="section-head">
-						<p class="eyebrow">Engineering Principles</p>
-						<h2 class="section-title">Simple standards that keep the work serious.</h2>
-					</div>
-					<div class="principles-grid">
-						{principles.map((principle) => (
-							<div class="principle-card">{principle}</div>
-						))}
-					</div>
-				</div>
-			</section>
-
-			<!-- ── CTA ── -->
 			<section class="section">
 				<div class="container">
 					<div class="cta-panel">
 						<div>
 							<p class="eyebrow">Contact</p>
-							<h2 class="section-title">Founders and dev teams building AI products.</h2>
-							<p class="card-body cta-copy">
-								Best fit: early-stage products, technical MVPs, and dev teams that need AI systems, secure mobile apps, or difficult integrations done right.
-							</p>
+							<h2 class="section-title">Let's build something.</h2>
 						</div>
-						<div class="hero-actions">
-							<a href="/contact" class="btn btn-primary">Let's Work</a>
-							{githubLink && (
-								<a href={githubLink.href} target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
-									GitHub
-								</a>
-							)}
-						</div>
+						<a href="/contact" class="btn btn-primary">Get in Touch</a>
 					</div>
 				</div>
 			</section>
@@ -323,12 +99,6 @@ const beatMapSummary = beatMapProject
 		padding: 0 2rem;
 	}
 
-	.section {
-		padding: 0 0 5rem;
-	}
-
-	/* ── Shared text styles ── */
-
 	.eyebrow {
 		margin: 0 0 1rem;
 		font-family: 'JetBrains Mono', monospace;
@@ -338,63 +108,38 @@ const beatMapSummary = beatMapProject
 		color: var(--fg-faint);
 	}
 
-	.label {
-		margin: 0 0 0.6rem;
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.7rem;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		color: var(--fg-faint);
+	/* ── Hero ── */
+
+	.hero-section {
+		padding: 1.5rem 0 5rem;
 	}
 
-	.card-heading {
-		margin: 0 0 0.75rem;
-		font-family: 'Syne', sans-serif;
-		font-size: 1.6rem;
-		letter-spacing: -0.03em;
-		line-height: 1.1;
+	.hero-panel {
+		padding: 2.5rem 2rem;
+		border-radius: 12px;
+		border: 1px solid var(--border);
+		background: var(--surface);
 	}
 
-	.card-heading-sm {
-		margin: 0 0 0.75rem;
-		font-family: 'Syne', sans-serif;
-		font-size: 1.3rem;
-		letter-spacing: -0.025em;
-		line-height: 1.15;
-		color: var(--fg);
+	.hero-title {
+		font-size: clamp(3rem, 7vw, 5.5rem);
+		margin: 0 0 1.25rem;
+		max-width: 14ch;
 	}
 
-	.card-body {
+	.hero-description {
+		max-width: 38rem;
+		font-size: 1.1rem;
 		color: var(--fg-muted);
 		line-height: 1.75;
-		margin: 0 0 1rem;
+		margin: 0 0 2rem;
 	}
 
-	/* ── Cards (Level 1 surface) ── */
-
-	.card {
-		padding: 1.25rem;
-		background: var(--surface);
-		border: 1px solid var(--border);
-		border-radius: 12px;
-		transition: border-color 0.15s ease, background 0.15s ease;
+	.hero-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.8rem;
 	}
-
-	.card:hover {
-		border-color: var(--border-strong);
-		background: var(--surface-hover);
-	}
-
-	.card-accent {
-		background: var(--bg-raised);
-		border-color: var(--border-strong);
-	}
-
-	.card-accent .label {
-		color: var(--fg-faint);
-	}
-
-	/* ── Buttons ── */
 
 	.btn {
 		display: inline-flex;
@@ -433,363 +178,107 @@ const beatMapSummary = beatMapProject
 		color: var(--fg);
 	}
 
-	.text-link {
-		display: inline-flex;
-		align-items: center;
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.74rem;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		text-decoration: none;
-		color: var(--accent);
-		transition: opacity 0.15s ease;
+	/* ── Projects ── */
+
+	.section {
+		padding: 0 0 5rem;
 	}
-
-	.text-link:hover {
-		opacity: 0.75;
-	}
-
-	/* ── Chips & Tags ── */
-
-	.chip, .tag {
-		display: inline-flex;
-		padding: 0.3rem 0.55rem;
-		border-radius: 6px;
-		background: var(--surface);
-		border: 1px solid var(--border);
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.65rem;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: var(--fg-faint);
-	}
-
-	.chip-accent {
-		background: var(--accent-dim);
-		border-color: var(--accent-border);
-		color: var(--accent);
-	}
-
-	.tag {
-		background: var(--accent-dim);
-		border-color: var(--accent-border);
-		color: var(--accent);
-	}
-
-	.chip-row {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-		margin-top: 1rem;
-	}
-
-	.signal-row {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.5rem;
-		margin-top: 1.25rem;
-	}
-
-	.signal-pill {
-		padding: 0.4rem 0.65rem;
-		border-radius: 6px;
-		background: var(--surface);
-		border: 1px solid var(--border);
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.65rem;
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
-		color: var(--fg-faint);
-	}
-
-	/* ── Hero ── */
-
-	.hero-section {
-		padding: 1.45rem 0 4.75rem;
-	}
-
-	.hero-layout {
-		display: grid;
-		grid-template-columns: minmax(0, 1.14fr) minmax(330px, 0.86fr);
-		gap: 1rem;
-		align-items: stretch;
-	}
-
-	.hero-copy {
-		padding: 2rem;
-		border-radius: 12px;
-		border: 1px solid var(--border);
-		background: var(--surface);
-	}
-
-	.hero-title {
-		max-width: 9ch;
-		font-size: clamp(3.8rem, 8vw, 6.8rem);
-		margin-bottom: 1.1rem;
-		text-wrap: balance;
-	}
-
-	.hero-description {
-		max-width: 36rem;
-		font-size: 1.1rem;
-		color: var(--fg-muted);
-		line-height: 1.75;
-		margin-bottom: 1rem;
-	}
-
-	.hero-manifesto {
-		max-width: 34rem;
-		margin: 0 0 1.5rem;
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.75rem;
-		line-height: 1.85;
-		letter-spacing: 0.06em;
-		text-transform: uppercase;
-		color: var(--fg-faint);
-	}
-
-	.hero-actions {
-		display: flex;
-		flex-wrap: wrap;
-		gap: 0.8rem;
-	}
-
-	.hero-rail {
-		display: grid;
-		gap: 1rem;
-	}
-
-	/* ── Ledger ── */
-
-	.ledger-grid {
-		display: grid;
-		gap: 0.6rem;
-	}
-
-	.ledger-item {
-		padding: 0.8rem;
-		border-radius: 8px;
-		border: 1px solid var(--border);
-		background: var(--bg-alt);
-	}
-
-	.ledger-label {
-		margin: 0 0 0.35rem;
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.65rem;
-		letter-spacing: 0.12em;
-		text-transform: uppercase;
-		color: var(--accent);
-	}
-
-	.ledger-copy {
-		margin: 0;
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.78rem;
-		line-height: 1.7;
-		color: var(--fg-muted);
-	}
-
-	/* ── Sections ── */
 
 	.section-head {
 		margin-bottom: 1.5rem;
 	}
 
-	.section-head-inline {
-		display: flex;
-		align-items: end;
-		justify-content: space-between;
-		gap: 1rem;
-	}
-
 	.section-title {
-		max-width: 16ch;
+		margin: 0;
 	}
 
-	.area-grid {
+	.project-grid {
 		display: grid;
 		grid-template-columns: repeat(3, minmax(0, 1fr));
 		gap: 1rem;
 	}
 
-	/* ── Flagship ── */
-
-	.flagship-section {
-		padding-bottom: 5.5rem;
-	}
-
-	.flagship-panel {
-		display: grid;
-		grid-template-columns: minmax(0, 1.14fr) minmax(330px, 0.86fr);
-		gap: 1.5rem;
-		padding: 2rem;
-		border: 1px solid var(--border-strong);
+	.project-card {
+		display: flex;
+		flex-direction: column;
+		gap: 0.6rem;
+		padding: 1.25rem;
 		border-radius: 12px;
-		background: var(--bg-raised);
+		border: 1px solid var(--border);
+		background: var(--surface);
+		text-decoration: none;
+		transition: border-color 0.15s ease, background 0.15s ease;
 	}
 
-	.product-badge {
-		display: inline-flex;
-		padding: 0.35rem 0.6rem;
-		border-radius: 6px;
-		border: 1px solid var(--accent-border);
-		background: var(--accent-dim);
+	.project-card:hover {
+		border-color: var(--border-strong);
+		background: var(--surface-hover);
+	}
+
+	.card-label {
+		margin: 0;
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.65rem;
+		font-size: 0.68rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--fg-faint);
+	}
+
+	.card-title {
+		margin: 0;
+		font-family: 'Syne', sans-serif;
+		font-size: 1.3rem;
+		letter-spacing: -0.025em;
+		line-height: 1.15;
+		color: var(--fg);
+	}
+
+	.card-body {
+		margin: 0;
+		color: var(--fg-muted);
+		line-height: 1.7;
+		font-size: 0.95rem;
+	}
+
+	.tag-row {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.4rem;
+		margin-top: auto;
+		padding-top: 0.5rem;
+	}
+
+	.tag {
+		display: inline-flex;
+		padding: 0.25rem 0.5rem;
+		border-radius: 6px;
+		background: var(--accent-dim);
+		border: 1px solid var(--accent-border);
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.6rem;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
 		color: var(--accent);
-		margin-bottom: 1rem;
-	}
-
-	.summary-grid {
-		display: grid;
-		grid-template-columns: repeat(3, minmax(0, 1fr));
-		gap: 0.8rem;
-		margin: 1.25rem 0 1.5rem;
-	}
-
-	.summary-card {
-		padding: 1rem;
-		border-radius: 8px;
-		border: 1px solid var(--border);
-		background: var(--surface);
-	}
-
-	.summary-text {
-		margin: 0;
-		color: var(--fg-muted);
-		line-height: 1.7;
-		font-size: 0.92rem;
-	}
-
-	.shot-rail {
-		display: grid;
-		gap: 1rem;
-	}
-
-	.shot-stack {
-		position: relative;
-		min-height: 34rem;
-	}
-
-	.product-shot {
-		border-radius: 12px;
-		border: 1px solid var(--border);
-	}
-
-	.product-shot-primary {
-		width: min(26rem, 100%);
-		transform: rotate(-2deg);
-	}
-
-	.product-shot-secondary {
-		position: absolute;
-		right: 0;
-		bottom: 0;
-		width: min(18rem, 56%);
-		transform: rotate(3deg);
-	}
-
-	.proof-list {
-		margin: 0;
-		padding-left: 1.1rem;
-		color: var(--fg-muted);
-		line-height: 1.75;
-	}
-
-	.proof-list li + li {
-		margin-top: 0.5rem;
-	}
-
-	/* ── Work + Notes grids ── */
-
-	.work-layout {
-		display: grid;
-		gap: 1rem;
-	}
-
-	.work-grid {
-		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 1rem;
-	}
-
-	.notes-grid {
-		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 1rem;
-	}
-
-	/* ── Principles ── */
-
-	.principles-grid {
-		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 1rem;
-	}
-
-	.principle-card {
-		padding: 1.1rem 1.2rem;
-		border-radius: 12px;
-		border: 1px solid var(--border);
-		background: var(--surface);
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.8rem;
-		line-height: 1.7;
-		color: var(--fg-muted);
 	}
 
 	/* ── CTA ── */
 
 	.cta-panel {
-		padding: 1.75rem;
+		padding: 1.5rem;
 		border-radius: 12px;
 		border: 1px solid var(--border);
 		background: var(--surface);
 		display: flex;
-		align-items: end;
+		align-items: center;
 		justify-content: space-between;
 		gap: 1.5rem;
-	}
-
-	.cta-copy {
-		max-width: 38rem;
 	}
 
 	/* ── Responsive ── */
 
 	@media (max-width: 980px) {
-		.hero-layout,
-		.flagship-panel,
-		.area-grid,
-		.summary-grid,
-		.cta-panel {
+		.project-grid {
 			grid-template-columns: 1fr;
-		}
-
-		.section-head-inline,
-		.cta-panel {
-			align-items: start;
-			flex-direction: column;
-		}
-
-		.shot-stack {
-			min-height: auto;
-			display: grid;
-			gap: 1rem;
-		}
-
-		.product-shot-secondary {
-			position: static;
-			width: min(22rem, 100%);
-			justify-self: end;
-			transform: rotate(0);
-		}
-
-		.product-shot-primary {
-			transform: rotate(0);
 		}
 	}
 
@@ -798,36 +287,21 @@ const beatMapSummary = beatMapProject
 			padding: 0 1rem;
 		}
 
+		.hero-section {
+			padding: 1rem 0 4rem;
+		}
+
+		.hero-panel {
+			padding: 1.5rem 1.25rem;
+		}
+
 		.section {
 			padding-bottom: 4rem;
 		}
 
-		.hero-section {
-			padding: 0.85rem 0 3.25rem;
-		}
-
-		.hero-title,
-		.section-title {
-			max-width: none;
-		}
-
-		.hero-description {
-			font-size: 1rem;
-		}
-
-		.hero-copy {
-			padding: 1.25rem;
-		}
-
-		.flagship-panel {
-			padding: 1.25rem;
-		}
-
-		.area-grid,
-		.work-grid,
-		.notes-grid,
-		.principles-grid {
-			grid-template-columns: 1fr;
+		.cta-panel {
+			flex-direction: column;
+			align-items: start;
 		}
 	}
 </style>

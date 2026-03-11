@@ -2,6 +2,5 @@ User-agent: *
 Allow: /
 
 Disallow: /keystatic/
-Disallow: /api/
 
 Sitemap: https://arthur3.com/sitemap-index.xml

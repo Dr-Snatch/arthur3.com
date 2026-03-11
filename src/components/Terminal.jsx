@@ -38,7 +38,7 @@ const FS = {
   "/home/arthur/projects/arthur3-com/README.md": { type: "file", content: ["# arthur3.com", "This website. Astro + Keystatic + Cloudflare Pages.", "The terminal you're using right now is part of it."] },
   "/home/arthur/lab": { type: "dir", url: "/lab", children: ["experiments"] },
   "/home/arthur/blog": { type: "dir", url: "/blog", children: ["README.md"] },
-  "/home/arthur/blog/README.md": { type: "file", content: ["# blog", "Devlogs, technical opinions, and notes from building in public.", "", "cd here and 'open' to visit the blog page."] },
+  "/home/arthur/blog/README.md": { type: "file", content: ["# blog", "Devlogs, technical opinions, and notes from building in public.", "", "Posts appear here as they're published.", "cd here and 'open' to visit the blog page."] },
   "/home/arthur/contact": { type: "dir", url: "/contact", children: ["README.md"] },
   "/home/arthur/contact/README.md": { type: "file", content: ["# contact", "Founders, dev teams, and technical leads can reach me via:", "", "  → Email     arthurwheildon0@gmail.com", "  → GitHub    github.com/Dr-Snatch", "  → LinkedIn  linkedin.com/in/arthurwheildon", "", "Best fit for founders, dev teams, and technical leads shipping AI products."] },
   "/home/arthur/lab/experiments": { type: "dir", children: ["prompt-sandwich", "local-llm-comparison", "shazam-benchmarks", "terminal-navigation"] },
@@ -137,9 +137,20 @@ function pathFromUrl(urlPath) {
     const labPath = `/home/arthur/lab/experiments/${labMatch[1]}`;
     if (FS[labPath]) return labPath;
   }
+  const blogMatch = urlPath.match(/^\/blog\/([^/]+)$/);
+  if (blogMatch) {
+    const blogPath = `/home/arthur/blog/${blogMatch[1]}`;
+    if (FS[blogPath]) return blogPath;
+    return "/home/arthur/blog";
+  }
   return HOME;
 }
 function cwdFromUrl() { if (typeof window === "undefined") return HOME; const p = window.location.pathname.replace(/\/+$/, "") || "/"; return pathFromUrl(p); }
+
+function navigateTo(url) {
+  if (window.__astro_navigate) window.__astro_navigate(url);
+  else window.location.href = url;
+}
 
 export default function Terminal() {
   const [lines, setLines] = useState([]);
@@ -183,6 +194,13 @@ export default function Terminal() {
     };
   }, []);
 
+  // Sync CWD when page changes via view transitions
+  useEffect(() => {
+    function onPageLoad() { setCwd(cwdFromUrl()); }
+    document.addEventListener('astro:page-load', onPageLoad);
+    return () => document.removeEventListener('astro:page-load', onPageLoad);
+  }, []);
+
   const displayCwd = toDisplayPath(cwd);
   const out = useCallback((newLines) => setLines((p) => [...p, ...newLines]), []);
 
@@ -195,10 +213,10 @@ export default function Terminal() {
     const parts = trimmed.split(/\s+/); const base = parts[0].toLowerCase(); const args = parts.slice(1); const rawArgs = trimmed.slice(base.length).trim();
 
     if (base === "clear") { setLines([]); return; }
-    if (base === "reset") { clearSession(); saveWindowState("normal"); setWindowState("normal"); setLines([]); setHistory([]); setHistoryIndex(-1); const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (cp !== "/") { window.location.href = "/"; return; } setCwd(HOME); BOOT.forEach(({ text, delay, color }) => setTimeout(() => setLines((p) => [...p, { text, color }]), delay)); setTimeout(() => setBooted(true), BOOT_READY); return; }
-    if (base === "home") { const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (cp === "/") { setCwd(HOME); out([{ text: "already home.", color: "#2a5e3e" }]); return; } saveSession([...linesRef.current, prompt, { text: "going home...", color: "#3dd68c" }], [raw, ...histRef.current]); saveWindowState(windowState); window.location.href = "/"; return; }
+    if (base === "reset") { clearSession(); saveWindowState("normal"); setWindowState("normal"); setLines([]); setHistory([]); setHistoryIndex(-1); const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (cp !== "/") { navigateTo("/"); return; } setCwd(HOME); BOOT.forEach(({ text, delay, color }) => setTimeout(() => setLines((p) => [...p, { text, color }]), delay)); setTimeout(() => setBooted(true), BOOT_READY); return; }
+    if (base === "home") { const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (cp === "/") { setCwd(HOME); out([{ text: "already home.", color: "#2a5e3e" }]); return; } if (!window.__astro_navigate) { saveSession([...linesRef.current, prompt, { text: "going home...", color: "#3dd68c" }], [raw, ...histRef.current]); saveWindowState(windowState); } else { out([{ text: "going home...", color: "#3dd68c" }]); } setCwd(HOME); navigateTo("/"); return; }
 
-    if (base === "cd") { const target = args[0] || "~"; if (target === "-") { out([{ text: "cd: OLDPWD not set", color: "#f87171" }]); return; } const resolved = resolvePath(cwd, target); const node = FS[resolved]; if (!node) { out([{ text: `cd: ${target}: no such file or directory`, color: "#f87171" }]); return; } if (node.type !== "dir") { out([{ text: `cd: ${target}: not a directory`, color: "#f87171" }]); return; } if (node.url) { const cp = (window.location.pathname.replace(/\/+$/, "") || "/"); if (node.url !== cp) { saveSession([...linesRef.current, prompt], [raw, ...histRef.current]); saveWindowState(windowState); window.location.href = node.url; return; } } setCwd(resolved); return; }
+    if (base === "cd") { const target = args[0] || "~"; if (target === "-") { out([{ text: "cd: OLDPWD not set", color: "#f87171" }]); return; } const resolved = resolvePath(cwd, target); const node = FS[resolved]; if (!node) { out([{ text: `cd: ${target}: no such file or directory`, color: "#f87171" }]); return; } if (node.type !== "dir") { out([{ text: `cd: ${target}: not a directory`, color: "#f87171" }]); return; } if (node.url) { const cp = (window.location.pathname.replace(/\/+$/, "") || "/"); if (node.url !== cp) { if (!window.__astro_navigate) { saveSession([...linesRef.current, prompt], [raw, ...histRef.current]); saveWindowState(windowState); } setCwd(resolved); navigateTo(node.url); return; } } setCwd(resolved); return; }
     if (base === "pwd") { out([{ text: cwd }]); return; }
 
     if (base === "ls") {
@@ -213,7 +231,7 @@ export default function Terminal() {
     if (base === "cat") { if (!args[0]) { out([{ text: "cat: missing operand", color: "#f87171" }]); return; } const t = resolvePath(cwd, args[0]); const n = FS[t]; if (!n) out([{ text: `cat: ${args[0]}: no such file or directory`, color: "#f87171" }]); else if (n.type === "dir") out([{ text: `cat: ${args[0]}: is a directory`, color: "#f87171" }]); else out(n.content.map((l) => ({ text: l }))); return; }
     if (base === "head") { const t = resolvePath(cwd, args[0] || ""); const n = FS[t]; if (!n || n.type !== "file") out([{ text: `head: cannot read`, color: "#f87171" }]); else out(n.content.slice(0, 5).map((l) => ({ text: l }))); return; }
 
-    if (base === "open") { const target = args[0]; if (!target) { const node = FS[cwd]; if (node && node.url) { const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (node.url === cp) { out([{ text: "you're already here.", color: "#2a5e3e" }]); return; } saveSession([...linesRef.current, prompt, { text: `opening ${node.url}...`, color: "#3dd68c" }], [raw, ...histRef.current]); saveWindowState(windowState); setTimeout(() => { window.location.href = node.url; }, 400); } else out([{ text: "open: no page for this directory", color: "#f87171" }]); return; } const resolved = resolvePath(cwd, target); const node = FS[resolved]; if (node && node.url) { saveSession([...linesRef.current, prompt, { text: `opening ${node.url}...`, color: "#3dd68c" }], [raw, ...histRef.current]); saveWindowState(windowState); setTimeout(() => { window.location.href = node.url; }, 400); } else if (target.startsWith("http")) { out([{ text: `opening ${target}...`, color: "#3dd68c" }]); setTimeout(() => { window.open(target, "_blank"); }, 400); } else out([{ text: `open: ${target}: no page associated`, color: "#f87171" }]); return; }
+    if (base === "open") { const target = args[0]; if (!target) { const node = FS[cwd]; if (node && node.url) { const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (node.url === cp) { out([{ text: "you're already here.", color: "#2a5e3e" }]); return; } if (!window.__astro_navigate) { saveSession([...linesRef.current, prompt, { text: `opening ${node.url}...`, color: "#3dd68c" }], [raw, ...histRef.current]); saveWindowState(windowState); } out([{ text: `opening ${node.url}...`, color: "#3dd68c" }]); setTimeout(() => { navigateTo(node.url); }, 400); } else out([{ text: "open: no page for this directory", color: "#f87171" }]); return; } const resolved = resolvePath(cwd, target); const node = FS[resolved]; if (node && node.url) { if (!window.__astro_navigate) { saveSession([...linesRef.current, prompt, { text: `opening ${node.url}...`, color: "#3dd68c" }], [raw, ...histRef.current]); saveWindowState(windowState); } out([{ text: `opening ${node.url}...`, color: "#3dd68c" }]); setTimeout(() => { navigateTo(node.url); }, 400); } else if (target.startsWith("http")) { out([{ text: `opening ${target}...`, color: "#3dd68c" }]); setTimeout(() => { window.open(target, "_blank"); }, 400); } else out([{ text: `open: ${target}: no page associated`, color: "#f87171" }]); return; }
 
     if (base === "tree") { const target = args[0] ? resolvePath(cwd, args[0]) : cwd; const node = FS[target]; if (!node || node.type !== "dir") { out([{ text: `tree: not a directory`, color: "#f87171" }]); return; } const tl = [{ text: toDisplayPath(target), color: "#3dd68c" }]; function walk(p, pfx) { const n = FS[p]; if (!n || n.type !== "dir") return; const items = (n.children || []).filter((i) => !i.startsWith(".")); items.forEach((item, i) => { const last = i === items.length - 1; const cp = p === "/" ? "/" + item : p + "/" + item; const cn = FS[cp]; const isDir = cn && cn.type === "dir"; tl.push({ text: pfx + (last ? "└── " : "├── ") + item + (isDir ? "/" : ""), color: isDir ? "#3dd68c" : "rgba(232,232,230,0.6)" }); if (isDir) walk(cp, pfx + (last ? "    " : "│   ")); }); } walk(target, ""); out(tl); return; }
 
