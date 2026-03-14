@@ -5,7 +5,6 @@ import { getCollection, render } from 'astro:content';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import Nav from '../../components/Nav.astro';
-import TerminalBar from '../../components/TerminalBar.astro';
 
 export async function getStaticPaths() {
 	const projects = await getCollection('projects');
@@ -33,7 +32,6 @@ const isBeatMap = project.id === 'beatmap';
 	</head>
 	<body>
 		<Nav />
-		<TerminalBar />
 		<main>
 			<section class="project-hero">
 				<div class="container">
@@ -149,7 +147,7 @@ const isBeatMap = project.id === 'beatmap';
 		font-size: 0.7rem;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
-		color: var(--fg-faint);
+		color: var(--fg-tertiary);
 	}
 
 	.project-title {
@@ -159,7 +157,7 @@ const isBeatMap = project.id === 'beatmap';
 
 	.project-headline,
 	.summary-text {
-		color: var(--fg-muted);
+		color: var(--fg-secondary);
 		line-height: 1.75;
 	}
 
@@ -188,7 +186,7 @@ const isBeatMap = project.id === 'beatmap';
 		letter-spacing: 0.06em;
 		text-transform: uppercase;
 		text-decoration: none;
-		color: var(--fg-muted);
+		color: var(--fg-secondary);
 		transition: border-color 0.15s ease, color 0.15s ease;
 	}
 
@@ -227,7 +225,7 @@ const isBeatMap = project.id === 'beatmap';
 		font-size: 0.7rem;
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
-		color: var(--fg-faint);
+		color: var(--fg-tertiary);
 	}
 
 	.summary-text {
@@ -259,7 +257,7 @@ const isBeatMap = project.id === 'beatmap';
 		font-family: 'Inter', sans-serif;
 		font-size: 1rem;
 		line-height: 1.7;
-		color: var(--fg-muted);
+		color: var(--fg-secondary);
 	}
 
 	.prose :global(h2) {
@@ -291,7 +289,7 @@ const isBeatMap = project.id === 'beatmap';
 		border: 1px solid var(--accent-border);
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.76rem;
-		color: var(--fg-muted);
+		color: var(--fg-secondary);
 	}
 
 	.prose :global(.diagram-arrow) {

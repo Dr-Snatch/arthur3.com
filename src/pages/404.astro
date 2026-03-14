@@ -2,7 +2,6 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Nav from '../components/Nav.astro';
-import TerminalBar from '../components/TerminalBar.astro';
 import { SITE_TITLE } from '../consts';
 ---
 
@@ -13,26 +12,17 @@ import { SITE_TITLE } from '../consts';
 	</head>
 	<body>
 		<Nav />
-		<TerminalBar />
 		<main>
 			<section class="error-section">
 				<div class="container">
 					<p class="eyebrow">404</p>
 					<h1 class="error-title">Nothing here.</h1>
 					<p class="error-copy">
-						The page you're looking for doesn't exist, was moved, or never did. Try the terminal — type <code>ls</code> to look around.
+						The page you're looking for doesn't exist, was moved, or never did. Try browsing my projects or head back home.
 					</p>
 					<div class="error-actions">
 						<a href="/" class="btn btn-primary">Back to Home</a>
 						<a href="/projects" class="btn btn-secondary">Browse Projects</a>
-					</div>
-					<div class="terminal-hint">
-						<p class="hint-label">or try</p>
-						<div class="hint-chips">
-							<span class="chip">cd ~/projects</span>
-							<span class="chip">help</span>
-							<span class="chip">tree ~</span>
-						</div>
 					</div>
 				</div>
 			</section>
@@ -62,7 +52,7 @@ import { SITE_TITLE } from '../consts';
 		font-size: 0.7rem;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
-		color: var(--fg-faint);
+		color: var(--fg-tertiary);
 	}
 
 	.error-title {
@@ -74,7 +64,7 @@ import { SITE_TITLE } from '../consts';
 		max-width: 38rem;
 		font-size: 1rem;
 		line-height: 1.75;
-		color: var(--fg-muted);
+		color: var(--fg-secondary);
 		margin: 0 0 2rem;
 	}
 
@@ -123,7 +113,7 @@ import { SITE_TITLE } from '../consts';
 
 	.btn-secondary {
 		background: transparent;
-		color: var(--fg-muted);
+		color: var(--fg-secondary);
 		border: 1px solid var(--border);
 	}
 
@@ -146,7 +136,7 @@ import { SITE_TITLE } from '../consts';
 		font-size: 0.7rem;
 		letter-spacing: 0.12em;
 		text-transform: uppercase;
-		color: var(--fg-faint);
+		color: var(--fg-tertiary);
 	}
 
 	.hint-chips {

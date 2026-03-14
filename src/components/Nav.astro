@@ -37,7 +37,6 @@ function isActive(href: string): boolean {
 					</li>
 				))}
 			</ul>
-			<button type="button" class="terminal-trigger" data-terminal-open>Open Terminal</button>
 			<a href="/contact" class="work-cta">Let's Build</a>
 		</div>
 
@@ -62,7 +61,6 @@ function isActive(href: string): boolean {
 			))}
 		</ul>
 		<div class="mobile-utility-row">
-			<button type="button" class="terminal-trigger mobile-terminal" data-terminal-open>Open Terminal</button>
 			<a href="/contact" class="work-cta mobile-work-cta">Let's Build</a>
 		</div>
 	</div>
@@ -70,25 +68,6 @@ function isActive(href: string): boolean {
 
 <script is:inline data-astro-rerun>
 	(function () {
-		function resetTerminal() {
-			try {
-				sessionStorage.removeItem('a3t-lines');
-				sessionStorage.removeItem('a3t-hist');
-			} catch {}
-		}
-
-		function openTerminal() {
-			window.dispatchEvent(new CustomEvent('a3t:open'));
-		}
-
-		document.querySelectorAll('[data-home-reset], [data-nav-link="home"]').forEach(function (el) {
-			el.addEventListener('click', function () { resetTerminal(); });
-		});
-
-		document.querySelectorAll('[data-terminal-open]').forEach(function (button) {
-			button.addEventListener('click', function () { openTerminal(); });
-		});
-
 		var mobileMenuBtn = document.querySelector('.mobile-menu-btn');
 		var mobileDropdown = document.querySelector('.mobile-dropdown');
 		if (mobileMenuBtn && mobileDropdown) {
@@ -104,7 +83,7 @@ function isActive(href: string): boolean {
 				setMenuState(!mobileDropdown.classList.contains('active'));
 			});
 
-			document.querySelectorAll('.mobile-nav-links a, .mobile-utility-row .terminal-trigger, .mobile-utility-row .work-cta').forEach(function (link) {
+			document.querySelectorAll('.mobile-nav-links a, .mobile-utility-row .work-cta').forEach(function (link) {
 				link.addEventListener('click', function () { setMenuState(false); });
 			});
 
@@ -188,7 +167,7 @@ function isActive(href: string): boolean {
 		font-size: 0.68rem;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
-		color: var(--fg-faint);
+		color: var(--fg-tertiary);
 	}
 
 	.nav-actions {
@@ -207,7 +186,6 @@ function isActive(href: string): boolean {
 	}
 
 	.nav-links a,
-	.terminal-trigger,
 	.work-cta {
 		display: inline-flex;
 		align-items: center;
@@ -220,8 +198,9 @@ function isActive(href: string): boolean {
 	}
 
 	.nav-links a {
-		padding: 0.65rem 0.9rem;
-		color: var(--fg-muted);
+		padding: 0.75rem 1rem;
+		min-height: 44px;
+		color: var(--fg-secondary);
 	}
 
 	.nav-links a:hover {
@@ -245,25 +224,17 @@ function isActive(href: string): boolean {
 		background: var(--accent);
 	}
 
-	.terminal-trigger {
-		padding: 0.65rem 1rem;
-		border: 1px solid var(--border);
-		background: transparent;
-		color: var(--fg-muted);
-		cursor: pointer;
-		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.75rem;
-		letter-spacing: 0.06em;
-		text-transform: uppercase;
-	}
-
-	.terminal-trigger:hover {
-		border-color: var(--border-strong);
+	/* Focus states for nav links */
+	.nav-links a:focus-visible {
+		outline: var(--focus-ring-width) solid var(--focus-ring);
+		outline-offset: var(--focus-ring-offset);
 		color: var(--fg);
 	}
 
 	.work-cta {
-		padding: 0.65rem 1.1rem;
+		padding: 1rem 2rem;
+		min-height: 44px;
+		min-width: 120px;
 		background: var(--accent);
 		color: #0d0d0d;
 		font-family: 'JetBrains Mono', monospace;
@@ -279,6 +250,13 @@ function isActive(href: string): boolean {
 		opacity: 0.88;
 	}
 
+	/* Focus states for CTA button */
+	.work-cta:focus-visible {
+		outline: var(--focus-ring-width) solid var(--focus-ring);
+		outline-offset: var(--focus-ring-offset);
+		box-shadow: 0 0 0 4px rgba(61, 214, 140, 0.2);
+	}
+
 	.mobile-controls,
 	.mobile-dropdown {
 		display: none;
@@ -288,8 +266,10 @@ function isActive(href: string): boolean {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		width: 2.8rem;
-		height: 2.8rem;
+		width: 48px;
+		height: 48px;
+		min-width: 44px;
+		min-height: 44px;
 		border-radius: 999px;
 		border: 1px solid var(--border);
 		background: transparent;
@@ -304,7 +284,7 @@ function isActive(href: string): boolean {
 		width: 1.2rem;
 		height: 2px;
 		border-radius: 999px;
-		background: var(--fg-muted);
+		background: var(--fg-secondary);
 		transition: transform 0.25s ease, opacity 0.25s ease;
 	}
 
@@ -325,6 +305,13 @@ function isActive(href: string): boolean {
 	.mobile-menu-btn.active .hamburger { background: transparent; }
 	.mobile-menu-btn.active .hamburger::before { transform: translateY(0.4rem) rotate(45deg); }
 	.mobile-menu-btn.active .hamburger::after { transform: translateY(-0.4rem) rotate(-45deg); }
+
+	/* Focus state for mobile menu button */
+	.mobile-menu-btn:focus-visible {
+		outline: var(--focus-ring-width) solid var(--focus-ring);
+		outline-offset: var(--focus-ring-offset);
+		border-color: var(--accent);
+	}
 
 	.mobile-dropdown {
 		position: fixed;
@@ -358,16 +345,25 @@ function isActive(href: string): boolean {
 
 	.mobile-nav-links a {
 		display: block;
-		padding: 0.85rem 1rem;
+		padding: 1rem 1rem;
+		min-height: 44px;
 		border-radius: 8px;
 		text-decoration: none;
-		color: var(--fg-muted);
+		color: var(--fg-secondary);
 	}
 
 	.mobile-nav-links a.nav-active {
 		color: var(--accent);
 		background: var(--accent-dim);
 		border: 1px solid var(--accent-border);
+	}
+
+	/* Focus state for mobile nav links */
+	.mobile-nav-links a:focus-visible {
+		outline: var(--focus-ring-width) solid var(--focus-ring);
+		outline-offset: var(--focus-ring-offset);
+		background: rgba(61, 214, 140, 0.08);
+		color: var(--fg);
 	}
 
 	.mobile-utility-row {
@@ -377,8 +373,19 @@ function isActive(href: string): boolean {
 		margin-top: 1rem;
 	}
 
-	.mobile-terminal, .mobile-work-cta { width: 100%; }
-	.mobile-work-cta { padding: 0.85rem 1rem; }
+	.mobile-work-cta {
+		width: 100%;
+		padding: 1rem;
+		min-height: 44px;
+	}
+
+	/* Focus state for brand logo link */
+	.brand:focus-visible {
+		outline: var(--focus-ring-width) solid var(--focus-ring);
+		outline-offset: var(--focus-ring-offset);
+		border-radius: 12px;
+	}
+
 	.mobile-only { display: none; }
 	.desktop-only { display: flex; }
 

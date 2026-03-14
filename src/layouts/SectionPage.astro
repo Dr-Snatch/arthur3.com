@@ -2,7 +2,6 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Nav from '../components/Nav.astro';
-import TerminalBar from '../components/TerminalBar.astro';
 
 interface Props {
 	title: string;
@@ -19,7 +18,6 @@ const { title, description } = Astro.props;
 	</head>
 	<body>
 		<Nav />
-		<TerminalBar />
 		<main>
 			<section class="page-hero">
 				<div class="container">
@@ -64,7 +62,7 @@ const { title, description } = Astro.props;
 		font-size: 0.7rem;
 		letter-spacing: 0.14em;
 		text-transform: uppercase;
-		color: var(--fg-faint);
+		color: var(--fg-tertiary);
 	}
 
 	.page-heading {
@@ -77,7 +75,7 @@ const { title, description } = Astro.props;
 		max-width: 40rem;
 		font-size: 1rem;
 		line-height: 1.75;
-		color: var(--fg-muted);
+		color: var(--fg-secondary);
 	}
 
 	@media (max-width: 768px) {

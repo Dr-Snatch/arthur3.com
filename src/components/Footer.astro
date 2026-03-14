@@ -71,7 +71,7 @@ const year = new Date().getFullYear();
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.72rem;
 		line-height: 1.7;
-		color: var(--fg-faint);
+		color: var(--fg-tertiary);
 	}
 
 	.footer-text {
@@ -103,6 +103,14 @@ const year = new Date().getFullYear();
 
 	.links a:hover {
 		color: var(--accent);
+	}
+
+	/* Focus state for footer links */
+	.links a:focus-visible {
+		outline: var(--focus-ring-width) solid var(--focus-ring);
+		outline-offset: var(--focus-ring-offset);
+		color: var(--accent);
+		border-radius: 4px;
 	}
 
 	@media (max-width: 768px) {

@@ -13,10 +13,15 @@
 	--bg-raised: #1f1f1f;
 	--bg-subtle: #242424;
 
-	/* Foreground */
-	--fg: #e8e8e6;
-	--fg-muted: rgba(232, 232, 230, 0.6);
-	--fg-faint: rgba(232, 232, 230, 0.36);
+	/* Foreground (WCAG AA Compliant) */
+	--fg: #e8e8e6;           /* 13.2:1 contrast - Primary text */
+	--fg-secondary: #b8b8b6; /* 7.1:1 contrast - Secondary text */
+	--fg-tertiary: #8a8a88;  /* 4.6:1 contrast - Tertiary text */
+	--fg-decorative: #666666; /* 3.1:1 contrast - Decorative only (non-essential) */
+
+	/* DEPRECATED - Use new variables above */
+	--fg-muted: #b8b8b6;     /* DEPRECATED: Use --fg-secondary */
+	--fg-faint: #8a8a88;     /* DEPRECATED: Use --fg-tertiary */
 
 	/* Accent — muted terminal green */
 	--accent: #3dd68c;
@@ -37,6 +42,11 @@
 	--shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
 	--shadow-md: 0 4px 16px rgba(0, 0, 0, 0.5);
 	--shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
+
+	/* Focus States (WCAG 2.4.7 Focus Visible) */
+	--focus-ring: #3dd68c;
+	--focus-ring-width: 3px;
+	--focus-ring-offset: 2px;
 }
 
 * {
@@ -147,6 +157,27 @@ a:hover {
 	opacity: 0.85;
 }
 
+/* ── Focus States ── */
+
+/* Remove default browser outlines */
+*:focus {
+	outline: none;
+}
+
+/* Global focus-visible styles (keyboard navigation only) */
+*:focus-visible {
+	outline: var(--focus-ring-width) solid var(--focus-ring);
+	outline-offset: var(--focus-ring-offset);
+	border-radius: 4px;
+}
+
+/* Link focus styles */
+a:focus-visible {
+	outline: var(--focus-ring-width) solid var(--focus-ring);
+	outline-offset: var(--focus-ring-offset);
+	text-decoration: underline;
+}
+
 p {
 	margin: 0 0 1rem;
 }
@@ -200,7 +231,7 @@ blockquote {
 	padding-left: 1rem;
 	margin: 0;
 	font-size: 1.05em;
-	color: var(--fg-muted);
+	color: var(--fg-secondary);
 }
 
 hr {

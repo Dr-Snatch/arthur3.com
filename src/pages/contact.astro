@@ -2,7 +2,6 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Nav from '../components/Nav.astro';
-import TerminalBar from '../components/TerminalBar.astro';
 import { CONTACT_TEXT, SITE_TITLE, SOCIAL_LINKS } from '../consts';
 
 const contactBlocks = [
@@ -28,7 +27,6 @@ const contactBlocks = [
 	</head>
 	<body>
 		<Nav />
-		<TerminalBar />
 
 		<main>
 			<section class="contact-hero">
@@ -107,7 +105,7 @@ const contactBlocks = [
 		margin: 0 0 0.9rem;
 		font-size: 0.7rem;
 		letter-spacing: 0.14em;
-		color: var(--fg-faint);
+		color: var(--fg-tertiary);
 	}
 
 	.hero-title {
@@ -118,7 +116,7 @@ const contactBlocks = [
 	.hero-copy,
 	.note-copy,
 	.card-value {
-		color: var(--fg-muted);
+		color: var(--fg-secondary);
 		line-height: 1.75;
 	}
 

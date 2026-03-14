@@ -62,7 +62,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 	.empty-msg {
 		font-family: 'JetBrains Mono', monospace;
 		font-size: 0.76rem;
-		color: var(--fg-faint);
+		color: var(--fg-tertiary);
 	}
 
 	.ks-link {
@@ -112,7 +112,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 	.card-kicker,
 	.post-date {
 		margin: 0;
-		color: var(--fg-faint);
+		color: var(--fg-tertiary);
 	}
 
 	.card-title {
@@ -125,7 +125,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 
 	.card-copy {
 		margin: 0;
-		color: var(--fg-muted);
+		color: var(--fg-secondary);
 		line-height: 1.75;
 	}
 
