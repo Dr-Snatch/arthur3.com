@@ -6,6 +6,7 @@ import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
 import Nav from '../../components/Nav.astro';
+import TerminalBar from '../../components/TerminalBar.astro';
 
 export async function getStaticPaths() {
 	const notes = await getCollection('lab');
@@ -71,6 +72,7 @@ const summaryCards = [
 			</section>
 		</main>
 		<Footer />
+		<TerminalBar />
 	</body>
 </html>
 
@@ -86,7 +88,7 @@ const summaryCards = [
 	}
 
 	.note-hero {
-		padding: 1.2rem 0 1.4rem;
+		padding: 8rem 0 1.4rem;
 	}
 
 	.back-link,
@@ -231,7 +233,7 @@ const summaryCards = [
 		}
 
 		.note-hero {
-			padding: 0.8rem 0 1.2rem;
+			padding: 5rem 0 1.2rem;
 		}
 
 		.hero-card {

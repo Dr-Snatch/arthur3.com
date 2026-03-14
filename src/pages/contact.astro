@@ -2,6 +2,7 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Nav from '../components/Nav.astro';
+import TerminalBar from '../components/TerminalBar.astro';
 import { CONTACT_TEXT, SITE_TITLE, SOCIAL_LINKS } from '../consts';
 
 const contactBlocks = [
@@ -71,6 +72,7 @@ const contactBlocks = [
 			</section>
 		</main>
 		<Footer />
+		<TerminalBar />
 	</body>
 </html>
 
@@ -86,7 +88,7 @@ const contactBlocks = [
 	}
 
 	.contact-hero {
-		padding: 1.25rem 0 2.4rem;
+		padding: 8rem 0 2.4rem;
 	}
 
 	.section {
@@ -186,7 +188,7 @@ const contactBlocks = [
 		}
 
 		.contact-hero {
-			padding: 0.8rem 0 2rem;
+			padding: 5rem 0 2rem;
 		}
 
 		.section {

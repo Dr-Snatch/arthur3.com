@@ -5,6 +5,7 @@ import { getCollection, render } from 'astro:content';
 import BaseHead from '../../components/BaseHead.astro';
 import Footer from '../../components/Footer.astro';
 import Nav from '../../components/Nav.astro';
+import TerminalBar from '../../components/TerminalBar.astro';
 
 export async function getStaticPaths() {
 	const projects = await getCollection('projects');
@@ -94,6 +95,7 @@ const isBeatMap = project.id === 'beatmap';
 			</section>
 		</main>
 		<Footer />
+		<TerminalBar />
 	</body>
 </html>
 
@@ -109,7 +111,7 @@ const isBeatMap = project.id === 'beatmap';
 	}
 
 	.project-hero {
-		padding: 1.2rem 0 1.6rem;
+		padding: 8rem 0 1.6rem;
 	}
 
 	.back-link,
@@ -313,7 +315,7 @@ const isBeatMap = project.id === 'beatmap';
 		}
 
 		.project-hero {
-			padding: 0.8rem 0 1.3rem;
+			padding: 5rem 0 1.3rem;
 		}
 
 		.hero-card {

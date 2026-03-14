@@ -2,6 +2,7 @@
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Nav from '../components/Nav.astro';
+import TerminalBar from '../components/TerminalBar.astro';
 import { SITE_TITLE } from '../consts';
 ---
 
@@ -28,6 +29,7 @@ import { SITE_TITLE } from '../consts';
 			</section>
 		</main>
 		<Footer />
+		<TerminalBar />
 	</body>
 </html>
 
@@ -43,7 +45,7 @@ import { SITE_TITLE } from '../consts';
 	}
 
 	.error-section {
-		padding: 4rem 0 6rem;
+		padding: 8rem 0 6rem;
 	}
 
 	.eyebrow {
@@ -163,7 +165,7 @@ import { SITE_TITLE } from '../consts';
 		}
 
 		.error-section {
-			padding: 2.5rem 0 4rem;
+			padding: 5rem 0 4rem;
 		}
 	}
 </style>
