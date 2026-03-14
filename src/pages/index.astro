@@ -37,36 +37,30 @@ function getTags(tagString: string | undefined, limit = 3) {
 		<main id="main-content">
 			<section class="hero-section">
 				<div class="container">
-					<div class="hero-panel">
-						<p class="eyebrow">Arthur Wheildon / AI Systems Developer</p>
-						<h1 class="hero-title">Software for messy reality.</h1>
-						<p class="hero-description">
-							Structured LLM workflows, secure native apps, and product-grade tooling for founders and dev teams shipping under real constraints.
-						</p>
-						<div class="hero-actions">
-							<a href="/contact" class="btn btn-primary">Start a Project</a>
-							{githubLink && (
-								<a href={githubLink.href} target="_blank" rel="noopener noreferrer" class="btn btn-secondary">GitHub</a>
-							)}
-						</div>
+					<p class="eyebrow">Arthur Wheildon / AI Systems Developer</p>
+					<h1 class="hero-title">Systems that survive production.</h1>
+					<hr class="hero-rule" />
+					<p class="hero-description">
+						Structured LLM workflows, hardened native apps, and developer tooling — built for founders and teams who need things to actually work under real constraints.
+					</p>
+					<div class="hero-actions">
+						<a href="/contact" class="btn btn-primary">Start a Project</a>
+						{githubLink && (
+							<a href={githubLink.href} target="_blank" rel="noopener noreferrer" class="btn btn-secondary">GitHub</a>
+						)}
 					</div>
-				</div>
-			</section>
-
-			<section class="stats-section">
-				<div class="container">
-					<div class="stats-grid">
-						<div class="stat-item">
-							<div class="stat-value">AI Systems</div>
-							<div class="stat-label">LLM Pipelines · Structured Output</div>
+					<div class="hero-status">
+						<div class="hero-status-item">
+							<span class="hero-status-dot"></span>
+							<span class="hero-status-text">AI Systems</span>
 						</div>
-						<div class="stat-item">
-							<div class="stat-value">Native Apps</div>
-							<div class="stat-label">OAuth · Keychain · SwiftUI</div>
+						<div class="hero-status-item">
+							<span class="hero-status-dot"></span>
+							<span class="hero-status-text">Native Apps</span>
 						</div>
-						<div class="stat-item">
-							<div class="stat-value">Automation</div>
-							<div class="stat-label">APIs · CLI · Developer Tools</div>
+						<div class="hero-status-item">
+							<span class="hero-status-dot"></span>
+							<span class="hero-status-text">Automation</span>
 						</div>
 					</div>
 				</div>
@@ -166,26 +160,29 @@ function getTags(tagString: string | undefined, limit = 3) {
 	/* ── Hero ── */
 
 	.hero-section {
-		padding: 8rem 0 var(--space-8);
-	}
-
-	.hero-panel {
-		padding: var(--space-5) var(--space-4);
-		border-radius: 12px;
-		border: 1px solid var(--border);
-		background: var(--surface);
+		padding: 10rem 0 var(--space-6);
+		border-bottom: 1px solid var(--border);
 	}
 
 	.hero-title {
-		font-size: clamp(var(--text-4xl), 7vw, var(--text-5xl));
-		margin: 0 0 var(--space-3);
-		max-width: 14ch;
-		line-height: var(--leading-tight);
+		font-size: clamp(var(--text-4xl), 8vw, var(--text-5xl));
+		margin: 0 0 var(--space-4);
+		max-width: 16ch;
+		line-height: 1.05;
 		letter-spacing: -0.04em;
 	}
 
+	.hero-rule {
+		width: 4rem;
+		height: 2px;
+		background: var(--accent);
+		opacity: 0.5;
+		border: none;
+		margin: 0 0 var(--space-4);
+	}
+
 	.hero-description {
-		max-width: 42rem;
+		max-width: 38rem;
 		font-size: var(--text-lg);
 		color: var(--fg-secondary);
 		line-height: var(--leading-relaxed);
@@ -196,6 +193,36 @@ function getTags(tagString: string | undefined, limit = 3) {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.8rem;
+		margin-bottom: var(--space-5);
+	}
+
+	.hero-status {
+		display: flex;
+		gap: var(--space-4);
+		padding-top: var(--space-4);
+		border-top: 1px solid var(--border);
+	}
+
+	.hero-status-item {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.hero-status-dot {
+		width: 6px;
+		height: 6px;
+		border-radius: 50%;
+		background: var(--accent);
+		flex-shrink: 0;
+	}
+
+	.hero-status-text {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: var(--text-xs);
+		color: var(--fg-tertiary);
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
 	}
 
 	.btn {
@@ -248,42 +275,6 @@ function getTags(tagString: string | undefined, limit = 3) {
 		outline: var(--focus-ring-width) solid var(--focus-ring);
 		outline-offset: var(--focus-ring-offset);
 		border-color: var(--accent);
-	}
-
-	/* ── Stats Section ── */
-	.stats-section {
-		padding: 0 0 var(--space-8);
-	}
-
-	.stats-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-		gap: var(--space-2);
-	}
-
-	.stat-item {
-		padding: var(--space-3);
-		border-radius: 12px;
-		border: 1px solid var(--border);
-		background: var(--surface);
-		text-align: center;
-	}
-
-	.stat-value {
-		font-family: 'Syne', sans-serif;
-		font-size: var(--text-xl);
-		font-weight: 700;
-		color: var(--accent);
-		margin-bottom: var(--space-1);
-		letter-spacing: -0.02em;
-	}
-
-	.stat-label {
-		font-family: 'JetBrains Mono', monospace;
-		font-size: var(--text-xs);
-		color: var(--fg-tertiary);
-		letter-spacing: 0.08em;
-		text-transform: uppercase;
 	}
 
 	/* ── Projects ── */
@@ -519,15 +510,6 @@ function getTags(tagString: string | undefined, limit = 3) {
 			grid-template-columns: 1fr;
 			gap: var(--space-2);
 		}
-
-		.stats-grid {
-			grid-template-columns: 1fr;
-			gap: var(--space-2);
-		}
-
-		.stats-section {
-			padding-bottom: var(--space-6);
-		}
 	}
 
 	@media (max-width: 768px) {
@@ -536,11 +518,12 @@ function getTags(tagString: string | undefined, limit = 3) {
 		}
 
 		.hero-section {
-			padding: 5rem 0 var(--space-6);
+			padding: 6rem 0 var(--space-4);
 		}
 
-		.hero-panel {
-			padding: var(--space-3) var(--space-2);
+		.hero-status {
+			flex-direction: column;
+			gap: var(--space-2);
 		}
 
 		.section {
