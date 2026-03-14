@@ -19,9 +19,8 @@ function isActive(href: string): boolean {
 <nav class="navbar" aria-label="Main navigation">
 	<div class="nav-container">
 		<a href="/" class="brand" data-home-reset>
-			<img src="/logo.png" alt="arthur3" class="logo-image" />
 			<div class="brand-copy">
-				<span class="brand-name">arthur3</span>
+				<span class="brand-name">arthur3<span class="cursor">_</span></span>
 				<span class="brand-tag">AI Systems Developer</span>
 			</div>
 		</a>
@@ -143,13 +142,6 @@ function isActive(href: string): boolean {
 		min-width: 0;
 	}
 
-	.logo-image {
-		height: 3.2rem;
-		width: auto;
-		border-radius: 12px;
-		border: 1px solid var(--border);
-	}
-
 	.brand-copy {
 		display: flex;
 		flex-direction: column;
@@ -157,11 +149,21 @@ function isActive(href: string): boolean {
 	}
 
 	.brand-name {
-		font-family: 'Syne', sans-serif;
-		font-size: 1rem;
-		font-weight: 700;
-		letter-spacing: -0.035em;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 1.1rem;
+		font-weight: 600;
+		letter-spacing: -0.02em;
 		color: var(--fg);
+	}
+
+	.cursor {
+		color: var(--accent);
+		animation: blink 1.2s step-end infinite;
+	}
+
+	@keyframes blink {
+		0%, 50% { opacity: 1; }
+		50.01%, 100% { opacity: 0; }
 	}
 
 	.brand-tag {
@@ -397,11 +399,7 @@ function isActive(href: string): boolean {
 			padding: 0 0.9rem 0 1rem;
 		}
 
-		.logo-image {
-			height: 2.8rem;
-			border-radius: 10px;
-		}
-
+		.brand-name { font-size: 1rem; }
 		.brand-tag { font-size: 0.6rem; }
 		.desktop-only { display: none; }
 		.mobile-only { display: flex; }
