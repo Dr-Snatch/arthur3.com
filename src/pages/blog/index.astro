@@ -10,7 +10,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 
 <SectionPage title="Blog" description="Devlogs, technical opinions, and notes from building in public.">
 	<Fragment slot="eyebrow">~/blog</Fragment>
-	<Fragment slot="heading">Devlog.</Fragment>
+	<Fragment slot="heading">Blog.</Fragment>
 	<Fragment slot="description">
 		Honest write-ups on what I'm building, what broke, and what I learned. No polish, no marketing.
 	</Fragment>
@@ -26,7 +26,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 					{posts.map((post) => (
 						<a href={`/blog/${post.id}/`} class="post-card">
 							<div class="post-top">
-								<p class="card-kicker">devlog</p>
+								<p class="card-kicker">blog</p>
 								{post.data.pubDate && (
 									<p class="post-date"><FormattedDate date={post.data.pubDate} /></p>
 								)}

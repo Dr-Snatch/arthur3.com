@@ -106,7 +106,7 @@ function getTags(tagString: string | undefined, limit = 3) {
 						{recentPosts.map((post) => (
 							<a href={`/blog/${post.id}/`} class="post-card">
 								<div class="post-top">
-									<p class="post-kicker">devlog</p>
+									<p class="post-kicker">blog</p>
 									<p class="post-date"><FormattedDate date={post.data.pubDate} /></p>
 								</div>
 								<h3 class="card-title">{post.data.title}</h3>
