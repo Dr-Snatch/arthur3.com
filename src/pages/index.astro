@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
 import Nav from '../components/Nav.astro';
+import TerminalBar from '../components/TerminalBar.astro';
 import { SITE_DESCRIPTION, SITE_TITLE, SOCIAL_LINKS } from '../consts';
 
 const allProjects = (await getCollection('projects')).sort((a, b) => {
@@ -84,6 +85,7 @@ function getTags(tagString: string | undefined, limit = 3) {
 			</section>
 		</main>
 		<Footer />
+		<TerminalBar />
 	</body>
 </html>
 
