@@ -48,6 +48,25 @@ function getTags(tagString: string | undefined, limit = 3) {
 				</div>
 			</section>
 
+			<section class="stats-section">
+				<div class="container">
+					<div class="stats-grid">
+						<div class="stat-item">
+							<div class="stat-value">AI Systems</div>
+							<div class="stat-label">LLM Pipelines · Structured Output</div>
+						</div>
+						<div class="stat-item">
+							<div class="stat-value">Native Apps</div>
+							<div class="stat-label">OAuth · Keychain · SwiftUI</div>
+						</div>
+						<div class="stat-item">
+							<div class="stat-value">Automation</div>
+							<div class="stat-label">APIs · CLI · Developer Tools</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
 			<section class="section">
 				<div class="container">
 					<div class="section-head">
@@ -101,39 +120,42 @@ function getTags(tagString: string | undefined, limit = 3) {
 	}
 
 	.eyebrow {
-		margin: 0 0 1rem;
+		margin: 0 0 var(--space-2);
 		font-family: 'JetBrains Mono', monospace;
-		font-size: 0.7rem;
-		letter-spacing: 0.14em;
+		font-size: var(--text-xs);
+		letter-spacing: 0.16em;
 		text-transform: uppercase;
 		color: var(--fg-tertiary);
+		font-weight: 600;
 	}
 
 	/* ── Hero ── */
 
 	.hero-section {
-		padding: 1.5rem 0 5rem;
+		padding: 1.5rem 0 var(--space-8);
 	}
 
 	.hero-panel {
-		padding: 2.5rem 2rem;
+		padding: var(--space-5) var(--space-4);
 		border-radius: 12px;
 		border: 1px solid var(--border);
 		background: var(--surface);
 	}
 
 	.hero-title {
-		font-size: clamp(3rem, 7vw, 5.5rem);
-		margin: 0 0 1.25rem;
+		font-size: clamp(var(--text-4xl), 7vw, var(--text-5xl));
+		margin: 0 0 var(--space-3);
 		max-width: 14ch;
+		line-height: var(--leading-tight);
+		letter-spacing: -0.04em;
 	}
 
 	.hero-description {
-		max-width: 38rem;
-		font-size: 1.1rem;
+		max-width: 42rem;
+		font-size: var(--text-lg);
 		color: var(--fg-secondary);
-		line-height: 1.75;
-		margin: 0 0 2rem;
+		line-height: var(--leading-relaxed);
+		margin: 0 0 var(--space-4);
 	}
 
 	.hero-actions {
@@ -194,6 +216,42 @@ function getTags(tagString: string | undefined, limit = 3) {
 		border-color: var(--accent);
 	}
 
+	/* ── Stats Section ── */
+	.stats-section {
+		padding: 0 0 var(--space-8);
+	}
+
+	.stats-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+		gap: var(--space-2);
+	}
+
+	.stat-item {
+		padding: var(--space-3);
+		border-radius: 12px;
+		border: 1px solid var(--border);
+		background: var(--surface);
+		text-align: center;
+	}
+
+	.stat-value {
+		font-family: 'Syne', sans-serif;
+		font-size: var(--text-xl);
+		font-weight: 700;
+		color: var(--accent);
+		margin-bottom: var(--space-1);
+		letter-spacing: -0.02em;
+	}
+
+	.stat-label {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: var(--text-xs);
+		color: var(--fg-tertiary);
+		letter-spacing: 0.08em;
+		text-transform: uppercase;
+	}
+
 	/* ── Projects ── */
 
 	.section {
@@ -217,18 +275,41 @@ function getTags(tagString: string | undefined, limit = 3) {
 	.project-card {
 		display: flex;
 		flex-direction: column;
-		gap: 0.6rem;
-		padding: 1.25rem;
+		gap: var(--space-2);
+		padding: var(--space-3);
 		border-radius: 12px;
 		border: 1px solid var(--border);
 		background: var(--surface);
 		text-decoration: none;
-		transition: border-color 0.15s ease, background 0.15s ease;
+		transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+		position: relative;
+		overflow: hidden;
+	}
+
+	/* Add subtle gradient overlay on hover */
+	.project-card::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: radial-gradient(
+			circle at top left,
+			rgba(61, 214, 140, 0.04),
+			transparent 60%
+		);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		pointer-events: none;
 	}
 
 	.project-card:hover {
-		border-color: var(--border-strong);
+		border-color: var(--accent-border);
 		background: var(--surface-hover);
+		transform: translateY(-2px);
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+	}
+
+	.project-card:hover::before {
+		opacity: 1;
 	}
 
 	/* Focus state for project cards */
@@ -307,9 +388,27 @@ function getTags(tagString: string | undefined, limit = 3) {
 
 	/* ── Responsive ── */
 
-	@media (max-width: 980px) {
+	/* Tablet: 2 columns */
+	@media (min-width: 640px) and (max-width: 1024px) {
+		.project-grid {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+
+	/* Mobile: 1 column */
+	@media (max-width: 639px) {
 		.project-grid {
 			grid-template-columns: 1fr;
+			gap: var(--space-2);
+		}
+
+		.stats-grid {
+			grid-template-columns: 1fr;
+			gap: var(--space-2);
+		}
+
+		.stats-section {
+			padding-bottom: var(--space-6);
 		}
 	}
 
@@ -319,20 +418,31 @@ function getTags(tagString: string | undefined, limit = 3) {
 		}
 
 		.hero-section {
-			padding: 1rem 0 4rem;
+			padding: 1rem 0 var(--space-6);
 		}
 
 		.hero-panel {
-			padding: 1.5rem 1.25rem;
+			padding: var(--space-3) var(--space-2);
 		}
 
 		.section {
-			padding-bottom: 4rem;
+			padding-bottom: var(--space-6);
 		}
 
 		.cta-panel {
 			flex-direction: column;
 			align-items: start;
+		}
+
+		.btn {
+			padding: 1.2rem 2.5rem;
+			min-height: 48px;
+			font-size: 0.8rem;
+		}
+
+		.project-card {
+			padding: var(--space-3);
+			min-height: 120px;
 		}
 	}
 </style>

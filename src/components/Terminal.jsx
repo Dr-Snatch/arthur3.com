@@ -90,7 +90,8 @@ const BOOT = [
   { text: "AI systems developer building reliable software.", delay: 100, color: "rgba(232,232,230,0.6)" },
   { text: "Structured LLM pipelines, secure native apps, and automation systems.", delay: 100, color: "rgba(232,232,230,0.6)" },
   { text: "", delay: 200 },
-  { text: "→ type help or start exploring with ls, cd, cat", delay: 300, color: "rgba(232,232,230,0.36)" },
+  { text: "→ Type 'help' for commands, or explore with 'ls', 'cd', 'cat'", delay: 300, color: "#3dd68c" },
+  { text: "→ Try: cd ~/projects → open", delay: 400, color: "rgba(232,232,230,0.36)" },
 ];
 
 const BOOT_READY = 500;

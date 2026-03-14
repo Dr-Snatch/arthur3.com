@@ -47,6 +47,48 @@
 	--focus-ring: #3dd68c;
 	--focus-ring-width: 3px;
 	--focus-ring-offset: 2px;
+
+	/* Typography Scale - 1.25 ratio (Major Third) */
+	--text-xs: 0.64rem;     /* 10.24px */
+	--text-sm: 0.8rem;      /* 12.8px */
+	--text-base: 1rem;      /* 16px */
+	--text-lg: 1.25rem;     /* 20px */
+	--text-xl: 1.563rem;    /* 25px */
+	--text-2xl: 1.953rem;   /* 31.25px */
+	--text-3xl: 2.441rem;   /* 39px */
+	--text-4xl: 3.052rem;   /* 48.8px */
+	--text-5xl: 3.815rem;   /* 61px */
+
+	/* Spacing Scale - 8px base unit */
+	--space-1: 0.5rem;   /* 8px */
+	--space-2: 1rem;     /* 16px */
+	--space-3: 1.5rem;   /* 24px */
+	--space-4: 2rem;     /* 32px */
+	--space-5: 2.5rem;   /* 40px */
+	--space-6: 3rem;     /* 48px */
+	--space-8: 4rem;     /* 64px */
+	--space-10: 5rem;    /* 80px */
+	--space-12: 6rem;    /* 96px */
+
+	/* Line Heights */
+	--leading-tight: 1.2;
+	--leading-snug: 1.375;
+	--leading-normal: 1.5;
+	--leading-relaxed: 1.7;
+	--leading-loose: 2;
+
+	/* Semantic Colors */
+	--color-success: #3dd68c;
+	--color-success-dim: rgba(61, 214, 140, 0.12);
+	--color-warning: #fbbf24;
+	--color-warning-dim: rgba(251, 191, 36, 0.12);
+	--color-error: #f87171;
+	--color-error-dim: rgba(248, 113, 113, 0.12);
+
+	/* Interactive States */
+	--hover-overlay: rgba(255, 255, 255, 0.05);
+	--active-overlay: rgba(255, 255, 255, 0.08);
+	--disabled-opacity: 0.5;
 }
 
 * {
