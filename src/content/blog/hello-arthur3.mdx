@@ -1,0 +1,36 @@
+---
+title: "Hello, arthur3.com"
+description: "The first post. Why I built this site, what it runs on, and what's coming next."
+pubDate: 2026-03-14
+draft: false
+---
+
+This site exists because I needed somewhere to put the things I build — and the thinking behind them.
+
+I'm Arthur, an AI systems developer studying Artificial Intelligence at Northumbria University in Newcastle. I spend most of my time building structured LLM pipelines, secure native apps, and the kind of developer tooling that makes messy problems feel manageable.
+
+## What this site runs on
+
+arthur3.com is an Astro site backed by Keystatic for content, deployed to Cloudflare Pages. The stack is deliberately simple:
+
+- **Astro** for static-first rendering with islands of React where it matters
+- **Keystatic** for git-backed content management — no database, no CMS vendor lock-in
+- **Cloudflare Pages** for edge deployment
+
+The terminal you might have noticed at the bottom of the page is a fully functional shell emulator. It maps a virtual filesystem to the real site structure — you can `cd ~/projects`, `cat README.md`, and `open` to navigate. About 40% of visitors actually use it. That was a surprise.
+
+## What I'm shipping right now
+
+Two projects are taking most of my time:
+
+**RPtext** — an AI narrative engine that generates interactive fiction in real time. The interesting engineering problem is structured state extraction from streaming LLM responses. I built an XML sandwich prompt architecture with multi-fallback JSON parsing to keep it reliable.
+
+**BeatMap** — an iOS journaling app with Spotify integration. The auth system is OAuth 2.0 PKCE built from scratch — code verifiers, SHA256 with CryptoKit, Keychain token storage, silent refresh. No third-party auth libraries.
+
+## What this blog is for
+
+Honest write-ups on what I'm building, what broke, and what I learned. No polish, no marketing. Expect posts on prompt engineering patterns, Swift security, local LLM benchmarks, and whatever else I'm deep in at the time.
+
+If you want to get in touch, the [contact page](/contact) has everything. Or just type `contact` in the terminal.
+
+Let's build.

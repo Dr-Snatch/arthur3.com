@@ -2,9 +2,14 @@
 import { getCollection } from 'astro:content';
 import BaseHead from '../components/BaseHead.astro';
 import Footer from '../components/Footer.astro';
+import FormattedDate from '../components/FormattedDate.astro';
 import Nav from '../components/Nav.astro';
 import TerminalBar from '../components/TerminalBar.astro';
 import { SITE_DESCRIPTION, SITE_TITLE, SOCIAL_LINKS } from '../consts';
+
+const recentPosts = (await getCollection('blog', ({ data }) => !data.draft))
+	.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+	.slice(0, 3);
 
 const allProjects = (await getCollection('projects')).sort((a, b) => {
 	const flagshipDelta = Number(b.data.flagship) - Number(a.data.flagship);
@@ -89,6 +94,35 @@ function getTags(tagString: string | undefined, limit = 3) {
 					</div>
 				</div>
 			</section>
+
+			{recentPosts.length > 0 && (
+			<section class="section">
+				<div class="container">
+					<div class="section-head">
+						<p class="eyebrow">Blog</p>
+						<h2 class="section-title">Recent posts.</h2>
+					</div>
+					<div class="post-grid">
+						{recentPosts.map((post) => (
+							<a href={`/blog/${post.id}/`} class="post-card">
+								<div class="post-top">
+									<p class="post-kicker">devlog</p>
+									<p class="post-date"><FormattedDate date={post.data.pubDate} /></p>
+								</div>
+								<h3 class="card-title">{post.data.title}</h3>
+								{post.data.description && (
+									<p class="card-body">{post.data.description}</p>
+								)}
+								<span class="post-link">Read post &#8599;</span>
+							</a>
+						))}
+					</div>
+					<div class="section-footer">
+						<a href="/blog" class="btn btn-secondary">All Posts</a>
+					</div>
+				</div>
+			</section>
+			)}
 
 			<section class="section">
 				<div class="container">
@@ -365,6 +399,89 @@ function getTags(tagString: string | undefined, limit = 3) {
 		color: var(--accent);
 	}
 
+	/* ── Blog Posts ── */
+
+	.post-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+	}
+
+	.post-card {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+		padding: var(--space-3);
+		border-radius: 12px;
+		border: 1px solid var(--border);
+		background: var(--surface);
+		text-decoration: none;
+		transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+		position: relative;
+		overflow: hidden;
+	}
+
+	.post-card::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		background: radial-gradient(
+			circle at top left,
+			rgba(61, 214, 140, 0.04),
+			transparent 60%
+		);
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		pointer-events: none;
+	}
+
+	.post-card:hover {
+		border-color: var(--accent-border);
+		background: var(--surface-hover);
+		transform: translateY(-2px);
+		box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+	}
+
+	.post-card:hover::before {
+		opacity: 1;
+	}
+
+	.post-card:focus-visible {
+		outline: var(--focus-ring-width) solid var(--focus-ring);
+		outline-offset: var(--focus-ring-offset);
+		border-color: var(--accent);
+	}
+
+	.post-top {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.post-kicker,
+	.post-date {
+		margin: 0;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.68rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--fg-tertiary);
+	}
+
+	.post-link {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.68rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--accent);
+	}
+
+	.section-footer {
+		margin-top: 1.5rem;
+		text-align: center;
+	}
+
 	/* ── CTA ── */
 
 	.cta-panel {
@@ -397,7 +514,8 @@ function getTags(tagString: string | undefined, limit = 3) {
 
 	/* Mobile: 1 column */
 	@media (max-width: 639px) {
-		.project-grid {
+		.project-grid,
+		.post-grid {
 			grid-template-columns: 1fr;
 			gap: var(--space-2);
 		}

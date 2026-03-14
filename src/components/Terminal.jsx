@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 
 const FS = {
   "/": { type: "dir", children: ["home", "etc", "usr", "tmp", "var"] },
@@ -126,34 +126,68 @@ function defaultWindowStateForViewport() {
   if (typeof window !== "undefined" && window.matchMedia("(max-width: 640px)").matches) return "closed";
   return DEFAULT_WINDOW_STATE;
 }
-function pathFromUrl(urlPath) {
+function pathFromUrl(urlPath, fsObj) {
   if (URL_TO_PATH[urlPath]) return URL_TO_PATH[urlPath];
   const projectMatch = urlPath.match(/^\/projects\/([^/]+)$/);
   if (projectMatch) {
     const projectPath = `/home/arthur/projects/${projectMatch[1]}`;
-    if (FS[projectPath]) return projectPath;
+    if (fsObj[projectPath]) return projectPath;
   }
   const labMatch = urlPath.match(/^\/lab\/([^/]+)$/);
   if (labMatch) {
     const labPath = `/home/arthur/lab/experiments/${labMatch[1]}`;
-    if (FS[labPath]) return labPath;
+    if (fsObj[labPath]) return labPath;
   }
   const blogMatch = urlPath.match(/^\/blog\/([^/]+)$/);
   if (blogMatch) {
     const blogPath = `/home/arthur/blog/${blogMatch[1]}`;
-    if (FS[blogPath]) return blogPath;
+    if (fsObj[blogPath]) return blogPath;
     return "/home/arthur/blog";
   }
   return HOME;
 }
-function cwdFromUrl() { if (typeof window === "undefined") return HOME; const p = window.location.pathname.replace(/\/+$/, "") || "/"; return pathFromUrl(p); }
+function cwdFromUrl(fsObj) { if (typeof window === "undefined") return HOME; const p = window.location.pathname.replace(/\/+$/, "") || "/"; return pathFromUrl(p, fsObj); }
 
 function navigateTo(url) {
   if (window.__astro_navigate) window.__astro_navigate(url);
   else window.location.href = url;
 }
 
-export default function Terminal() {
+function buildFS(blogPosts) {
+  const fs = JSON.parse(JSON.stringify(FS));
+  if (blogPosts && blogPosts.length > 0) {
+    const blogChildren = ["README.md"];
+    for (const post of blogPosts) {
+      blogChildren.push(post.id);
+      const postPath = `/home/arthur/blog/${post.id}`;
+      fs[postPath] = {
+        type: "dir",
+        url: `/blog/${post.id}`,
+        children: ["README.md"],
+      };
+      fs[`${postPath}/README.md`] = {
+        type: "file",
+        content: [
+          `# ${post.title}`,
+          "",
+          post.description || "",
+          "",
+          `Published: ${post.pubDate}`,
+          "",
+          "open to read the full post.",
+        ],
+      };
+    }
+    fs["/home/arthur/blog"] = { ...fs["/home/arthur/blog"], children: blogChildren };
+  }
+  return fs;
+}
+
+export default function Terminal({ blogPosts }) {
+  const fs = useMemo(() => buildFS(blogPosts), [blogPosts]);
+  const fsRef = useRef(fs);
+  useEffect(() => { fsRef.current = fs; }, [fs]);
+
   const [lines, setLines] = useState([]);
   const [input, setInput] = useState("");
   const [history, setHistory] = useState([]);
@@ -174,7 +208,7 @@ export default function Terminal() {
 
   useEffect(() => {
     const saved = loadSession();
-    setCwd(cwdFromUrl());
+    setCwd(cwdFromUrl(fsRef.current));
     const savedWindowState = loadWindowState();
     setWindowState(savedWindowState || defaultWindowStateForViewport());
     setWindowStateReady(true);
@@ -197,7 +231,7 @@ export default function Terminal() {
 
   // Sync CWD when page changes via view transitions
   useEffect(() => {
-    function onPageLoad() { setCwd(cwdFromUrl()); }
+    function onPageLoad() { setCwd(cwdFromUrl(fsRef.current)); }
     document.addEventListener('astro:page-load', onPageLoad);
     return () => document.removeEventListener('astro:page-load', onPageLoad);
   }, []);
@@ -217,24 +251,24 @@ export default function Terminal() {
     if (base === "reset") { clearSession(); saveWindowState("normal"); setWindowState("normal"); setLines([]); setHistory([]); setHistoryIndex(-1); const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (cp !== "/") { navigateTo("/"); return; } setCwd(HOME); BOOT.forEach(({ text, delay, color }) => setTimeout(() => setLines((p) => [...p, { text, color }]), delay)); setTimeout(() => setBooted(true), BOOT_READY); return; }
     if (base === "home") { const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (cp === "/") { setCwd(HOME); out([{ text: "already home.", color: "#2a5e3e" }]); return; } if (!window.__astro_navigate) { saveSession([...linesRef.current, prompt, { text: "going home...", color: "#3dd68c" }], [raw, ...histRef.current]); saveWindowState(windowState); } else { out([{ text: "going home...", color: "#3dd68c" }]); } setCwd(HOME); navigateTo("/"); return; }
 
-    if (base === "cd") { const target = args[0] || "~"; if (target === "-") { out([{ text: "cd: OLDPWD not set", color: "#f87171" }]); return; } const resolved = resolvePath(cwd, target); const node = FS[resolved]; if (!node) { out([{ text: `cd: ${target}: no such file or directory`, color: "#f87171" }]); return; } if (node.type !== "dir") { out([{ text: `cd: ${target}: not a directory`, color: "#f87171" }]); return; } if (node.url) { const cp = (window.location.pathname.replace(/\/+$/, "") || "/"); if (node.url !== cp) { if (!window.__astro_navigate) { saveSession([...linesRef.current, prompt], [raw, ...histRef.current]); saveWindowState(windowState); } setCwd(resolved); navigateTo(node.url); return; } } setCwd(resolved); return; }
+    if (base === "cd") { const target = args[0] || "~"; if (target === "-") { out([{ text: "cd: OLDPWD not set", color: "#f87171" }]); return; } const resolved = resolvePath(cwd, target); const node = fsRef.current[resolved]; if (!node) { out([{ text: `cd: ${target}: no such file or directory`, color: "#f87171" }]); return; } if (node.type !== "dir") { out([{ text: `cd: ${target}: not a directory`, color: "#f87171" }]); return; } if (node.url) { const cp = (window.location.pathname.replace(/\/+$/, "") || "/"); if (node.url !== cp) { if (!window.__astro_navigate) { saveSession([...linesRef.current, prompt], [raw, ...histRef.current]); saveWindowState(windowState); } setCwd(resolved); navigateTo(node.url); return; } } setCwd(resolved); return; }
     if (base === "pwd") { out([{ text: cwd }]); return; }
 
     if (base === "ls") {
-      const showHidden = args.includes("-a") || args.includes("-la") || args.includes("-al"); const showLong = args.includes("-l") || args.includes("-la") || args.includes("-al"); const pathArg = args.find((a) => !a.startsWith("-")); const target = pathArg ? resolvePath(cwd, pathArg) : cwd; const node = FS[target];
+      const showHidden = args.includes("-a") || args.includes("-la") || args.includes("-al"); const showLong = args.includes("-l") || args.includes("-la") || args.includes("-al"); const pathArg = args.find((a) => !a.startsWith("-")); const target = pathArg ? resolvePath(cwd, pathArg) : cwd; const node = fsRef.current[target];
       if (!node) { out([{ text: `ls: ${pathArg}: no such file or directory`, color: "#f87171" }]); return; } if (node.type === "file") { out([{ text: pathArg || target.split("/").pop() }]); return; }
       let items = node.children || []; if (!showHidden) items = items.filter((i) => !i.startsWith("."));
-      if (showLong) { if (showHidden) out([{ text: "total " + items.length }, { text: "drwxr-xr-x  .   ", color: "#3dd68c" }, { text: "drwxr-xr-x  ..  ", color: "#3dd68c" }]); items.forEach((item) => { const cp = target === "/" ? "/" + item : target + "/" + item; const cn = FS[cp]; const isDir = cn && cn.type === "dir"; const perms = isDir ? "drwxr-xr-x" : "-rw-r--r--"; const sz = cn && cn.content ? String(cn.content.length * 42).padStart(5) : "  4096"; const c = isDir ? "#3dd68c" : item.startsWith(".") ? "rgba(232,232,230,0.3)" : item.endsWith(".py") || item.endsWith(".sh") ? "#3dd68c" : "rgba(232,232,230,0.6)"; out([{ text: `${perms}  ${sz} Mar  7 00:00  ${item}${isDir ? "/" : ""}`, color: c }]); });
-      } else { const result = items.map((item) => { const cp = target === "/" ? "/" + item : target + "/" + item; const cn = FS[cp]; const isDir = cn && cn.type === "dir"; return { text: isDir ? item + "/" : item, color: isDir ? "#3dd68c" : "rgba(232,232,230,0.6)" }; }); out(result.length > 0 ? result : [{ text: "(empty)", color: "rgba(232,232,230,0.3)" }]); }
+      if (showLong) { if (showHidden) out([{ text: "total " + items.length }, { text: "drwxr-xr-x  .   ", color: "#3dd68c" }, { text: "drwxr-xr-x  ..  ", color: "#3dd68c" }]); items.forEach((item) => { const cp = target === "/" ? "/" + item : target + "/" + item; const cn = fsRef.current[cp]; const isDir = cn && cn.type === "dir"; const perms = isDir ? "drwxr-xr-x" : "-rw-r--r--"; const sz = cn && cn.content ? String(cn.content.length * 42).padStart(5) : "  4096"; const c = isDir ? "#3dd68c" : item.startsWith(".") ? "rgba(232,232,230,0.3)" : item.endsWith(".py") || item.endsWith(".sh") ? "#3dd68c" : "rgba(232,232,230,0.6)"; out([{ text: `${perms}  ${sz} Mar  7 00:00  ${item}${isDir ? "/" : ""}`, color: c }]); });
+      } else { const result = items.map((item) => { const cp = target === "/" ? "/" + item : target + "/" + item; const cn = fsRef.current[cp]; const isDir = cn && cn.type === "dir"; return { text: isDir ? item + "/" : item, color: isDir ? "#3dd68c" : "rgba(232,232,230,0.6)" }; }); out(result.length > 0 ? result : [{ text: "(empty)", color: "rgba(232,232,230,0.3)" }]); }
       return;
     }
 
-    if (base === "cat") { if (!args[0]) { out([{ text: "cat: missing operand", color: "#f87171" }]); return; } const t = resolvePath(cwd, args[0]); const n = FS[t]; if (!n) out([{ text: `cat: ${args[0]}: no such file or directory`, color: "#f87171" }]); else if (n.type === "dir") out([{ text: `cat: ${args[0]}: is a directory`, color: "#f87171" }]); else out(n.content.map((l) => ({ text: l }))); return; }
-    if (base === "head") { const t = resolvePath(cwd, args[0] || ""); const n = FS[t]; if (!n || n.type !== "file") out([{ text: `head: cannot read`, color: "#f87171" }]); else out(n.content.slice(0, 5).map((l) => ({ text: l }))); return; }
+    if (base === "cat") { if (!args[0]) { out([{ text: "cat: missing operand", color: "#f87171" }]); return; } const t = resolvePath(cwd, args[0]); const n = fsRef.current[t]; if (!n) out([{ text: `cat: ${args[0]}: no such file or directory`, color: "#f87171" }]); else if (n.type === "dir") out([{ text: `cat: ${args[0]}: is a directory`, color: "#f87171" }]); else out(n.content.map((l) => ({ text: l }))); return; }
+    if (base === "head") { const t = resolvePath(cwd, args[0] || ""); const n = fsRef.current[t]; if (!n || n.type !== "file") out([{ text: `head: cannot read`, color: "#f87171" }]); else out(n.content.slice(0, 5).map((l) => ({ text: l }))); return; }
 
-    if (base === "open") { const target = args[0]; if (!target) { const node = FS[cwd]; if (node && node.url) { const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (node.url === cp) { out([{ text: "you're already here.", color: "#2a5e3e" }]); return; } if (!window.__astro_navigate) { saveSession([...linesRef.current, prompt, { text: `opening ${node.url}...`, color: "#3dd68c" }], [raw, ...histRef.current]); saveWindowState(windowState); } out([{ text: `opening ${node.url}...`, color: "#3dd68c" }]); setTimeout(() => { navigateTo(node.url); }, 400); } else out([{ text: "open: no page for this directory", color: "#f87171" }]); return; } const resolved = resolvePath(cwd, target); const node = FS[resolved]; if (node && node.url) { if (!window.__astro_navigate) { saveSession([...linesRef.current, prompt, { text: `opening ${node.url}...`, color: "#3dd68c" }], [raw, ...histRef.current]); saveWindowState(windowState); } out([{ text: `opening ${node.url}...`, color: "#3dd68c" }]); setTimeout(() => { navigateTo(node.url); }, 400); } else if (target.startsWith("http")) { out([{ text: `opening ${target}...`, color: "#3dd68c" }]); setTimeout(() => { window.open(target, "_blank"); }, 400); } else out([{ text: `open: ${target}: no page associated`, color: "#f87171" }]); return; }
+    if (base === "open") { const target = args[0]; if (!target) { const node = fsRef.current[cwd]; if (node && node.url) { const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (node.url === cp) { out([{ text: "you're already here.", color: "#2a5e3e" }]); return; } if (!window.__astro_navigate) { saveSession([...linesRef.current, prompt, { text: `opening ${node.url}...`, color: "#3dd68c" }], [raw, ...histRef.current]); saveWindowState(windowState); } out([{ text: `opening ${node.url}...`, color: "#3dd68c" }]); setTimeout(() => { navigateTo(node.url); }, 400); } else out([{ text: "open: no page for this directory", color: "#f87171" }]); return; } const resolved = resolvePath(cwd, target); const node = fsRef.current[resolved]; if (node && node.url) { if (!window.__astro_navigate) { saveSession([...linesRef.current, prompt, { text: `opening ${node.url}...`, color: "#3dd68c" }], [raw, ...histRef.current]); saveWindowState(windowState); } out([{ text: `opening ${node.url}...`, color: "#3dd68c" }]); setTimeout(() => { navigateTo(node.url); }, 400); } else if (target.startsWith("http")) { out([{ text: `opening ${target}...`, color: "#3dd68c" }]); setTimeout(() => { window.open(target, "_blank"); }, 400); } else out([{ text: `open: ${target}: no page associated`, color: "#f87171" }]); return; }
 
-    if (base === "tree") { const target = args[0] ? resolvePath(cwd, args[0]) : cwd; const node = FS[target]; if (!node || node.type !== "dir") { out([{ text: `tree: not a directory`, color: "#f87171" }]); return; } const tl = [{ text: toDisplayPath(target), color: "#3dd68c" }]; function walk(p, pfx) { const n = FS[p]; if (!n || n.type !== "dir") return; const items = (n.children || []).filter((i) => !i.startsWith(".")); items.forEach((item, i) => { const last = i === items.length - 1; const cp = p === "/" ? "/" + item : p + "/" + item; const cn = FS[cp]; const isDir = cn && cn.type === "dir"; tl.push({ text: pfx + (last ? "└── " : "├── ") + item + (isDir ? "/" : ""), color: isDir ? "#3dd68c" : "rgba(232,232,230,0.6)" }); if (isDir) walk(cp, pfx + (last ? "    " : "│   ")); }); } walk(target, ""); out(tl); return; }
+    if (base === "tree") { const target = args[0] ? resolvePath(cwd, args[0]) : cwd; const node = fsRef.current[target]; if (!node || node.type !== "dir") { out([{ text: `tree: not a directory`, color: "#f87171" }]); return; } const tl = [{ text: toDisplayPath(target), color: "#3dd68c" }]; function walk(p, pfx) { const n = fsRef.current[p]; if (!n || n.type !== "dir") return; const items = (n.children || []).filter((i) => !i.startsWith(".")); items.forEach((item, i) => { const last = i === items.length - 1; const cp = p === "/" ? "/" + item : p + "/" + item; const cn = fsRef.current[cp]; const isDir = cn && cn.type === "dir"; tl.push({ text: pfx + (last ? "└── " : "├── ") + item + (isDir ? "/" : ""), color: isDir ? "#3dd68c" : "rgba(232,232,230,0.6)" }); if (isDir) walk(cp, pfx + (last ? "    " : "│   ")); }); } walk(target, ""); out(tl); return; }
 
     if (base === "echo") { out([{ text: rawArgs.replace(/^["']|["']$/g, "") || "" }]); return; }
     if (base === "date") { out([{ text: new Date().toString() }]); return; }
@@ -277,7 +311,7 @@ export default function Terminal() {
 
     if (base === "neofetch") { out(NEOFETCH); return; }
     if (base === "cowsay") { out(cowsay(rawArgs || COWMSGS[Math.floor(Math.random() * COWMSGS.length)])); return; }
-    if (base === "fortune") { const q = FS["/usr/share/fortune/quotes.txt"].content; out([{ text: q[Math.floor(Math.random() * q.length)], color: "#fbbf24" }]); return; }
+    if (base === "fortune") { const q = fsRef.current["/usr/share/fortune/quotes.txt"].content; out([{ text: q[Math.floor(Math.random() * q.length)], color: "#fbbf24" }]); return; }
     if (base === "sudo") { if (rawArgs.startsWith("rm -rf")) out([{ text: "[sudo] password for arthur: ********", color: "#f87171" }, { text: "nice try. this is a portfolio, not a sandbox." }, { text: "incident reported to /dev/null." }]); else if (rawArgs === "make me a sandwich") out([{ text: "okay.", color: "#3dd68c" }]); else out([{ text: "[sudo] password for arthur: ********", color: "#f87171" }, { text: "arthur is not in the sudoers file. this incident will be reported." }]); return; }
     if (base === "rm") { out([{ text: rawArgs.includes("-rf") ? "rm: nice try. refusing to destroy everything." : "rm: read-only filesystem", color: "#f87171" }]); return; }
     if (base === "touch") { out([{ text: args[0] === "grass" ? "good advice. going outside..." : "touch: read-only filesystem", color: args[0] === "grass" ? "#3dd68c" : "#f87171" }]); return; }
@@ -319,7 +353,7 @@ export default function Terminal() {
     else if (e.key === "ArrowDown") { e.preventDefault(); const n = Math.max(historyIndex - 1, -1); setHistoryIndex(n); setInput(n === -1 ? "" : history[n]); }
     else if (e.key === "l" && e.ctrlKey) { e.preventDefault(); setLines([]); }
     else if (e.key === "c" && e.ctrlKey) { e.preventDefault(); setLines((p) => [...p, { text: `user@arthur3 ${displayCwd} % ${input}^C`, color: "#3dd68c" }]); setInput(""); }
-    else if (e.key === "Tab") { e.preventDefault(); const partial = input.split(/\s+/).pop() || ""; if (!partial) return; const node = FS[cwd]; if (!node || node.type !== "dir") return; const matches = (node.children || []).filter((c) => c.startsWith(partial)); if (matches.length === 1) { const pp = input.split(/\s+/); pp[pp.length - 1] = matches[0]; const cp = cwd === "/" ? "/" + matches[0] : cwd + "/" + matches[0]; const cn = FS[cp]; if (cn && cn.type === "dir") pp[pp.length - 1] += "/"; setInput(pp.join(" ")); } else if (matches.length > 1) setLines((p) => [...p, { text: matches.join("  "), color: "#2a5e3e" }]); }
+    else if (e.key === "Tab") { e.preventDefault(); const partial = input.split(/\s+/).pop() || ""; if (!partial) return; const node = fsRef.current[cwd]; if (!node || node.type !== "dir") return; const matches = (node.children || []).filter((c) => c.startsWith(partial)); if (matches.length === 1) { const pp = input.split(/\s+/); pp[pp.length - 1] = matches[0]; const cp = cwd === "/" ? "/" + matches[0] : cwd + "/" + matches[0]; const cn = fsRef.current[cp]; if (cn && cn.type === "dir") pp[pp.length - 1] += "/"; setInput(pp.join(" ")); } else if (matches.length > 1) setLines((p) => [...p, { text: matches.join("  "), color: "#2a5e3e" }]); }
   };
 
   const isMax = windowState === "maximized", isMin = windowState === "minimized", isClosed = windowState === "closed";
