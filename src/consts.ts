@@ -3,7 +3,7 @@
 // ============================================================
 
 export const SITE_TITLE = 'Arthur Wheildon — AI Systems Developer';
-export const SITE_DESCRIPTION = 'AI systems, secure native apps, and product-grade tooling. I build software for founders and dev teams shipping under real constraints.';
+export const SITE_DESCRIPTION = 'AI systems, secure native apps, and product-grade tooling. I build software for founders and dev teams shipping under real conditions.';
 
 export const CONTACT_TEXT = 'Founders, dev teams, and technical leads building product-minded software.';
 
