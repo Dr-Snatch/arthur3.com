@@ -107,22 +107,22 @@ function isActive(href: string): boolean {
 
 	// Typewriter animation
 	(function () {
-		// Page-aware commands based on current path
+		// Page-aware commands - show commands to navigate TO this page
 		const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
 
 		const commandMap = {
-			'/': ['arthur3', 'cd ~', 'ls ~', 'cat ~/README.md', 'pwd'],
-			'/projects': ['cd ~/projects', 'ls ~/projects', 'tree ~/projects', 'pwd'],
-			'/projects/beatmap': ['cd ~/projects/beatmap', 'cat ~/projects/beatmap/README.md', 'ls ~/projects/beatmap', 'pwd'],
-			'/projects/rptext': ['cd ~/projects/rptext', 'cat ~/projects/rptext/README.md', 'ls ~/projects/rptext', 'pwd'],
-			'/projects/arthur3-com': ['cd ~/projects/arthur3-com', 'cat ~/projects/arthur3-com/README.md', 'pwd'],
-			'/lab': ['cd ~/lab', 'ls ~/lab/experiments', 'tree ~/lab', 'pwd'],
-			'/blog': ['cd ~/blog', 'ls ~/blog', 'cat ~/blog/README.md', 'pwd'],
-			'/contact': ['cd ~/contact', 'cat ~/contact/README.md', 'ls ~/contact', 'pwd']
+			'/': ['arthur3', 'cd ~', 'home'],
+			'/projects': ['cd ~/projects', 'cd projects'],
+			'/projects/beatmap': ['cd ~/projects/beatmap', 'open beatmap'],
+			'/projects/rptext': ['cd ~/projects/rptext', 'open rptext'],
+			'/projects/arthur3-com': ['cd ~/projects/arthur3-com', 'open arthur3-com'],
+			'/lab': ['cd ~/lab', 'cd lab'],
+			'/blog': ['cd ~/blog', 'cd blog'],
+			'/contact': ['cd ~/contact', 'cd contact']
 		};
 
 		// Default commands if path not found
-		const commands = commandMap[currentPath] || ['arthur3', 'pwd', 'ls', 'help'];
+		const commands = commandMap[currentPath] || ['arthur3', 'cd ~'];
 
 		let currentIndex = 0;
 		let currentText = '';
