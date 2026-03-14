@@ -111,14 +111,14 @@ function isActive(href: string): boolean {
 		const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
 
 		const commandMap = {
-			'/': ['arthur3', 'cd ~', 'home'],
-			'/projects': ['cd ~/projects', 'cd projects'],
-			'/projects/beatmap': ['cd ~/projects/beatmap', 'open beatmap'],
-			'/projects/rptext': ['cd ~/projects/rptext', 'open rptext'],
-			'/projects/arthur3-com': ['cd ~/projects/arthur3-com', 'open arthur3-com'],
-			'/lab': ['cd ~/lab', 'cd lab'],
-			'/blog': ['cd ~/blog', 'cd blog'],
-			'/contact': ['cd ~/contact', 'cd contact']
+			'/': ['arthur3', 'cd ~', 'cd /home/arthur', 'home'],
+			'/projects': ['cd ~/projects', 'cd projects', 'cd /home/arthur/projects', 'open projects'],
+			'/projects/beatmap': ['cd ~/projects/beatmap', 'cd /home/arthur/projects/beatmap', 'open beatmap', 'open ~/projects/beatmap'],
+			'/projects/rptext': ['cd ~/projects/rptext', 'cd /home/arthur/projects/rptext', 'open rptext', 'open ~/projects/rptext'],
+			'/projects/arthur3-com': ['cd ~/projects/arthur3-com', 'cd /home/arthur/projects/arthur3-com', 'open arthur3-com', 'open ~/projects/arthur3-com'],
+			'/lab': ['cd ~/lab', 'cd lab', 'cd /home/arthur/lab', 'open lab'],
+			'/blog': ['cd ~/blog', 'cd blog', 'cd /home/arthur/blog', 'open blog'],
+			'/contact': ['cd ~/contact', 'cd contact', 'cd /home/arthur/contact', 'open contact']
 		};
 
 		// Default commands if path not found
