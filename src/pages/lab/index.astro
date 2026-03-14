@@ -15,9 +15,9 @@ function getTags(tagString) {
 }
 ---
 
-<SectionPage title="Engineering Notes" description="Benchmarks, experiments, and technical write-ups behind the shipped work.">
+<SectionPage title="Lab" description="Benchmarks, experiments, and technical write-ups behind the shipped work.">
 	<Fragment slot="eyebrow">~/lab</Fragment>
-	<Fragment slot="heading">Engineering Notes.</Fragment>
+	<Fragment slot="heading">Lab.</Fragment>
 	<Fragment slot="description">
 		Benchmarks, prototypes, and case-study fragments that explain how the systems on this site were tested, improved, and made more reliable.
 	</Fragment>
@@ -26,7 +26,7 @@ function getTags(tagString) {
 		<div class="container">
 			{sorted.length === 0 ? (
 				<div class="empty-state">
-					<p class="empty-msg">No notes yet. Add them via <a href="/keystatic" class="ks-link">/keystatic</a>.</p>
+					<p class="empty-msg">No experiments yet. Add them via <a href="/keystatic" class="ks-link">/keystatic</a>.</p>
 				</div>
 			) : (
 				<div class="note-grid">
@@ -43,7 +43,7 @@ function getTags(tagString) {
 							<div class="card-tag-row">
 								{getTags(note.data.tags).map((tag) => <span class="card-tag">{tag}</span>)}
 							</div>
-							<a href={`/lab/${note.id}`} class="card-link">Read note ↗</a>
+							<a href={`/lab/${note.id}`} class="card-link">Read experiment ↗</a>
 						</article>
 					))}
 				</div>
