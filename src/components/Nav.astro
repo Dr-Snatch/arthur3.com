@@ -107,14 +107,13 @@ function isActive(href: string): boolean {
 
 	// Typewriter animation
 	(function () {
+		// TODO: Make page-aware - change commands based on current page
 		const commands = [
 			'arthur3',
-			'cd arthur3.com',
-			'ping 104.21.x.x',
-			'ls ~/projects',
+			'whoami',
+			'ls',
 			'cat README.md',
-			'git status',
-			'npm run dev'
+			'neofetch'
 		];
 
 		let currentIndex = 0;
