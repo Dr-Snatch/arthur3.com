@@ -11,6 +11,9 @@ export default defineConfig({
   output: 'server',
   adapter: cloudflare({ imageService: 'compile' }),
   integrations: [mdx(), sitemap(), react(), keystatic()],
+  prefetch: {
+    defaultStrategy: 'hover',
+  },
   session: {
     driver: 'memory',
   },
@@ -21,8 +24,7 @@ export default defineConfig({
   },
   vite: {
     build: {
-      target: 'es2019',
-      chunkSizeWarningLimit: 3000,
+      target: 'es2022',
     },
   },
 });

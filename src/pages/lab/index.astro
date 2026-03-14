@@ -1,7 +1,10 @@
 ---
+export const prerender = true;
+
 import { getCollection } from 'astro:content';
 import SectionPage from '../../layouts/SectionPage.astro';
 import FormattedDate from '../../components/FormattedDate.astro';
+import { getTags } from '../../utils';
 
 const notes = await getCollection('lab');
 const sorted = notes.sort((a, b) => {
@@ -9,10 +12,6 @@ const sorted = notes.sort((a, b) => {
 	const db = b.data.pubDate ? new Date(b.data.pubDate).getTime() : 0;
 	return db - da;
 });
-
-function getTags(tagString) {
-	return tagString ? tagString.split(',').map((tag) => tag.trim()).slice(0, 3) : [];
-}
 ---
 
 <SectionPage title="Lab" description="Benchmarks, experiments, and technical write-ups behind the shipped work.">

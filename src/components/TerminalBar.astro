@@ -13,7 +13,7 @@ const blogPosts = (await getCollection('blog', ({ data }) => !data.draft))
 ---
 
 <div class="terminal-shell-offset" aria-hidden="true"></div>
-<Terminal client:load transition:persist blogPosts={blogPosts} />
+<Terminal client:idle transition:persist blogPosts={blogPosts} />
 
 <!-- Expose Astro navigate for the Terminal's cd/open commands -->
 <script>

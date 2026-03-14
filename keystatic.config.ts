@@ -6,7 +6,7 @@ export default config({
     repo: 'Dr-Snatch/arthur3.com',
   },
   collections: {
-    posts: collection({
+    blog: collection({
       label: 'Blog Posts',
       slugField: 'title',
       path: 'src/content/blog/*',
@@ -15,6 +15,7 @@ export default config({
         title: fields.slug({ name: { label: 'Title' } }),
         description: fields.text({ label: 'Description' }),
         pubDate: fields.date({ label: 'Publish Date' }),
+        updatedDate: fields.date({ label: 'Updated Date' }),
         heroImage: fields.image({ label: 'Hero Image', directory: 'src/assets', publicPath: '/_astro/' }),
         draft: fields.checkbox({ label: 'Draft', defaultValue: false }),
         content: fields.mdx({ label: 'Content' }),

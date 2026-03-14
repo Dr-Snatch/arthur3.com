@@ -107,6 +107,12 @@ function isActive(href: string): boolean {
 
 	// Typewriter animation
 	(function () {
+		// Clean up any previous typewriter timer
+		if (window.__typewriterTimer) {
+			clearTimeout(window.__typewriterTimer);
+			window.__typewriterTimer = null;
+		}
+
 		// Page-aware commands - show commands to navigate TO this page
 		const currentPath = window.location.pathname.replace(/\/$/, '') || '/';
 
@@ -121,7 +127,6 @@ function isActive(href: string): boolean {
 			'/contact': ['cd ~/contact', 'cd contact', 'cd /home/arthur/contact', 'open contact']
 		};
 
-		// Default commands if path not found
 		const commands = commandMap[currentPath] || ['arthur3', 'cd ~'];
 
 		let currentIndex = 0;
@@ -148,19 +153,29 @@ function isActive(href: string): boolean {
 			let typeSpeed = isDeleting ? 50 : 100;
 
 			if (!isDeleting && charIndex === currentCommand.length) {
-				typeSpeed = 2000; // Pause at end
+				typeSpeed = 2000;
 				isDeleting = true;
 			} else if (isDeleting && charIndex === 0) {
 				isDeleting = false;
 				currentIndex = (currentIndex + 1) % commands.length;
-				typeSpeed = 500; // Pause before next command
+				typeSpeed = 500;
 			}
 
-			setTimeout(type, typeSpeed);
+			window.__typewriterTimer = setTimeout(type, typeSpeed);
 		}
 
-		// Start after a short delay
-		setTimeout(type, 1000);
+		window.__typewriterTimer = setTimeout(type, 1000);
+
+		// Cancel on view transition navigation
+		if (!window.__typewriterSwapListener) {
+			window.__typewriterSwapListener = true;
+			document.addEventListener('astro:before-swap', function () {
+				if (window.__typewriterTimer) {
+					clearTimeout(window.__typewriterTimer);
+					window.__typewriterTimer = null;
+				}
+			});
+		}
 	})();
 </script>
 

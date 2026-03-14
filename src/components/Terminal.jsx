@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import '../styles/terminal.css';
 
 const FS = {
   "/": { type: "dir", children: ["home", "etc", "usr", "tmp", "var"] },
@@ -113,12 +114,13 @@ const NEOFETCH = [
 const COWMSGS = ["moo. i mean, ship it.", "have you tried turning it off and on again?", "segfault in the matrix.", "git push --force and pray."];
 function cowsay(msg) { const t = " " + "_".repeat(msg.length + 2), b = " " + "-".repeat(msg.length + 2); return [{ text: t }, { text: `< ${msg} >` }, { text: b }, { text: "        \\   ^__^" }, { text: "         \\  (oo)\\_______" }, { text: "            (__)\\       )\\/\\" }, { text: "                ||----w |" }, { text: "                ||     ||" }]; }
 
+const SCHEMA_VERSION = 2;
 const SK_LINES = "a3t-lines";
 const SK_HIST  = "a3t-hist";
 const SK_WINDOW = "a3t-window";
 const DEFAULT_WINDOW_STATE = "minimized";
-function saveSession(lines, history) { try { sessionStorage.setItem(SK_LINES, JSON.stringify(lines.length > 300 ? lines.slice(-300) : lines)); sessionStorage.setItem(SK_HIST, JSON.stringify(history.slice(0, 50))); } catch {} }
-function loadSession() { try { const l = sessionStorage.getItem(SK_LINES), h = sessionStorage.getItem(SK_HIST); if (l) return { lines: JSON.parse(l), history: h ? JSON.parse(h) : [] }; } catch {} return null; }
+function saveSession(lines, history) { try { const data = { v: SCHEMA_VERSION, lines: lines.length > 300 ? lines.slice(-300) : lines, history: history.slice(0, 50) }; sessionStorage.setItem(SK_LINES, JSON.stringify(data)); } catch {} }
+function loadSession() { try { const raw = sessionStorage.getItem(SK_LINES); if (!raw) return null; const data = JSON.parse(raw); if (data && data.v === SCHEMA_VERSION && Array.isArray(data.lines) && data.lines.length > 0) return { lines: data.lines, history: Array.isArray(data.history) ? data.history : [] }; if (data && !data.v) { sessionStorage.removeItem(SK_LINES); sessionStorage.removeItem(SK_HIST); } } catch {} return null; }
 function clearSession() { try { sessionStorage.removeItem(SK_LINES); sessionStorage.removeItem(SK_HIST); } catch {} }
 function saveWindowState(windowState) { try { sessionStorage.setItem(SK_WINDOW, windowState); } catch {} }
 function loadWindowState() { try { const windowState = sessionStorage.getItem(SK_WINDOW); if (windowState === "normal" || windowState === "minimized" || windowState === "maximized" || windowState === "closed") return windowState; } catch {} return null; }
@@ -154,7 +156,7 @@ function navigateTo(url) {
 }
 
 function buildFS(blogPosts) {
-  const fs = JSON.parse(JSON.stringify(FS));
+  const fs = structuredClone(FS);
   if (blogPosts && blogPosts.length > 0) {
     const blogChildren = ["README.md"];
     for (const post of blogPosts) {
@@ -182,6 +184,317 @@ function buildFS(blogPosts) {
   }
   return fs;
 }
+
+// ---------------------------------------------------------------------------
+// Flag parsing helper
+// ---------------------------------------------------------------------------
+function parseFlags(args) {
+  const flags = new Set();
+  const positional = [];
+  for (const arg of args) {
+    if (arg.startsWith("-") && arg.length > 1) {
+      // Each character after the dash is an individual flag
+      for (let i = 1; i < arg.length; i++) flags.add(arg[i]);
+    } else {
+      positional.push(arg);
+    }
+  }
+  return { flags, positional };
+}
+
+// ---------------------------------------------------------------------------
+// Command map — each handler receives a context object
+// ---------------------------------------------------------------------------
+
+// -- Navigation commands --------------------------------------------------
+
+function cmdClear(ctx) { ctx.setLines([]); }
+
+function cmdReset(ctx) {
+  const { setLines, setHistory, setHistoryIndex, setBooted, setCwd, windowState: _ws } = ctx;
+  clearSession();
+  saveWindowState("normal");
+  ctx.setWindowState("normal");
+  setLines([]);
+  setHistory([]);
+  setHistoryIndex(-1);
+  const cp = window.location.pathname.replace(/\/+$/, "") || "/";
+  if (cp !== "/") { ctx.navigateWithSave("/"); return; }
+  setCwd(HOME);
+  BOOT.forEach(({ text, delay, color }) => setTimeout(() => setLines((p) => [...p, { text, color }]), delay));
+  setTimeout(() => setBooted(true), BOOT_READY);
+}
+
+function cmdHome(ctx) {
+  const { out, setCwd } = ctx;
+  const cp = window.location.pathname.replace(/\/+$/, "") || "/";
+  if (cp === "/") { setCwd(HOME); out([{ text: "already home.", color: "#2a5e3e" }]); return; }
+  out([{ text: "going home...", color: "#3dd68c" }]);
+  setCwd(HOME);
+  ctx.navigateWithSave("/");
+}
+
+function cmdCd(ctx) {
+  const { args, out, cwd, fsRef, setCwd } = ctx;
+  const target = args[0] || "~";
+  if (target === "-") { out([{ text: "cd: OLDPWD not set", color: "#f87171" }]); return; }
+  const resolved = resolvePath(cwd, target);
+  const node = fsRef.current[resolved];
+  if (!node) { out([{ text: `cd: ${target}: no such file or directory`, color: "#f87171" }]); return; }
+  if (node.type !== "dir") { out([{ text: `cd: ${target}: not a directory`, color: "#f87171" }]); return; }
+  if (node.url) {
+    const cp = (window.location.pathname.replace(/\/+$/, "") || "/");
+    if (node.url !== cp) { setCwd(resolved); ctx.navigateWithSave(node.url); return; }
+  }
+  setCwd(resolved);
+}
+
+function cmdPwd(ctx) { ctx.out([{ text: ctx.cwd }]); }
+
+function cmdLs(ctx) {
+  const { args, out, cwd, fsRef } = ctx;
+  const { flags, positional } = parseFlags(args);
+  const showHidden = flags.has("a");
+  const showLong = flags.has("l");
+  const pathArg = positional[0];
+  const target = pathArg ? resolvePath(cwd, pathArg) : cwd;
+  const node = fsRef.current[target];
+  if (!node) { out([{ text: `ls: ${pathArg}: no such file or directory`, color: "#f87171" }]); return; }
+  if (node.type === "file") { out([{ text: pathArg || target.split("/").pop() }]); return; }
+  let items = node.children || [];
+  if (!showHidden) items = items.filter((i) => !i.startsWith("."));
+  if (showLong) {
+    if (showHidden) out([{ text: "total " + items.length }, { text: "drwxr-xr-x  .   ", color: "#3dd68c" }, { text: "drwxr-xr-x  ..  ", color: "#3dd68c" }]);
+    items.forEach((item) => {
+      const cp = target === "/" ? "/" + item : target + "/" + item;
+      const cn = fsRef.current[cp];
+      const isDir = cn && cn.type === "dir";
+      const perms = isDir ? "drwxr-xr-x" : "-rw-r--r--";
+      const sz = cn && cn.content ? String(cn.content.length * 42).padStart(5) : "  4096";
+      const c = isDir ? "#3dd68c" : item.startsWith(".") ? "rgba(232,232,230,0.3)" : item.endsWith(".py") || item.endsWith(".sh") ? "#3dd68c" : "rgba(232,232,230,0.6)";
+      out([{ text: `${perms}  ${sz} Mar  7 00:00  ${item}${isDir ? "/" : ""}`, color: c }]);
+    });
+  } else {
+    const result = items.map((item) => {
+      const cp = target === "/" ? "/" + item : target + "/" + item;
+      const cn = fsRef.current[cp];
+      const isDir = cn && cn.type === "dir";
+      return { text: isDir ? item + "/" : item, color: isDir ? "#3dd68c" : "rgba(232,232,230,0.6)" };
+    });
+    out(result.length > 0 ? result : [{ text: "(empty)", color: "rgba(232,232,230,0.3)" }]);
+  }
+}
+
+function cmdCat(ctx) {
+  const { args, out, cwd, fsRef } = ctx;
+  if (!args[0]) { out([{ text: "cat: missing operand", color: "#f87171" }]); return; }
+  const t = resolvePath(cwd, args[0]);
+  const n = fsRef.current[t];
+  if (!n) out([{ text: `cat: ${args[0]}: no such file or directory`, color: "#f87171" }]);
+  else if (n.type === "dir") out([{ text: `cat: ${args[0]}: is a directory`, color: "#f87171" }]);
+  else out(n.content.map((l) => ({ text: l })));
+}
+
+function cmdHead(ctx) {
+  const { args, out, cwd, fsRef } = ctx;
+  const t = resolvePath(cwd, args[0] || "");
+  const n = fsRef.current[t];
+  if (!n || n.type !== "file") out([{ text: `head: cannot read`, color: "#f87171" }]);
+  else out(n.content.slice(0, 5).map((l) => ({ text: l })));
+}
+
+function cmdOpen(ctx) {
+  const { args, out, cwd, fsRef } = ctx;
+  const target = args[0];
+  if (!target) {
+    const node = fsRef.current[cwd];
+    if (node && node.url) {
+      const cp = window.location.pathname.replace(/\/+$/, "") || "/";
+      if (node.url === cp) { out([{ text: "you're already here.", color: "#2a5e3e" }]); return; }
+      out([{ text: `opening ${node.url}...`, color: "#3dd68c" }]);
+      setTimeout(() => { ctx.navigateWithSave(node.url); }, 400);
+    } else out([{ text: "open: no page for this directory", color: "#f87171" }]);
+    return;
+  }
+  const resolved = resolvePath(cwd, target);
+  const node = fsRef.current[resolved];
+  if (node && node.url) {
+    out([{ text: `opening ${node.url}...`, color: "#3dd68c" }]);
+    setTimeout(() => { ctx.navigateWithSave(node.url); }, 400);
+  } else if (target.startsWith("http")) {
+    out([{ text: `opening ${target}...`, color: "#3dd68c" }]);
+    setTimeout(() => { window.open(target, "_blank"); }, 400);
+  } else out([{ text: `open: ${target}: no page associated`, color: "#f87171" }]);
+}
+
+function cmdTree(ctx) {
+  const { args, out, cwd, fsRef } = ctx;
+  const target = args[0] ? resolvePath(cwd, args[0]) : cwd;
+  const node = fsRef.current[target];
+  if (!node || node.type !== "dir") { out([{ text: `tree: not a directory`, color: "#f87171" }]); return; }
+  const tl = [{ text: toDisplayPath(target), color: "#3dd68c" }];
+  function walk(p, pfx) {
+    const n = fsRef.current[p];
+    if (!n || n.type !== "dir") return;
+    const items = (n.children || []).filter((i) => !i.startsWith("."));
+    items.forEach((item, i) => {
+      const last = i === items.length - 1;
+      const cp = p === "/" ? "/" + item : p + "/" + item;
+      const cn = fsRef.current[cp];
+      const isDir = cn && cn.type === "dir";
+      tl.push({ text: pfx + (last ? "└── " : "├── ") + item + (isDir ? "/" : ""), color: isDir ? "#3dd68c" : "rgba(232,232,230,0.6)" });
+      if (isDir) walk(cp, pfx + (last ? "    " : "│   "));
+    });
+  }
+  walk(target, "");
+  out(tl);
+}
+
+// -- Info commands --------------------------------------------------------
+
+function cmdHelp(ctx) {
+  ctx.out([
+    { text: "┌────────────────────────────────────────────────────┐" },
+    { text: "│  NAVIGATION                                        │" },
+    { text: "│    cd <path>    change directory (.. ~ / relative)  │" },
+    { text: "│    ls [-la]     list files and directories          │" },
+    { text: "│    pwd          print working directory              │" },
+    { text: "│    tree         show directory tree                  │" },
+    { text: "│    cat <file>   read a file                         │" },
+    { text: "│    open         navigate to current section's page   │" },
+    { text: "│    home         go back to the landing page          │" },
+    { text: "│    reset        clear session and restart            │" },
+    { text: "│                                                      │" },
+    { text: "│  cd to a section navigates to that page.            │", color: "#3dd68c" },
+    { text: "│  terminal state persists across pages.              │", color: "#3dd68c" },
+    { text: "│                                                      │" },
+    { text: "│  INFO                                                │" },
+    { text: "│    about  skills  contact  neofetch                  │" },
+    { text: "│                                                      │" },
+    { text: "│  SYSTEM                                              │" },
+    { text: "│    whoami hostname uname date uptime echo history    │" },
+    { text: "│                                                      │" },
+    { text: "│  there are also some hidden commands...              │", color: "#2a5e3e" },
+    { text: "└────────────────────────────────────────────────────┘" },
+  ]);
+}
+
+function cmdAbout(ctx) {
+  ctx.out([{ text: "user@arthur3.com", color: "#3dd68c" }, { text: "──────────────────" }, { text: "AI systems developer @ Northumbria University" }, { text: "" }, { text: "I build reliable LLM-powered software, secure native apps," }, { text: "and automation systems with Swift and Python." }, { text: "" }, { text: "Currently shipping:" }, { text: "  → RPtext   — real-time AI game engine with structured state" }, { text: "  → BeatMap  — iOS journaling app with hardened Spotify auth" }, { text: "" }, { text: "I build things to understand how they break." }]);
+}
+
+function cmdSkills(ctx) {
+  ctx.out([{ text: "SYSTEMS I BUILD", color: "#3dd68c" }, { text: "───────────────" }, { text: "AI systems   structured output pipelines · streaming · evals" }, { text: "Native apps  OAuth 2.0 PKCE · Keychain · Core Data · SwiftUI" }, { text: "Tooling      automation · API integrations · CLI workflows" }, { text: "Languages    Python · Swift · TypeScript · JavaScript" }, { text: "Infra        Linux · Git · Docker · Cloudflare" }, { text: "" }, { text: "Research     local LLMs · prompt design · applied security" }]);
+}
+
+function cmdContact(ctx) {
+  ctx.out([{ text: "CONTACT", color: "#3dd68c" }, { text: "───────" }, { text: "GitHub    github.com/Dr-Snatch" }, { text: "Email     arthurwheildon0@gmail.com" }, { text: "Twitter   x.com/ExpoArturo" }, { text: "LinkedIn  linkedin.com/in/arthurwheildon" }, { text: "" }, { text: "founders and dev teams — open /contact for the full page", color: "#2a5e3e" }]);
+}
+
+function cmdProjects(ctx) {
+  ctx.out([{ text: "SELECTED SYSTEMS", color: "#3dd68c" }, { text: "────────────────" }, { text: "BeatMap    iOS product — hardened OAuth + durable local data" }, { text: "RPtext     AI game engine — resilient structured state" }, { text: "" }, { text: "cd ~/projects to explore, or 'open' to visit the page", color: "#2a5e3e" }]);
+}
+
+function cmdNeofetch(ctx) { ctx.out(NEOFETCH); }
+
+// -- System commands ------------------------------------------------------
+
+function cmdEcho(ctx) { ctx.out([{ text: ctx.rawArgs.replace(/^["']|["']$/g, "") || "" }]); }
+function cmdDate(ctx) { ctx.out([{ text: new Date().toString() }]); }
+function cmdWhoami(ctx) { ctx.out([{ text: "arthur" }]); }
+function cmdHostname(ctx) { ctx.out([{ text: "arthur3.com" }]); }
+function cmdUname(ctx) { ctx.out([{ text: ctx.args.includes("-a") ? "arthur3-os 1.0.0 arthur3.com x86_64 GNU/Linux" : "arthur3-os" }]); }
+function cmdUptime(ctx) { const m = Math.floor((Date.now() - new Date("2025-06-01").getTime()) / 2592000000); ctx.out([{ text: ` up ${m} months, 1 user, load average: 0.42, 0.69, 0.13` }]); }
+function cmdHistory(ctx) { ctx.out([...ctx.history].reverse().map((c, i) => ({ text: `  ${String(i + 1).padStart(4)}  ${c}`, color: "rgba(232,232,230,0.36)" }))); }
+function cmdWhich(ctx) { ctx.out([{ text: `${ctx.args[0] || "?"}: shell built-in command` }]); }
+
+// -- Easter eggs ----------------------------------------------------------
+
+function cmdCowsay(ctx) { ctx.out(cowsay(ctx.rawArgs || COWMSGS[Math.floor(Math.random() * COWMSGS.length)])); }
+function cmdFortune(ctx) { const q = ctx.fsRef.current["/usr/share/fortune/quotes.txt"].content; ctx.out([{ text: q[Math.floor(Math.random() * q.length)], color: "#fbbf24" }]); }
+
+function cmdSudo(ctx) {
+  const { rawArgs, out } = ctx;
+  if (rawArgs.startsWith("rm -rf")) out([{ text: "[sudo] password for arthur: ********", color: "#f87171" }, { text: "nice try. this is a portfolio, not a sandbox." }, { text: "incident reported to /dev/null." }]);
+  else if (rawArgs === "make me a sandwich") out([{ text: "okay.", color: "#3dd68c" }]);
+  else out([{ text: "[sudo] password for arthur: ********", color: "#f87171" }, { text: "arthur is not in the sudoers file. this incident will be reported." }]);
+}
+
+function cmdRm(ctx) { ctx.out([{ text: ctx.rawArgs.includes("-rf") ? "rm: nice try. refusing to destroy everything." : "rm: read-only filesystem", color: "#f87171" }]); }
+function cmdTouch(ctx) { ctx.out([{ text: ctx.args[0] === "grass" ? "good advice. going outside..." : "touch: read-only filesystem", color: ctx.args[0] === "grass" ? "#3dd68c" : "#f87171" }]); }
+function cmdReadonly(ctx) { ctx.out([{ text: `${ctx.base}: read-only filesystem`, color: "#f87171" }]); }
+function cmdVim(ctx) { ctx.out([{ text: "~" }, { text: "~" }, { text: "~                    VIM - Vi IMproved" }, { text: "~" }, { text: "~             you're stuck now. there's no escape." }, { text: "~                    (just kidding, type :q)" }, { text: "~" }]); }
+function cmdEmacs(ctx) { ctx.out([{ text: "emacs: great operating system, terrible text editor.", color: "#fbbf24" }, { text: "(this terminal is a vim household.)" }]); }
+function cmdNano(ctx) { ctx.out([{ text: "nano is valid and I respect your choice.", color: "#3dd68c" }]); }
+function cmdCode(ctx) { ctx.out([{ text: "VS Code... the Switzerland of editors.", color: "#3dd68c" }]); }
+function cmdPython(ctx) { ctx.out([{ text: "Python 3.12.0 (totally real)", color: "#fbbf24" }, { text: ">>> import antigravity" }, { text: "    (you are now floating)" }, { text: ">>> exit()" }]); }
+function cmdNode(ctx) { ctx.out([{ text: "Welcome to Node.js v24.12.0." }, { text: "> require('happiness')" }, { text: "Error: Cannot find module 'happiness'", color: "#f87171" }]); }
+function cmdNpm(ctx) { ctx.out(ctx.args[0] === "install" ? [{ text: "added 847 packages in 2s", color: "#3dd68c" }, { text: "37 vulnerabilities (12 moderate, 25 high)", color: "#fbbf24" }, { text: "  good luck." }] : [{ text: `npm: '${ctx.args[0] || ""}' — sure, whatever.` }]); }
+
+function cmdGit(ctx) {
+  const { args, out } = ctx;
+  if (args[0] === "status") out([{ text: "On branch main" }, { text: "nothing to commit, working tree clean", color: "#3dd68c" }]);
+  else if (args[0] === "log") out([{ text: "commit 2b07eed (HEAD -> main)", color: "#fbbf24" }, { text: "Author: arthur <arthurwheildon0@gmail.com>" }, { text: "" }, { text: "    Add projects, swift, lab section pages" }]);
+  else if (args[0] === "blame") out([{ text: "it was you. it's always you." }]);
+  else out([{ text: `git: '${args[0] || ""}' is not a git command.` }]);
+}
+
+function cmdPing(ctx) { const h = ctx.args[0] || "localhost"; ctx.out([{ text: `PING ${h}: 56 data bytes` }, { text: `64 bytes from ${h}: icmp_seq=0 time=0.042 ms` }, { text: `64 bytes from ${h}: icmp_seq=1 time=0.069 ms` }, { text: "" }, { text: "3 packets transmitted, 3 received, 0% loss", color: "#3dd68c" }]); }
+function cmdCurl(ctx) { ctx.out([{ text: '{"status":"alive","mood":"caffeinated","shipping":true}', color: "#3dd68c" }]); }
+function cmdMake(ctx) { ctx.out([{ text: ctx.args[0] === "coffee" ? "☕ brewing..." : `make: *** No rule to make target '${ctx.args[0] || ""}'. Stop.`, color: ctx.args[0] === "coffee" ? "#fbbf24" : "#f87171" }]); }
+function cmdMan(ctx) { ctx.out([{ text: `No manual entry for ${ctx.args[0] || "life"}.` }, { text: "RTFM? there is no FM. just vibes.", color: "#2a5e3e" }]); }
+function cmdApt(ctx) { ctx.out([{ text: "E: Could not open lock file — are you root?", color: "#f87171" }]); }
+function cmdBrew(ctx) { ctx.out([{ text: "Error: This is Linux, not macOS. Oh wait...", color: "#fbbf24" }]); }
+function cmdExit(ctx) { ctx.out([{ text: "there's no escape. you live here now." }]); }
+function cmdReboot(ctx) { ctx.out([{ text: "system going down for reboot...", color: "#f87171" }, { text: "..." }, { text: "just kidding. refresh the page." }]); }
+function cmdHack(ctx) { ctx.out([{ text: "initiating hack sequence..." }, { text: "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ 100%", color: "#3dd68c" }, { text: "ACCESS GRANTED", color: "#3dd68c" }, { text: "" }, { text: "just kidding. this is a portfolio." }]); }
+function cmdNmap(ctx) { ctx.out([{ text: "Starting Nmap 7.94 ( https://nmap.org )", color: "#3dd68c" }, { text: "Nmap scan report for arthur3.com (104.21.x.x)" }, { text: "PORT    STATE SERVICE" }, { text: "443/tcp open  https" }, { text: "" }, { text: "nice try. the firewall says hi.", color: "#2a5e3e" }]); }
+function cmdWireshark(ctx) { ctx.out([{ text: `${ctx.base}: capturing packets...`, color: "#3dd68c" }, { text: "0 packets captured. this is a browser, not a NIC." }]); }
+function cmdMetasploit(ctx) { ctx.out([{ text: "       =[ metasploit v6.3.x-dev ]", color: "#f87171" }, { text: "+ -- --=[ not really. this is a portfolio. ]" }, { text: "" }, { text: "msf6 > exit", color: "#2a5e3e" }]); }
+function cmdCoffee(ctx) { ctx.out([{ text: "     ( (" }, { text: "      ) )" }, { text: "   .______." }, { text: "   |      |]" }, { text: "   \\      /" }, { text: "    '----'" }, { text: "" }, { text: "coffee.service: active (running)", color: "#3dd68c" }]); }
+function cmdMatrix(ctx) { ctx.out([{ text: "wake up, Neo...", color: "#3dd68c" }, { text: "the Matrix has you...", color: "#3dd68c" }, { text: "follow the white rabbit.", color: "#3dd68c" }, { text: "" }, { text: "(or just keep browsing this portfolio)" }]); }
+function cmdSl(ctx) { ctx.out([{ text: "      ====        ________                ___________" }, { text: "  _D _|  |_______/        \\__I_I_____===__|_________/" }, { text: "   |(_)---  |   H\\________/ |   |        =|___ ___|" }, { text: "" }, { text: "you meant 'ls', didn't you?", color: "#2a5e3e" }]); }
+function cmdHello(ctx) { const g = ["hey!", "hello there.", "sup.", "oh hi.", "greetings, human."]; ctx.out([{ text: g[Math.floor(Math.random() * g.length)], color: "#3dd68c" }]); }
+function cmdFortyTwo(ctx) { ctx.out([{ text: "to life, the universe, and everything.", color: "#fbbf24" }]); }
+function cmdXkcd(ctx) { ctx.out([{ text: "there's always a relevant xkcd. always." }]); }
+function cmdRickroll(ctx) { ctx.out([{ text: "Never gonna give you up", color: "#f87171" }, { text: "Never gonna let you down", color: "#fbbf24" }, { text: "Never gonna run around and desert you", color: "#3dd68c" }]); }
+
+// -- Command dispatch map -------------------------------------------------
+
+const commands = {
+  // Navigation
+  clear: cmdClear, reset: cmdReset, home: cmdHome, cd: cmdCd, pwd: cmdPwd,
+  ls: cmdLs, cat: cmdCat, head: cmdHead, open: cmdOpen, tree: cmdTree,
+
+  // Info
+  help: cmdHelp, about: cmdAbout, skills: cmdSkills, contact: cmdContact,
+  projects: cmdProjects, neofetch: cmdNeofetch,
+
+  // System
+  echo: cmdEcho, date: cmdDate, whoami: cmdWhoami, hostname: cmdHostname,
+  uname: cmdUname, uptime: cmdUptime, history: cmdHistory,
+  which: cmdWhich, type: cmdWhich,
+
+  // Easter eggs
+  cowsay: cmdCowsay, fortune: cmdFortune, sudo: cmdSudo, rm: cmdRm,
+  touch: cmdTouch, mkdir: cmdReadonly, mv: cmdReadonly, cp: cmdReadonly,
+  vim: cmdVim, vi: cmdVim, emacs: cmdEmacs, nano: cmdNano,
+  code: cmdCode, "code.": cmdCode,
+  python: cmdPython, python3: cmdPython, node: cmdNode, npm: cmdNpm,
+  git: cmdGit, ping: cmdPing, curl: cmdCurl, make: cmdMake, man: cmdMan,
+  apt: cmdApt, "apt-get": cmdApt, brew: cmdBrew,
+  exit: cmdExit, logout: cmdExit, reboot: cmdReboot, shutdown: cmdReboot,
+  hack: cmdHack, hackerman: cmdHack, nmap: cmdNmap,
+  wireshark: cmdWireshark, tcpdump: cmdWireshark,
+  metasploit: cmdMetasploit, msfconsole: cmdMetasploit,
+  coffee: cmdCoffee, cafe: cmdCoffee, matrix: cmdMatrix, sl: cmdSl,
+  hello: cmdHello, hi: cmdHello, hey: cmdHello,
+  "42": cmdFortyTwo, xkcd: cmdXkcd, rickroll: cmdRickroll,
+};
+
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
 
 export default function Terminal({ blogPosts }) {
   const fs = useMemo(() => buildFS(blogPosts), [blogPosts]);
@@ -239,6 +552,15 @@ export default function Terminal({ blogPosts }) {
   const displayCwd = toDisplayPath(cwd);
   const out = useCallback((newLines) => setLines((p) => [...p, ...newLines]), []);
 
+  // Consolidated navigation helper — saves session state then navigates
+  const navigateWithSave = useCallback((url) => {
+    if (!window.__astro_navigate) {
+      saveSession(linesRef.current, histRef.current);
+      saveWindowState(windowState);
+    }
+    navigateTo(url);
+  }, [windowState]);
+
   const handleCommand = (raw) => {
     const trimmed = raw.trim();
     const prompt = { text: `user@arthur3 ${displayCwd} % ${raw}`, color: "#3dd68c" };
@@ -247,102 +569,15 @@ export default function Terminal({ blogPosts }) {
     setHistory((p) => [raw, ...p]); setHistoryIndex(-1);
     const parts = trimmed.split(/\s+/); const base = parts[0].toLowerCase(); const args = parts.slice(1); const rawArgs = trimmed.slice(base.length).trim();
 
-    if (base === "clear") { setLines([]); return; }
-    if (base === "reset") { clearSession(); saveWindowState("normal"); setWindowState("normal"); setLines([]); setHistory([]); setHistoryIndex(-1); const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (cp !== "/") { navigateTo("/"); return; } setCwd(HOME); BOOT.forEach(({ text, delay, color }) => setTimeout(() => setLines((p) => [...p, { text, color }]), delay)); setTimeout(() => setBooted(true), BOOT_READY); return; }
-    if (base === "home") { const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (cp === "/") { setCwd(HOME); out([{ text: "already home.", color: "#2a5e3e" }]); return; } if (!window.__astro_navigate) { saveSession([...linesRef.current, prompt, { text: "going home...", color: "#3dd68c" }], [raw, ...histRef.current]); saveWindowState(windowState); } else { out([{ text: "going home...", color: "#3dd68c" }]); } setCwd(HOME); navigateTo("/"); return; }
+    // Check for "the answer" special case before dispatch
+    if (trimmed === "the answer") { cmdFortyTwo({ out }); return; }
+    if (trimmed === "never gonna") { cmdRickroll({ out }); return; }
 
-    if (base === "cd") { const target = args[0] || "~"; if (target === "-") { out([{ text: "cd: OLDPWD not set", color: "#f87171" }]); return; } const resolved = resolvePath(cwd, target); const node = fsRef.current[resolved]; if (!node) { out([{ text: `cd: ${target}: no such file or directory`, color: "#f87171" }]); return; } if (node.type !== "dir") { out([{ text: `cd: ${target}: not a directory`, color: "#f87171" }]); return; } if (node.url) { const cp = (window.location.pathname.replace(/\/+$/, "") || "/"); if (node.url !== cp) { if (!window.__astro_navigate) { saveSession([...linesRef.current, prompt], [raw, ...histRef.current]); saveWindowState(windowState); } setCwd(resolved); navigateTo(node.url); return; } } setCwd(resolved); return; }
-    if (base === "pwd") { out([{ text: cwd }]); return; }
-
-    if (base === "ls") {
-      const showHidden = args.includes("-a") || args.includes("-la") || args.includes("-al"); const showLong = args.includes("-l") || args.includes("-la") || args.includes("-al"); const pathArg = args.find((a) => !a.startsWith("-")); const target = pathArg ? resolvePath(cwd, pathArg) : cwd; const node = fsRef.current[target];
-      if (!node) { out([{ text: `ls: ${pathArg}: no such file or directory`, color: "#f87171" }]); return; } if (node.type === "file") { out([{ text: pathArg || target.split("/").pop() }]); return; }
-      let items = node.children || []; if (!showHidden) items = items.filter((i) => !i.startsWith("."));
-      if (showLong) { if (showHidden) out([{ text: "total " + items.length }, { text: "drwxr-xr-x  .   ", color: "#3dd68c" }, { text: "drwxr-xr-x  ..  ", color: "#3dd68c" }]); items.forEach((item) => { const cp = target === "/" ? "/" + item : target + "/" + item; const cn = fsRef.current[cp]; const isDir = cn && cn.type === "dir"; const perms = isDir ? "drwxr-xr-x" : "-rw-r--r--"; const sz = cn && cn.content ? String(cn.content.length * 42).padStart(5) : "  4096"; const c = isDir ? "#3dd68c" : item.startsWith(".") ? "rgba(232,232,230,0.3)" : item.endsWith(".py") || item.endsWith(".sh") ? "#3dd68c" : "rgba(232,232,230,0.6)"; out([{ text: `${perms}  ${sz} Mar  7 00:00  ${item}${isDir ? "/" : ""}`, color: c }]); });
-      } else { const result = items.map((item) => { const cp = target === "/" ? "/" + item : target + "/" + item; const cn = fsRef.current[cp]; const isDir = cn && cn.type === "dir"; return { text: isDir ? item + "/" : item, color: isDir ? "#3dd68c" : "rgba(232,232,230,0.6)" }; }); out(result.length > 0 ? result : [{ text: "(empty)", color: "rgba(232,232,230,0.3)" }]); }
+    const handler = commands[base];
+    if (handler) {
+      handler({ args, rawArgs, base, cwd, fsRef, out, setCwd, navigateWithSave, windowState, setWindowState, setLines, setHistory, setHistoryIndex, setBooted, history, linesRef, histRef });
       return;
     }
-
-    if (base === "cat") { if (!args[0]) { out([{ text: "cat: missing operand", color: "#f87171" }]); return; } const t = resolvePath(cwd, args[0]); const n = fsRef.current[t]; if (!n) out([{ text: `cat: ${args[0]}: no such file or directory`, color: "#f87171" }]); else if (n.type === "dir") out([{ text: `cat: ${args[0]}: is a directory`, color: "#f87171" }]); else out(n.content.map((l) => ({ text: l }))); return; }
-    if (base === "head") { const t = resolvePath(cwd, args[0] || ""); const n = fsRef.current[t]; if (!n || n.type !== "file") out([{ text: `head: cannot read`, color: "#f87171" }]); else out(n.content.slice(0, 5).map((l) => ({ text: l }))); return; }
-
-    if (base === "open") { const target = args[0]; if (!target) { const node = fsRef.current[cwd]; if (node && node.url) { const cp = window.location.pathname.replace(/\/+$/, "") || "/"; if (node.url === cp) { out([{ text: "you're already here.", color: "#2a5e3e" }]); return; } if (!window.__astro_navigate) { saveSession([...linesRef.current, prompt, { text: `opening ${node.url}...`, color: "#3dd68c" }], [raw, ...histRef.current]); saveWindowState(windowState); } out([{ text: `opening ${node.url}...`, color: "#3dd68c" }]); setTimeout(() => { navigateTo(node.url); }, 400); } else out([{ text: "open: no page for this directory", color: "#f87171" }]); return; } const resolved = resolvePath(cwd, target); const node = fsRef.current[resolved]; if (node && node.url) { if (!window.__astro_navigate) { saveSession([...linesRef.current, prompt, { text: `opening ${node.url}...`, color: "#3dd68c" }], [raw, ...histRef.current]); saveWindowState(windowState); } out([{ text: `opening ${node.url}...`, color: "#3dd68c" }]); setTimeout(() => { navigateTo(node.url); }, 400); } else if (target.startsWith("http")) { out([{ text: `opening ${target}...`, color: "#3dd68c" }]); setTimeout(() => { window.open(target, "_blank"); }, 400); } else out([{ text: `open: ${target}: no page associated`, color: "#f87171" }]); return; }
-
-    if (base === "tree") { const target = args[0] ? resolvePath(cwd, args[0]) : cwd; const node = fsRef.current[target]; if (!node || node.type !== "dir") { out([{ text: `tree: not a directory`, color: "#f87171" }]); return; } const tl = [{ text: toDisplayPath(target), color: "#3dd68c" }]; function walk(p, pfx) { const n = fsRef.current[p]; if (!n || n.type !== "dir") return; const items = (n.children || []).filter((i) => !i.startsWith(".")); items.forEach((item, i) => { const last = i === items.length - 1; const cp = p === "/" ? "/" + item : p + "/" + item; const cn = fsRef.current[cp]; const isDir = cn && cn.type === "dir"; tl.push({ text: pfx + (last ? "└── " : "├── ") + item + (isDir ? "/" : ""), color: isDir ? "#3dd68c" : "rgba(232,232,230,0.6)" }); if (isDir) walk(cp, pfx + (last ? "    " : "│   ")); }); } walk(target, ""); out(tl); return; }
-
-    if (base === "echo") { out([{ text: rawArgs.replace(/^["']|["']$/g, "") || "" }]); return; }
-    if (base === "date") { out([{ text: new Date().toString() }]); return; }
-    if (base === "whoami") { out([{ text: "arthur" }]); return; }
-    if (base === "hostname") { out([{ text: "arthur3.com" }]); return; }
-    if (base === "uname") { out([{ text: args.includes("-a") ? "arthur3-os 1.0.0 arthur3.com x86_64 GNU/Linux" : "arthur3-os" }]); return; }
-    if (base === "uptime") { const m = Math.floor((Date.now() - new Date("2025-06-01").getTime()) / 2592000000); out([{ text: ` up ${m} months, 1 user, load average: 0.42, 0.69, 0.13` }]); return; }
-    if (base === "history") { out([...history].reverse().map((c, i) => ({ text: `  ${String(i + 1).padStart(4)}  ${c}`, color: "rgba(232,232,230,0.36)" }))); return; }
-    if (base === "which" || base === "type") { out([{ text: `${args[0] || "?"}: shell built-in command` }]); return; }
-
-    if (base === "help") { out([
-      { text: "┌────────────────────────────────────────────────────┐" },
-      { text: "│  NAVIGATION                                        │" },
-      { text: "│    cd <path>    change directory (.. ~ / relative)  │" },
-      { text: "│    ls [-la]     list files and directories          │" },
-      { text: "│    pwd          print working directory              │" },
-      { text: "│    tree         show directory tree                  │" },
-      { text: "│    cat <file>   read a file                         │" },
-      { text: "│    open         navigate to current section's page   │" },
-      { text: "│    home         go back to the landing page          │" },
-      { text: "│    reset        clear session and restart            │" },
-      { text: "│                                                      │" },
-      { text: "│  cd to a section navigates to that page.            │", color: "#3dd68c" },
-      { text: "│  terminal state persists across pages.              │", color: "#3dd68c" },
-      { text: "│                                                      │" },
-      { text: "│  INFO                                                │" },
-      { text: "│    about  skills  contact  neofetch                  │" },
-      { text: "│                                                      │" },
-      { text: "│  SYSTEM                                              │" },
-      { text: "│    whoami hostname uname date uptime echo history    │" },
-      { text: "│                                                      │" },
-      { text: "│  there are also some hidden commands...              │", color: "#2a5e3e" },
-      { text: "└────────────────────────────────────────────────────┘" },
-    ]); return; }
-
-    if (base === "about") { out([{ text: "user@arthur3.com", color: "#3dd68c" }, { text: "──────────────────" }, { text: "AI systems developer @ Northumbria University" }, { text: "" }, { text: "I build reliable LLM-powered software, secure native apps," }, { text: "and automation systems with Swift and Python." }, { text: "" }, { text: "Currently shipping:" }, { text: "  → RPtext   — real-time AI game engine with structured state" }, { text: "  → BeatMap  — iOS journaling app with hardened Spotify auth" }, { text: "" }, { text: "I build things to understand how they break." }]); return; }
-    if (base === "skills") { out([{ text: "SYSTEMS I BUILD", color: "#3dd68c" }, { text: "───────────────" }, { text: "AI systems   structured output pipelines · streaming · evals" }, { text: "Native apps  OAuth 2.0 PKCE · Keychain · Core Data · SwiftUI" }, { text: "Tooling      automation · API integrations · CLI workflows" }, { text: "Languages    Python · Swift · TypeScript · JavaScript" }, { text: "Infra        Linux · Git · Docker · Cloudflare" }, { text: "" }, { text: "Research     local LLMs · prompt design · applied security" }]); return; }
-    if (base === "contact") { out([{ text: "CONTACT", color: "#3dd68c" }, { text: "───────" }, { text: "GitHub    github.com/Dr-Snatch" }, { text: "Email     arthurwheildon0@gmail.com" }, { text: "Twitter   x.com/ExpoArturo" }, { text: "LinkedIn  linkedin.com/in/arthurwheildon" }, { text: "" }, { text: "founders and dev teams — open /contact for the full page", color: "#2a5e3e" }]); return; }
-    if (base === "projects") { out([{ text: "SELECTED SYSTEMS", color: "#3dd68c" }, { text: "────────────────" }, { text: "BeatMap    iOS product — hardened OAuth + durable local data" }, { text: "RPtext     AI game engine — resilient structured state" }, { text: "" }, { text: "cd ~/projects to explore, or 'open' to visit the page", color: "#2a5e3e" }]); return; }
-
-    if (base === "neofetch") { out(NEOFETCH); return; }
-    if (base === "cowsay") { out(cowsay(rawArgs || COWMSGS[Math.floor(Math.random() * COWMSGS.length)])); return; }
-    if (base === "fortune") { const q = fsRef.current["/usr/share/fortune/quotes.txt"].content; out([{ text: q[Math.floor(Math.random() * q.length)], color: "#fbbf24" }]); return; }
-    if (base === "sudo") { if (rawArgs.startsWith("rm -rf")) out([{ text: "[sudo] password for arthur: ********", color: "#f87171" }, { text: "nice try. this is a portfolio, not a sandbox." }, { text: "incident reported to /dev/null." }]); else if (rawArgs === "make me a sandwich") out([{ text: "okay.", color: "#3dd68c" }]); else out([{ text: "[sudo] password for arthur: ********", color: "#f87171" }, { text: "arthur is not in the sudoers file. this incident will be reported." }]); return; }
-    if (base === "rm") { out([{ text: rawArgs.includes("-rf") ? "rm: nice try. refusing to destroy everything." : "rm: read-only filesystem", color: "#f87171" }]); return; }
-    if (base === "touch") { out([{ text: args[0] === "grass" ? "good advice. going outside..." : "touch: read-only filesystem", color: args[0] === "grass" ? "#3dd68c" : "#f87171" }]); return; }
-    if (base === "mkdir" || base === "mv" || base === "cp") { out([{ text: `${base}: read-only filesystem`, color: "#f87171" }]); return; }
-    if (base === "vim" || base === "vi") { out([{ text: "~" }, { text: "~" }, { text: "~                    VIM - Vi IMproved" }, { text: "~" }, { text: "~             you're stuck now. there's no escape." }, { text: "~                    (just kidding, type :q)" }, { text: "~" }]); return; }
-    if (base === "emacs") { out([{ text: "emacs: great operating system, terrible text editor.", color: "#fbbf24" }, { text: "(this terminal is a vim household.)" }]); return; }
-    if (base === "nano") { out([{ text: "nano is valid and I respect your choice.", color: "#3dd68c" }]); return; }
-    if (base === "code" || base === "code.") { out([{ text: "VS Code... the Switzerland of editors.", color: "#3dd68c" }]); return; }
-    if (base === "python" || base === "python3") { out([{ text: "Python 3.12.0 (totally real)", color: "#fbbf24" }, { text: ">>> import antigravity" }, { text: "    (you are now floating)" }, { text: ">>> exit()" }]); return; }
-    if (base === "node") { out([{ text: "Welcome to Node.js v24.12.0." }, { text: "> require('happiness')" }, { text: "Error: Cannot find module 'happiness'", color: "#f87171" }]); return; }
-    if (base === "npm") { out(args[0] === "install" ? [{ text: "added 847 packages in 2s", color: "#3dd68c" }, { text: "37 vulnerabilities (12 moderate, 25 high)", color: "#fbbf24" }, { text: "  good luck." }] : [{ text: `npm: '${args[0] || ""}' — sure, whatever.` }]); return; }
-    if (base === "git") { if (args[0] === "status") out([{ text: "On branch main" }, { text: "nothing to commit, working tree clean", color: "#3dd68c" }]); else if (args[0] === "log") out([{ text: "commit 2b07eed (HEAD -> main)", color: "#fbbf24" }, { text: "Author: arthur <arthurwheildon0@gmail.com>" }, { text: "" }, { text: "    Add projects, swift, lab section pages" }]); else if (args[0] === "blame") out([{ text: "it was you. it's always you." }]); else out([{ text: `git: '${args[0] || ""}' is not a git command.` }]); return; }
-    if (base === "ping") { const h = args[0] || "localhost"; out([{ text: `PING ${h}: 56 data bytes` }, { text: `64 bytes from ${h}: icmp_seq=0 time=0.042 ms` }, { text: `64 bytes from ${h}: icmp_seq=1 time=0.069 ms` }, { text: "" }, { text: "3 packets transmitted, 3 received, 0% loss", color: "#3dd68c" }]); return; }
-    if (base === "curl") { out([{ text: '{"status":"alive","mood":"caffeinated","shipping":true}', color: "#3dd68c" }]); return; }
-    if (base === "make") { out([{ text: args[0] === "coffee" ? "☕ brewing..." : `make: *** No rule to make target '${args[0] || ""}'. Stop.`, color: args[0] === "coffee" ? "#fbbf24" : "#f87171" }]); return; }
-    if (base === "man") { out([{ text: `No manual entry for ${args[0] || "life"}.` }, { text: "RTFM? there is no FM. just vibes.", color: "#2a5e3e" }]); return; }
-    if (base === "apt" || base === "apt-get") { out([{ text: "E: Could not open lock file — are you root?", color: "#f87171" }]); return; }
-    if (base === "brew") { out([{ text: "Error: This is Linux, not macOS. Oh wait...", color: "#fbbf24" }]); return; }
-    if (base === "exit" || base === "logout") { out([{ text: "there's no escape. you live here now." }]); return; }
-    if (base === "reboot" || base === "shutdown") { out([{ text: "system going down for reboot...", color: "#f87171" }, { text: "..." }, { text: "just kidding. refresh the page." }]); return; }
-    if (base === "hack" || base === "hackerman") { out([{ text: "initiating hack sequence..." }, { text: "▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓ 100%", color: "#3dd68c" }, { text: "ACCESS GRANTED", color: "#3dd68c" }, { text: "" }, { text: "just kidding. this is a portfolio." }]); return; }
-    if (base === "nmap") { out([{ text: "Starting Nmap 7.94 ( https://nmap.org )", color: "#3dd68c" }, { text: "Nmap scan report for arthur3.com (104.21.x.x)" }, { text: "PORT    STATE SERVICE" }, { text: "443/tcp open  https" }, { text: "" }, { text: "nice try. the firewall says hi.", color: "#2a5e3e" }]); return; }
-    if (base === "wireshark" || base === "tcpdump") { out([{ text: `${base}: capturing packets...`, color: "#3dd68c" }, { text: "0 packets captured. this is a browser, not a NIC." }]); return; }
-    if (base === "metasploit" || base === "msfconsole") { out([{ text: "       =[ metasploit v6.3.x-dev ]", color: "#f87171" }, { text: "+ -- --=[ not really. this is a portfolio. ]" }, { text: "" }, { text: "msf6 > exit", color: "#2a5e3e" }]); return; }
-    if (base === "coffee" || base === "cafe") { out([{ text: "     ( (" }, { text: "      ) )" }, { text: "   .______." }, { text: "   |      |]" }, { text: "   \\      /" }, { text: "    '----'" }, { text: "" }, { text: "coffee.service: active (running)", color: "#3dd68c" }]); return; }
-    if (base === "matrix") { out([{ text: "wake up, Neo...", color: "#3dd68c" }, { text: "the Matrix has you...", color: "#3dd68c" }, { text: "follow the white rabbit.", color: "#3dd68c" }, { text: "" }, { text: "(or just keep browsing this portfolio)" }]); return; }
-    if (base === "sl") { out([{ text: "      ====        ________                ___________" }, { text: "  _D _|  |_______/        \\__I_I_____===__|_________/" }, { text: "   |(_)---  |   H\\________/ |   |        =|___ ___|" }, { text: "" }, { text: "you meant 'ls', didn't you?", color: "#2a5e3e" }]); return; }
-    if (base === "hello" || base === "hi" || base === "hey") { const g = ["hey!", "hello there.", "sup.", "oh hi.", "greetings, human."]; out([{ text: g[Math.floor(Math.random() * g.length)], color: "#3dd68c" }]); return; }
-    if (base === "42" || trimmed === "the answer") { out([{ text: "to life, the universe, and everything.", color: "#fbbf24" }]); return; }
-    if (base === "xkcd") { out([{ text: "there's always a relevant xkcd. always." }]); return; }
-    if (base === "rickroll" || trimmed === "never gonna") { out([{ text: "Never gonna give you up", color: "#f87171" }, { text: "Never gonna let you down", color: "#fbbf24" }, { text: "Never gonna run around and desert you", color: "#3dd68c" }]); return; }
 
     out([{ text: `zsh: command not found: ${base}`, color: "#f87171" }, { text: 'type "help" for available commands', color: "#2a5e3e" }]);
   };
@@ -361,55 +596,6 @@ export default function Terminal({ blogPosts }) {
 
   return (
     <>
-      <style>{`
-        .term-tab{position:fixed;right:24px;bottom:18px;z-index:9999;display:flex;align-items:center;gap:10px;padding:12px 16px 12px 14px;background:rgba(31,31,31,0.97);border:1px solid rgba(255,255,255,.1);border-radius:12px;cursor:pointer;transition:background .15s,border-color .15s;user-select:none;-webkit-tap-highlight-color:transparent;box-shadow:0 4px 16px rgba(0,0,0,0.5)}
-        .term-tab:hover{background:rgba(36,36,36,0.98);border-color:rgba(61,214,140,.3)}
-        .term-tab-dot{width:10px;height:10px;border-radius:50%;background:#3dd68c;box-shadow:0 0 10px rgba(61,214,140,.5);animation:tabpulse 1.6s ease-in-out infinite}
-        @keyframes tabpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.88)}}
-        .term-tab-copy{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
-        .term-tab-label{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#e8e8e6;letter-spacing:.03em;line-height:1}
-        .term-tab-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(232,232,230,0.36);letter-spacing:.06em;text-transform:uppercase;line-height:1}
-        .term-tab-open{margin-left:4px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#3dd68c}
-        .term-overlay{position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.4);backdrop-filter:blur(2px)}
-        .term-window{position:fixed;right:24px;bottom:72px;z-index:9999;background:#141414;border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden;width:min(480px,calc(100vw - 2rem));height:min(420px,calc(100vh - 120px));display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,0.6);transition:box-shadow .2s}
-        .term-window.maximized{inset:40px;right:auto;bottom:auto;z-index:9999;border-radius:12px;width:auto;height:auto;box-shadow:0 12px 40px rgba(0,0,0,0.6)}
-        .term-titlebar{display:flex;align-items:center;gap:7px;padding:11px 16px;background:#0d0d0d;border-bottom:1px solid rgba(255,255,255,.08);position:relative;flex-shrink:0;user-select:none}
-        .term-btn{width:28px;height:28px;border-radius:50%;flex-shrink:0;border:none;cursor:pointer;padding:8px;background-clip:content-box;transition:filter .15s;-webkit-tap-highlight-color:transparent}
-        .term-btn:hover{filter:brightness(1.25)}
-        .term-btn-close{background-color:#ff5f57}.term-btn-min{background-color:#febc2e}.term-btn-max{background-color:#28c840}
-        .term-btn-group{display:flex;gap:4px;align-items:center}
-        .term-titlebar-label{position:absolute;left:50%;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(232,232,230,.3);letter-spacing:.05em;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:55%}
-        .term-body{padding:14px 16px 4px;flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:rgba(61,214,140,.2) transparent}
-        .term-window.maximized .term-body{flex:1;height:auto}
-        .term-body::-webkit-scrollbar{width:4px}.term-body::-webkit-scrollbar-thumb{background:rgba(61,214,140,.2);border-radius:2px}
-        .term-line{font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.65;white-space:pre-wrap;word-break:break-word}
-        .term-window.maximized .term-line{font-size:14px}
-        .term-input-row{display:flex;align-items:center;gap:6px;padding:10px 16px 14px;border-top:1px solid rgba(255,255,255,.08);flex-shrink:0}
-        .term-prompt{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#3dd68c;white-space:nowrap;user-select:none;flex-shrink:0}
-        .term-prompt-short{display:none}
-        .term-window.maximized .term-prompt{font-size:14px}
-        .term-input{flex:1;background:transparent;border:none;outline:none;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#e8e8e6;caret-color:#3dd68c;min-width:0}
-        .term-window.maximized .term-input{font-size:14px}
-        @media(max-width:640px){
-          .term-tab{display:none}
-          .term-window{right:12px;left:12px;bottom:12px;width:auto;height:min(440px,calc(100vh - 100px));border-radius:12px}
-          .term-window.maximized{inset:8px;border-radius:12px}
-          .term-titlebar{padding:9px 12px}
-          .term-titlebar-label{font-size:10px;max-width:40%}
-          .term-body{padding:10px 10px 4px}
-          .term-line{font-size:11px;line-height:1.55}
-          .term-window.maximized .term-line{font-size:12.5px}
-          .term-input-row{padding:8px 10px 10px;gap:4px}
-          .term-prompt{font-size:11px}
-          .term-prompt-full{display:none!important}
-          .term-prompt-short{display:inline!important}
-          .term-input{font-size:16px}
-          .term-window.maximized .term-prompt{font-size:12px}
-          .term-window.maximized .term-input{font-size:16px}
-          .term-tab-label{font-size:11px}
-          .term-tab-meta{font-size:9px}
-        }
-      `}</style>
       {isMin && <button className="term-tab" onClick={() => setWindowState("normal")} aria-label="Restore terminal"><span className="term-tab-dot" /><span className="term-tab-copy"><span className="term-tab-label">Open Terminal</span><span className="term-tab-meta">{tabCwdLabel}</span></span><span className="term-tab-open">↑</span></button>}
       {isMax && <div className="term-overlay" onClick={() => setWindowState("normal")} />}
       {!isClosed && !isMin && (

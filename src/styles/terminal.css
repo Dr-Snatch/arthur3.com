@@ -1,0 +1,47 @@
+.term-tab{position:fixed;right:24px;bottom:18px;z-index:9999;display:flex;align-items:center;gap:10px;padding:12px 16px 12px 14px;background:rgba(31,31,31,0.97);border:1px solid rgba(255,255,255,.1);border-radius:12px;cursor:pointer;transition:background .15s,border-color .15s;user-select:none;-webkit-tap-highlight-color:transparent;box-shadow:0 4px 16px rgba(0,0,0,0.5)}
+.term-tab:hover{background:rgba(36,36,36,0.98);border-color:rgba(61,214,140,.3)}
+.term-tab-dot{width:10px;height:10px;border-radius:50%;background:#3dd68c;box-shadow:0 0 10px rgba(61,214,140,.5);animation:tabpulse 1.6s ease-in-out infinite}
+@keyframes tabpulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.45;transform:scale(.88)}}
+.term-tab-copy{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+.term-tab-label{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600;color:#e8e8e6;letter-spacing:.03em;line-height:1}
+.term-tab-meta{font-family:'JetBrains Mono',monospace;font-size:10px;color:rgba(232,232,230,0.36);letter-spacing:.06em;text-transform:uppercase;line-height:1}
+.term-tab-open{margin-left:4px;font-family:'JetBrains Mono',monospace;font-size:13px;color:#3dd68c}
+.term-overlay{position:fixed;inset:0;z-index:9998;background:rgba(0,0,0,.4);backdrop-filter:blur(2px)}
+.term-window{position:fixed;right:24px;bottom:72px;z-index:9999;background:#141414;border:1px solid rgba(255,255,255,.1);border-radius:12px;overflow:hidden;width:min(480px,calc(100vw - 2rem));height:min(420px,calc(100vh - 120px));display:flex;flex-direction:column;box-shadow:0 12px 40px rgba(0,0,0,0.6);transition:box-shadow .2s}
+.term-window.maximized{inset:40px;right:auto;bottom:auto;z-index:9999;border-radius:12px;width:auto;height:auto;box-shadow:0 12px 40px rgba(0,0,0,0.6)}
+.term-titlebar{display:flex;align-items:center;gap:7px;padding:11px 16px;background:#0d0d0d;border-bottom:1px solid rgba(255,255,255,.08);position:relative;flex-shrink:0;user-select:none}
+.term-btn{width:28px;height:28px;border-radius:50%;flex-shrink:0;border:none;cursor:pointer;padding:8px;background-clip:content-box;transition:filter .15s;-webkit-tap-highlight-color:transparent}
+.term-btn:hover{filter:brightness(1.25)}
+.term-btn-close{background-color:#ff5f57}.term-btn-min{background-color:#febc2e}.term-btn-max{background-color:#28c840}
+.term-btn-group{display:flex;gap:4px;align-items:center}
+.term-titlebar-label{position:absolute;left:50%;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:11px;color:rgba(232,232,230,.3);letter-spacing:.05em;pointer-events:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:55%}
+.term-body{padding:14px 16px 4px;flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:rgba(61,214,140,.2) transparent}
+.term-window.maximized .term-body{flex:1;height:auto}
+.term-body::-webkit-scrollbar{width:4px}.term-body::-webkit-scrollbar-thumb{background:rgba(61,214,140,.2);border-radius:2px}
+.term-line{font-family:'JetBrains Mono',monospace;font-size:12.5px;line-height:1.65;white-space:pre-wrap;word-break:break-word}
+.term-window.maximized .term-line{font-size:14px}
+.term-input-row{display:flex;align-items:center;gap:6px;padding:10px 16px 14px;border-top:1px solid rgba(255,255,255,.08);flex-shrink:0}
+.term-prompt{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#3dd68c;white-space:nowrap;user-select:none;flex-shrink:0}
+.term-prompt-short{display:none}
+.term-window.maximized .term-prompt{font-size:14px}
+.term-input{flex:1;background:transparent;border:none;outline:none;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:#e8e8e6;caret-color:#3dd68c;min-width:0}
+.term-window.maximized .term-input{font-size:14px}
+@media(max-width:640px){
+  .term-tab{display:none}
+  .term-window{right:12px;left:12px;bottom:12px;width:auto;height:min(440px,calc(100vh - 100px));border-radius:12px}
+  .term-window.maximized{inset:8px;border-radius:12px}
+  .term-titlebar{padding:9px 12px}
+  .term-titlebar-label{font-size:10px;max-width:40%}
+  .term-body{padding:10px 10px 4px}
+  .term-line{font-size:11px;line-height:1.55}
+  .term-window.maximized .term-line{font-size:12.5px}
+  .term-input-row{padding:8px 10px 10px;gap:4px}
+  .term-prompt{font-size:11px}
+  .term-prompt-full{display:none!important}
+  .term-prompt-short{display:inline!important}
+  .term-input{font-size:16px}
+  .term-window.maximized .term-prompt{font-size:12px}
+  .term-window.maximized .term-input{font-size:16px}
+  .term-tab-label{font-size:11px}
+  .term-tab-meta{font-size:9px}
+}

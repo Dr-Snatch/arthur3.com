@@ -1,6 +1,9 @@
 ---
+export const prerender = true;
+
 import { getCollection } from 'astro:content';
 import SectionPage from '../../layouts/SectionPage.astro';
+import { getTags } from '../../utils';
 
 const allProjects = await getCollection('projects');
 const sorted = allProjects.sort((a, b) => {
@@ -10,10 +13,6 @@ const sorted = allProjects.sort((a, b) => {
 	const db = b.data.pubDate ? new Date(b.data.pubDate).getTime() : 0;
 	return db - da;
 });
-
-function getTags(tagString) {
-	return tagString ? tagString.split(',').map((tag) => tag.trim()).slice(0, 3) : [];
-}
 ---
 
 <SectionPage title="Projects" description="Case studies for the systems, apps, and tools I build.">
