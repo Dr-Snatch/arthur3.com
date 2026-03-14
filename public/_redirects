@@ -1,0 +1,2 @@
+# Redirect .pages.dev domain to custom domain
+https://arthur3-com.pages.dev/* https://arthur3.com/:splat 301
