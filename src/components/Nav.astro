@@ -20,7 +20,7 @@ function isActive(href: string): boolean {
 	<div class="nav-container">
 		<a href="/" class="brand" data-home-reset>
 			<div class="brand-copy">
-				<span class="brand-name">arthur3<span class="cursor">█</span></span>
+				<span class="brand-name"><span class="typewriter-text">arthur3</span><span class="cursor">█</span></span>
 				<span class="brand-tag">AI Systems Developer</span>
 			</div>
 		</a>
@@ -104,6 +104,57 @@ function isActive(href: string): boolean {
 			}
 		}
 	})();
+
+	// Typewriter animation
+	(function () {
+		const commands = [
+			'arthur3',
+			'cd arthur3.com',
+			'ping 104.21.x.x',
+			'ls ~/projects',
+			'cat README.md',
+			'git status',
+			'npm run dev'
+		];
+
+		let currentIndex = 0;
+		let currentText = '';
+		let isDeleting = false;
+		let charIndex = 0;
+
+		const typewriterElement = document.querySelector('.typewriter-text');
+		if (!typewriterElement) return;
+
+		function type() {
+			const currentCommand = commands[currentIndex];
+
+			if (isDeleting) {
+				currentText = currentCommand.substring(0, charIndex - 1);
+				charIndex--;
+			} else {
+				currentText = currentCommand.substring(0, charIndex + 1);
+				charIndex++;
+			}
+
+			typewriterElement.textContent = currentText;
+
+			let typeSpeed = isDeleting ? 50 : 100;
+
+			if (!isDeleting && charIndex === currentCommand.length) {
+				typeSpeed = 2000; // Pause at end
+				isDeleting = true;
+			} else if (isDeleting && charIndex === 0) {
+				isDeleting = false;
+				currentIndex = (currentIndex + 1) % commands.length;
+				typeSpeed = 500; // Pause before next command
+			}
+
+			setTimeout(type, typeSpeed);
+		}
+
+		// Start after a short delay
+		setTimeout(type, 1000);
+	})();
 </script>
 
 <style>
@@ -154,6 +205,12 @@ function isActive(href: string): boolean {
 		font-weight: 600;
 		letter-spacing: -0.02em;
 		color: var(--fg);
+		min-width: 180px;
+		display: inline-block;
+	}
+
+	.typewriter-text {
+		display: inline-block;
 	}
 
 	.cursor {
@@ -399,7 +456,10 @@ function isActive(href: string): boolean {
 			padding: 0 0.9rem 0 1rem;
 		}
 
-		.brand-name { font-size: 1rem; }
+		.brand-name {
+			font-size: 0.9rem;
+			min-width: 140px;
+		}
 		.brand-tag { font-size: 0.6rem; }
 		.desktop-only { display: none; }
 		.mobile-only { display: flex; }
