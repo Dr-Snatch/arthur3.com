@@ -15,7 +15,7 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
 		Honest write-ups on what I'm building, what broke, and what I learned. No polish, no marketing.
 	</Fragment>
 
-	<section class="section">
+	<section class="section" id="main-content">
 		<div class="container">
 			{posts.length === 0 ? (
 				<div class="empty-state">

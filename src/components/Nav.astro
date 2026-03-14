@@ -14,7 +14,9 @@ function isActive(href: string): boolean {
 }
 ---
 
-<nav class="navbar">
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<nav class="navbar" aria-label="Main navigation">
 	<div class="nav-container">
 		<a href="/" class="brand" data-home-reset>
 			<img src="/logo.png" alt="arthur3" class="logo-image" />
@@ -41,8 +43,8 @@ function isActive(href: string): boolean {
 		</div>
 
 		<div class="mobile-controls mobile-only">
-			<button type="button" class="mobile-menu-btn" aria-label="Toggle menu" aria-expanded="false">
-				<span class="hamburger"></span>
+			<button type="button" class="mobile-menu-btn" aria-label="Toggle navigation menu" aria-expanded="false">
+				<span class="hamburger" aria-hidden="true"></span>
 			</button>
 		</div>
 	</div>

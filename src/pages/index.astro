@@ -28,7 +28,7 @@ function getTags(tagString: string | undefined, limit = 3) {
 	<body>
 		<Nav />
 
-		<main>
+		<main id="main-content">
 			<section class="hero-section">
 				<div class="container">
 					<div class="hero-panel">
@@ -74,10 +74,11 @@ function getTags(tagString: string | undefined, limit = 3) {
 				<div class="container">
 					<div class="cta-panel">
 						<div>
-							<p class="eyebrow">Contact</p>
-							<h2 class="section-title">Let's build something.</h2>
+							<p class="eyebrow">Ready to Build?</p>
+							<h2 class="section-title">Let's discuss your project.</h2>
+							<p class="cta-description">Available for AI systems, native apps, and technical product work that needs to survive real constraints.</p>
 						</div>
-						<a href="/contact" class="btn btn-primary">Get in Touch</a>
+						<a href="/contact" class="btn btn-primary">Start a Conversation</a>
 					</div>
 				</div>
 			</section>
@@ -284,7 +285,7 @@ function getTags(tagString: string | undefined, limit = 3) {
 	/* ── CTA ── */
 
 	.cta-panel {
-		padding: 1.5rem;
+		padding: 2rem;
 		border-radius: 12px;
 		border: 1px solid var(--border);
 		background: var(--surface);
@@ -292,6 +293,14 @@ function getTags(tagString: string | undefined, limit = 3) {
 		align-items: center;
 		justify-content: space-between;
 		gap: 1.5rem;
+	}
+
+	.cta-description {
+		margin: 0.5rem 0 0;
+		color: var(--fg-secondary);
+		line-height: 1.75;
+		max-width: 38rem;
+		font-size: 0.95rem;
 	}
 
 	/* ── Responsive ── */
