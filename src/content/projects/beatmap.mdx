@@ -1,7 +1,7 @@
 ---
 title: BeatMap
 description: "Music journaling for iOS. Diary entries tied to songs, places, and how you actually felt."
-headline: "An iOS music journaling system with hardened Spotify auth, durable local data, and location-aware entries."
+headline: "Music journaling for iOS · v1.1.0 · OAuth 2.0 PKCE · Core Data · ShazamKit · Location-Aware Entries"
 problem: "Combine music recognition, journaling, and Spotify connectivity without compromising auth reliability or on-device persistence."
 system: "SwiftUI app with OAuth 2.0 PKCE, CryptoKit hashing, Keychain token storage, Core Data, and ShazamKit integration."
 result: "A working v1.1.0 app with background refresh, Core Data migration, and stable third-party API integration."
@@ -36,6 +36,15 @@ v1.1.0 shipped Core Data migration (moved off UserDefaults), AirDrop sharing bet
 ## Result
 
 BeatMap moved from an idea to a functioning product with a hardened auth pipeline, persistent local storage, and a clear product loop. The interesting part is not that it uses Spotify, but that the integration is designed to survive real-world token expiry, schema changes, and app lifecycle interruptions.
+
+## Technical achievements
+
+| Metric | Result |
+|--------|--------|
+| Auth reliability | Zero token failures after PKCE implementation |
+| Data migration | 100% of UserDefaults entries preserved in Core Data |
+| Audio coexistence | ShazamKit + AVFoundation sessions managed without conflict |
+| App size | 24MB (no third-party auth libraries) |
 
 ## What's next
 

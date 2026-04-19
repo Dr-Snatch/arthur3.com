@@ -1,0 +1,616 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Footer from '../../components/Footer.astro';
+import Nav from '../../components/Nav.astro';
+import TerminalBar from '../../components/TerminalBar.astro';
+
+const SHEET_ID = '1YjIntCLU_VXtbW_ESPbChMdBnZA9pmbCY7I9B0nlbrI';
+const API_KEY = import.meta.env.GOOGLE_SHEETS_API_KEY;
+
+const { slug } = Astro.params;
+
+interface Species {
+	active: string;
+	name: string;
+	botanical: string;
+	category: string;
+	subcategory: string;
+	light: string;
+	indoorOutdoor: string;
+	minTemp: string;
+	maxTemp: string;
+	humidity: string;
+	soilType: string;
+	waterFreq: string;
+	feedFreq: string;
+	feedType: string;
+	pruning: string;
+	repotFreq: string;
+	growthRate: string;
+	matureHeight: string;
+	spread: string;
+	lifespan: string;
+	season: string;
+	timeToHarvest: string;
+	companionPlants: string;
+	avoidNear: string;
+	commonPests: string;
+	commonDiseases: string;
+}
+
+interface MyPlant {
+	name: string;
+	category: string;
+	variety: string;
+	location: string;
+	potSize: string;
+	compost: string;
+	datePlanted: string;
+	expectedHarvest: string;
+	lastHarvested: string;
+	lastWatered: string;
+	lastFed: string;
+	status: string;
+	health: string;
+	notes: string;
+}
+
+function slugify(name: string): string {
+	return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
+function healthClass(health: string): string {
+	const h = health.toLowerCase();
+	if (h === 'thriving' || h === 'healthy') return 'health-thriving';
+	if (h === 'stable' || h === 'good') return 'health-stable';
+	if (h === 'struggling' || h === 'poor') return 'health-struggling';
+	if (h === 'dead') return 'health-dead';
+	return '';
+}
+
+let species: Species | null = null;
+let myPlants: MyPlant[] = [];
+let error = '';
+
+if (!API_KEY) {
+	error = 'Google Sheets API key not configured.';
+} else {
+	try {
+		// Fetch species data
+		const speciesUrl = 'https://sheets.googleapis.com/v4/spreadsheets/' + SHEET_ID + '/values/Species!A:Z?key=' + API_KEY;
+		const speciesRes = await fetch(speciesUrl);
+		if (!speciesRes.ok) throw new Error('Species fetch failed');
+		const speciesData = await speciesRes.json();
+		const speciesRows: string[][] = speciesData.values || [];
+
+		const match = speciesRows.slice(1).find((r: string[]) => slugify(r[1] || '') === slug);
+		if (match) {
+			species = {
+				active: match[0] || '',
+				name: match[1] || '',
+				botanical: match[2] || '',
+				category: match[3] || '',
+				subcategory: match[4] || '',
+				light: match[5] || '',
+				indoorOutdoor: match[6] || '',
+				minTemp: match[7] || '',
+				maxTemp: match[8] || '',
+				humidity: match[9] || '',
+				soilType: match[10] || '',
+				waterFreq: match[11] || '',
+				feedFreq: match[12] || '',
+				feedType: match[13] || '',
+				pruning: match[14] || '',
+				repotFreq: match[15] || '',
+				growthRate: match[16] || '',
+				matureHeight: match[17] || '',
+				spread: match[18] || '',
+				lifespan: match[19] || '',
+				season: match[20] || '',
+				timeToHarvest: match[21] || '',
+				companionPlants: match[22] || '',
+				avoidNear: match[23] || '',
+				commonPests: match[24] || '',
+				commonDiseases: match[25] || '',
+			};
+		}
+
+		// Fetch my plants that match this species
+		const plantsUrl = 'https://sheets.googleapis.com/v4/spreadsheets/' + SHEET_ID + '/values/My%20Garden!A:N?key=' + API_KEY;
+		const plantsRes = await fetch(plantsUrl);
+		if (plantsRes.ok) {
+			const plantsData = await plantsRes.json();
+			const plantRows: string[][] = plantsData.values || [];
+			myPlants = plantRows.slice(1)
+				.filter((r: string[]) => r[0] && slugify(r[0] || '') === slug)
+				.map((r: string[]) => ({
+					name: r[0] || '',
+					category: r[1] || '',
+					variety: r[2] || '',
+					location: r[3] || '',
+					potSize: r[4] || '',
+					compost: r[5] || '',
+					datePlanted: r[6] || '',
+					expectedHarvest: r[7] || '',
+					lastHarvested: r[8] || '',
+					lastWatered: r[9] || '',
+					lastFed: r[10] || '',
+					status: r[11] || '',
+					health: r[12] || '',
+					notes: r[13] || '',
+				}));
+		}
+	} catch (e) {
+		error = 'Could not load plant data.';
+	}
+}
+
+if (!species && !error) {
+	return Astro.redirect('/garden');
+}
+
+const title = species ? species.name : 'Plant';
+const desc = species ? species.botanical : '';
+
+const envCards = [
+	{ label: 'Light', value: species?.light },
+	{ label: 'Indoor/Outdoor', value: species?.indoorOutdoor },
+	{ label: 'Humidity', value: species?.humidity },
+	{ label: 'Soil', value: species?.soilType },
+	{ label: 'Temp Range', value: species?.minTemp && species?.maxTemp ? species.minTemp + ' - ' + species.maxTemp + ' C' : '' },
+	{ label: 'Season', value: species?.season },
+].filter((c) => c.value);
+
+const careCards = [
+	{ label: 'Water', value: species?.waterFreq },
+	{ label: 'Feed', value: (species?.feedFreq || '') + (species?.feedType ? ' (' + species.feedType + ')' : '') },
+	{ label: 'Pruning', value: species?.pruning },
+	{ label: 'Repotting', value: species?.repotFreq },
+].filter((c) => c.value);
+
+const growthCards = [
+	{ label: 'Growth Rate', value: species?.growthRate },
+	{ label: 'Mature Height', value: species?.matureHeight },
+	{ label: 'Spread', value: species?.spread },
+	{ label: 'Lifespan', value: species?.lifespan },
+	{ label: 'Time to Harvest', value: species?.timeToHarvest },
+].filter((c) => c.value);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={title + ' — Garden — arthur3'} description={desc} />
+	</head>
+	<body>
+		<Nav />
+		<main id="main-content">
+			<section class="page-hero">
+				<div class="container">
+					<a href="/garden" class="back-link">Garden</a>
+					{species && (
+						<div class="hero-card">
+							<div class="hero-top">
+								<div>
+									<p class="eyebrow">{species.category}{species.subcategory ? ' / ' + species.subcategory : ''}</p>
+									<h1 class="page-title">{species.name}</h1>
+									<p class="botanical">{species.botanical}</p>
+								</div>
+							</div>
+						</div>
+					)}
+				</div>
+			</section>
+
+			{error && (
+				<section class="content-section">
+					<div class="container">
+						<p class="empty-msg">{error}</p>
+					</div>
+				</section>
+			)}
+
+			{species && envCards.length > 0 && (
+				<section class="content-section">
+					<div class="container">
+						<h2 class="section-heading">Environment</h2>
+						<div class="info-grid">
+							{envCards.map((card) => (
+								<div class="info-card">
+									<span class="info-label">{card.label}</span>
+									<span class="info-value">{card.value}</span>
+								</div>
+							))}
+						</div>
+					</div>
+				</section>
+			)}
+
+			{species && careCards.length > 0 && (
+				<section class="content-section">
+					<div class="container">
+						<h2 class="section-heading">Care</h2>
+						<div class="info-grid">
+							{careCards.map((card) => (
+								<div class="info-card">
+									<span class="info-label">{card.label}</span>
+									<span class="info-value">{card.value}</span>
+								</div>
+							))}
+						</div>
+					</div>
+				</section>
+			)}
+
+			{species && growthCards.length > 0 && (
+				<section class="content-section">
+					<div class="container">
+						<h2 class="section-heading">Growth</h2>
+						<div class="info-grid">
+							{growthCards.map((card) => (
+								<div class="info-card">
+									<span class="info-label">{card.label}</span>
+									<span class="info-value">{card.value}</span>
+								</div>
+							))}
+						</div>
+					</div>
+				</section>
+			)}
+
+			{species && (species.companionPlants || species.avoidNear) && (
+				<section class="content-section">
+					<div class="container">
+						<h2 class="section-heading">Companions</h2>
+						<div class="info-grid">
+							{species.companionPlants && (
+								<div class="info-card companion-good">
+									<span class="info-label">Plant with</span>
+									<span class="info-value">{species.companionPlants}</span>
+								</div>
+							)}
+							{species.avoidNear && (
+								<div class="info-card companion-bad">
+									<span class="info-label">Avoid near</span>
+									<span class="info-value">{species.avoidNear}</span>
+								</div>
+							)}
+						</div>
+					</div>
+				</section>
+			)}
+
+			{species && (species.commonPests || species.commonDiseases) && (
+				<section class="content-section">
+					<div class="container">
+						<h2 class="section-heading">Watch out for</h2>
+						<div class="info-grid">
+							{species.commonPests && (
+								<div class="info-card">
+									<span class="info-label">Pests</span>
+									<span class="info-value">{species.commonPests}</span>
+								</div>
+							)}
+							{species.commonDiseases && (
+								<div class="info-card">
+									<span class="info-label">Diseases</span>
+									<span class="info-value">{species.commonDiseases}</span>
+								</div>
+							)}
+						</div>
+					</div>
+				</section>
+			)}
+
+			{myPlants.length > 0 && (
+				<section class="content-section">
+					<div class="container">
+						<h2 class="section-heading">My {title} plants</h2>
+						<div class="my-plants-grid">
+							{myPlants.map((plant) => (
+								<div class="my-plant-card">
+									<div class="my-plant-top">
+										{plant.variety && (
+											<span class="variety-label">{plant.variety}</span>
+										)}
+										{plant.health && (
+											<span class={"health-badge " + healthClass(plant.health)}>{plant.health}</span>
+										)}
+									</div>
+									<div class="my-plant-meta">
+										{plant.location && (
+											<div class="meta-item">
+												<span class="meta-label">Location</span>
+												<span class="meta-value">{plant.location}</span>
+											</div>
+										)}
+										{plant.potSize && (
+											<div class="meta-item">
+												<span class="meta-label">Pot</span>
+												<span class="meta-value">{plant.potSize}</span>
+											</div>
+										)}
+										{plant.datePlanted && (
+											<div class="meta-item">
+												<span class="meta-label">Planted</span>
+												<span class="meta-value">{plant.datePlanted}</span>
+											</div>
+										)}
+										{plant.status && (
+											<div class="meta-item">
+												<span class="meta-label">Status</span>
+												<span class="meta-value">{plant.status}</span>
+											</div>
+										)}
+										{plant.lastWatered && (
+											<div class="meta-item">
+												<span class="meta-label">Last watered</span>
+												<span class="meta-value">{plant.lastWatered}</span>
+											</div>
+										)}
+										{plant.lastFed && (
+											<div class="meta-item">
+												<span class="meta-label">Last fed</span>
+												<span class="meta-value">{plant.lastFed}</span>
+											</div>
+										)}
+									</div>
+									{plant.notes && (
+										<p class="plant-notes">{plant.notes}</p>
+									)}
+								</div>
+							))}
+						</div>
+					</div>
+				</section>
+			)}
+		</main>
+		<Footer />
+		<TerminalBar />
+	</body>
+</html>
+
+<style>
+	body {
+		padding-top: 0;
+	}
+
+	.container {
+		max-width: var(--page-max);
+		margin: 0 auto;
+		padding: 0 2rem;
+	}
+
+	.page-hero {
+		padding: 8rem 0 1.4rem;
+	}
+
+	.back-link {
+		display: inline-block;
+		margin-bottom: 1rem;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.72rem;
+		text-decoration: none;
+		color: var(--accent);
+	}
+
+	.hero-card {
+		padding: 1.5rem;
+		border-radius: 12px;
+		border: 1px solid var(--border);
+		background: var(--surface);
+	}
+
+	.hero-top {
+		display: flex;
+		justify-content: space-between;
+		gap: 1rem;
+		align-items: start;
+	}
+
+	.eyebrow {
+		margin: 0 0 0.8rem;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.7rem;
+		letter-spacing: 0.14em;
+		text-transform: uppercase;
+		color: var(--fg-tertiary);
+	}
+
+	.page-title {
+		font-size: clamp(2.2rem, 5vw, 3.8rem);
+		margin: 0;
+	}
+
+	.botanical {
+		margin: 0.5rem 0 0;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.82rem;
+		font-style: italic;
+		color: var(--fg-tertiary);
+	}
+
+	.content-section {
+		padding: 1.5rem 0;
+	}
+
+	.content-section:last-of-type {
+		padding-bottom: 5rem;
+	}
+
+	.section-heading {
+		font-family: 'Syne', sans-serif;
+		font-size: 1.2rem;
+		letter-spacing: -0.02em;
+		margin: 0 0 1rem;
+		color: var(--fg);
+	}
+
+	.info-grid {
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 0.6rem;
+	}
+
+	.info-card {
+		display: flex;
+		flex-direction: column;
+		gap: 0.3rem;
+		padding: 1rem;
+		border-radius: 8px;
+		border: 1px solid var(--border);
+		background: var(--surface);
+	}
+
+	.info-label {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.58rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--fg-tertiary);
+	}
+
+	.info-value {
+		font-size: 0.9rem;
+		color: var(--fg-secondary);
+		line-height: 1.5;
+	}
+
+	.companion-good {
+		border-left: 3px solid #8ba778;
+	}
+
+	.companion-bad {
+		border-left: 3px solid #cf7e63;
+	}
+
+	.empty-msg {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.76rem;
+		color: var(--fg-tertiary);
+	}
+
+	/* My plants section */
+	.my-plants-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+	}
+
+	.my-plant-card {
+		display: flex;
+		flex-direction: column;
+		gap: 0.6rem;
+		padding: 1.25rem;
+		border-radius: 12px;
+		border: 1px solid var(--border);
+		background: var(--surface);
+	}
+
+	.my-plant-top {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.variety-label {
+		font-family: 'Syne', sans-serif;
+		font-size: 1.1rem;
+		letter-spacing: -0.02em;
+		color: var(--fg);
+	}
+
+	.health-badge {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.6rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		padding: 0.2rem 0.6rem;
+		border-radius: 999px;
+		border: 1px solid transparent;
+	}
+
+	.health-badge.health-thriving {
+		background: rgba(139, 167, 120, 0.15);
+		color: #8ba778;
+		border-color: rgba(139, 167, 120, 0.3);
+	}
+	.health-badge.health-stable {
+		background: rgba(214, 182, 105, 0.15);
+		color: #d6b669;
+		border-color: rgba(214, 182, 105, 0.3);
+	}
+	.health-badge.health-struggling {
+		background: rgba(207, 126, 99, 0.15);
+		color: #cf7e63;
+		border-color: rgba(207, 126, 99, 0.3);
+	}
+	.health-badge.health-dead {
+		background: rgba(120, 120, 120, 0.12);
+		color: #787878;
+		border-color: rgba(120, 120, 120, 0.25);
+	}
+
+	.my-plant-meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+	}
+
+	.meta-item {
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+	}
+
+	.meta-label {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.58rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--fg-tertiary);
+	}
+
+	.meta-value {
+		font-size: 0.85rem;
+		color: var(--fg-secondary);
+	}
+
+	.plant-notes {
+		margin: 0;
+		font-size: 0.82rem;
+		line-height: 1.6;
+		color: var(--fg-tertiary);
+		border-top: 1px solid var(--border);
+		padding-top: 0.6rem;
+	}
+
+	@media (max-width: 768px) {
+		.container {
+			padding: 0 1rem;
+		}
+
+		.page-hero {
+			padding: 5rem 0 1.2rem;
+		}
+
+		.hero-card {
+			padding: 1.15rem;
+		}
+
+		.info-grid {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+
+		.my-plants-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+
+	@media (max-width: 480px) {
+		.info-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

@@ -21,14 +21,24 @@ const githubUrl = SOCIAL_LINKS.find(l => l.label === 'GitHub')?.href ?? '';
 const linkedinUrl = SOCIAL_LINKS.find(l => l.label === 'LinkedIn')?.href ?? '';
 const twitterUrl = SOCIAL_LINKS.find(l => l.label === 'Twitter')?.href ?? '';
 
-const personSchema = {
+const siteSchema = {
 	'@context': 'https://schema.org',
-	'@type': 'Person',
-	name: 'Arthur Wheildon',
-	url: 'https://arthur3.com',
-	jobTitle: 'AI Systems Developer',
-	description: 'AI systems developer building structured LLM workflows, secure native apps, and product-grade tooling for founders and dev teams.',
-	sameAs: [githubUrl, linkedinUrl, twitterUrl].filter(Boolean),
+	'@graph': [
+		{
+			'@type': 'Person',
+			name: 'Arthur Wheildon',
+			url: 'https://arthur3.com',
+			jobTitle: 'AI Systems Developer',
+			description: 'AI systems developer building structured LLM workflows, secure native apps, and product-grade tooling for founders and dev teams.',
+			sameAs: [githubUrl, linkedinUrl, twitterUrl].filter(Boolean),
+		},
+		{
+			'@type': 'WebSite',
+			name: 'Arthur Wheildon',
+			url: 'https://arthur3.com',
+			description: 'AI systems developer portfolio showcasing LLM workflows, native applications, and developer tools.',
+		},
+	],
 };
 ---
 
@@ -51,6 +61,7 @@ const personSchema = {
 <!-- Fonts: Self-hosted Syne + Inter + JetBrains Mono (latin) -->
 <link rel="preload" href="/fonts/inter-400-latin.woff2" as="font" type="font/woff2" crossorigin />
 <link rel="preload" href="/fonts/syne-700-latin.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="/fonts/jetbrains-mono-400-latin.woff2" as="font" type="font/woff2" crossorigin />
 
 <!-- View Transitions -->
 <ClientRouter />
@@ -71,11 +82,11 @@ const personSchema = {
 <meta property="og:image" content={ogImageUrl} />
 
 <!-- Twitter -->
-<meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:url" content={Astro.url} />
-<meta property="twitter:title" content={title} />
-<meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={ogImageUrl} />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={Astro.url} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImageUrl} />
 
 <!-- JSON-LD structured data -->
-<script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+<script type="application/ld+json" set:html={JSON.stringify(siteSchema)} />

@@ -597,21 +597,21 @@ export default function Terminal({ blogPosts }) {
   return (
     <>
       {isMin && <button className="term-tab" onClick={() => setWindowState("normal")} aria-label="Restore terminal"><span className="term-tab-dot" /><span className="term-tab-copy"><span className="term-tab-label">Open Terminal</span><span className="term-tab-meta">{tabCwdLabel}</span></span><span className="term-tab-open">↑</span></button>}
-      {isMax && <div className="term-overlay" onClick={() => setWindowState("normal")} />}
+      {isMax && <div className="term-overlay" onClick={() => setWindowState("normal")} role="presentation" />}
       {!isClosed && !isMin && (
-        <div className={`term-window${isMax ? " maximized" : ""}`} onClick={() => inputRef.current?.focus()}>
+        <div className={`term-window${isMax ? " maximized" : ""}`} onClick={() => inputRef.current?.focus()} role="region" aria-label="Interactive terminal">
           <div className="term-titlebar">
             <div className="term-btn-group">
-              <button className="term-btn term-btn-close" onClick={(e) => { e.stopPropagation(); setWindowState("closed"); }} title="Close" />
-              <button className="term-btn term-btn-min" onClick={(e) => { e.stopPropagation(); setWindowState("minimized"); }} title="Minimise" />
-              <button className="term-btn term-btn-max" onClick={(e) => { e.stopPropagation(); setWindowState((s) => s === "maximized" ? "normal" : "maximized"); }} title={isMax ? "Restore" : "Maximise"} />
+              <button className="term-btn term-btn-close" onClick={(e) => { e.stopPropagation(); setWindowState("closed"); }} title="Close" aria-label="Close terminal" />
+              <button className="term-btn term-btn-min" onClick={(e) => { e.stopPropagation(); setWindowState("minimized"); }} title="Minimise" aria-label="Minimise terminal" />
+              <button className="term-btn term-btn-max" onClick={(e) => { e.stopPropagation(); setWindowState((s) => s === "maximized" ? "normal" : "maximized"); }} title={isMax ? "Restore" : "Maximise"} aria-label={isMax ? "Restore terminal" : "Maximise terminal"} />
             </div>
             <span className="term-titlebar-label">user@arthur3 {displayCwd}</span>
           </div>
-          <div className="term-body" ref={bodyRef}>{lines.map((l, i) => <div key={i} className="term-line" style={{ color: l.color || "rgba(232,232,230,0.6)" }}>{l.text}</div>)}</div>
+          <div className="term-body" ref={bodyRef} role="log" aria-live="polite" aria-label="Terminal output">{lines.map((l, i) => <div key={i} className="term-line" style={{ color: l.color || "rgba(232,232,230,0.6)" }}>{l.text}</div>)}</div>
           <div className="term-input-row">
             <span className="term-prompt"><span className="term-prompt-full">user@arthur3 {displayCwd} %</span><span className="term-prompt-short">{displayCwd} %</span></span>
-            <input ref={inputRef} className="term-input" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyDown} autoFocus spellCheck={false} autoComplete="off" autoCapitalize="off" disabled={!booted} />
+            <input ref={inputRef} className="term-input" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={handleKeyDown} spellCheck={false} autoComplete="off" autoCapitalize="off" disabled={!booted} aria-label="Terminal command input" />
           </div>
         </div>
       )}

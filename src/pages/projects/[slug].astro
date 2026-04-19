@@ -24,12 +24,27 @@ const summaryCards = [
 	{ label: 'Result', value: project.data.result },
 ].filter((item) => item.value);
 const isBeatMap = project.id === 'beatmap';
+
+const creativeWorkSchema = {
+	'@context': 'https://schema.org',
+	'@type': 'CreativeWork',
+	name: project.data.title,
+	description: project.data.description,
+	creator: {
+		'@type': 'Person',
+		name: 'Arthur Wheildon',
+		url: 'https://arthur3.com',
+	},
+	...(project.data.pubDate && { datePublished: new Date(project.data.pubDate).toISOString() }),
+	keywords: tags,
+};
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
 		<BaseHead title={`${project.data.title} — arthur3`} description={project.data.description} />
+		<script type="application/ld+json" set:html={JSON.stringify(creativeWorkSchema)} />
 	</head>
 	<body>
 		<Nav />
@@ -269,7 +284,9 @@ const isBeatMap = project.id === 'beatmap';
 	}
 
 	.prose :global(a) {
-		text-decoration: none;
+		text-decoration: underline;
+		text-decoration-thickness: 1px;
+		text-underline-offset: 0.16em;
 	}
 
 	.prose :global(code) {

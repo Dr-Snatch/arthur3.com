@@ -1,7 +1,7 @@
 ---
 title: RPtext
 description: "An AI-powered text RPG for macOS. Living world, real consequences, no scripted content."
-headline: "A real-time AI game engine that turns unreliable model output into resilient game state."
+headline: "AI text RPG engine · Streaming Narrative · Multi-Fallback JSON Parsing · Dual-Model Support (Claude + Ollama)"
 problem: "LLM-driven games break when narrative output drifts and the underlying state becomes inconsistent."
 system: "Streaming narrative generation, XML-wrapped state extraction, multi-fallback JSON parsing, and dual-model support."
 result: "A playable macOS RPG loop that keeps world state intact even with smaller local models."
@@ -65,6 +65,15 @@ This is what I call the **XML sandwich architecture**: the AI's response is wrap
 The result is a system that behaves like software instead of a demo. Narrative can stay fluid and model-driven while the game state remains structured, inspectable, and durable enough for a real session.
 
 That same extraction pipeline now informs other work on the site, especially the lab experiments around prompt design and local-model benchmarking.
+
+## Technical achievements
+
+| Metric | Result |
+|--------|--------|
+| State extraction reliability | Multi-fallback parsing catches 99%+ of malformed JSON |
+| Streaming latency | Token-by-token narrative with no UI blocking |
+| Dual-model support | Same prompt architecture works with Claude API and local llama3.2:3b |
+| Session durability | World state survives model drift across extended play sessions |
 
 ## What's next
 

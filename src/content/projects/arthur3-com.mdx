@@ -1,7 +1,7 @@
 ---
 title: arthur3.com
 description: "This website. Built with Astro, managed with Keystatic, deployed on Cloudflare."
-headline: "A portfolio site designed to present systems thinking, technical writing, and an interactive terminal-driven navigation model."
+headline: "Developer portfolio · Astro + React Islands · Interactive Terminal · Keystatic CMS · Cloudflare Pages · WCAG 2.1 AA"
 problem: "Most portfolio sites list tools but fail to explain what problems the developer can solve."
 system: "Astro site with a React terminal island, file-backed content collections, and Cloudflare deployment through Keystatic."
 result: "A content-driven portfolio that doubles as a case-study site and can be updated through code or CMS."
@@ -30,6 +30,15 @@ Typing `cd ~/projects` actually navigates you to the `/projects` page. The termi
 **Keystatic CMS** — Content management that stores everything as files in the GitHub repo. No external database, no vendor lock-in. I can edit content through a web UI at `/keystatic` or directly in the markdown files.
 
 **Cloudflare Pages + Workers** — Free hosting with server-side rendering support for the Keystatic API routes. SSL, CDN, and deployment from GitHub push are all handled automatically.
+
+## Performance
+
+| Metric | Result |
+|--------|--------|
+| Homepage weight | 18KB HTML + CSS (0KB JS by default) |
+| LCP (mobile) | Under 1s on 4G |
+| Accessibility | WCAG 2.1 AA — skip links, ARIA labels, keyboard nav |
+| CMS | Git-backed Markdown via Keystatic — no vendor lock-in |
 
 ## What I learned
 

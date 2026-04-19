@@ -33,7 +33,7 @@ const summaryCards = [
 	</head>
 	<body>
 		<Nav />
-		<main>
+		<main id="main-content">
 			<section class="note-hero">
 				<div class="container">
 					<a href="/lab" class="back-link">← Lab</a>
@@ -209,7 +209,9 @@ const summaryCards = [
 	}
 
 	.prose :global(a) {
-		text-decoration: none;
+		text-decoration: underline;
+		text-decoration-thickness: 1px;
+		text-underline-offset: 0.16em;
 	}
 
 	.prose :global(code) {

@@ -1,0 +1,366 @@
+---
+import SectionPage from '../layouts/SectionPage.astro';
+
+const SHEET_ID = '1YjIntCLU_VXtbW_ESPbChMdBnZA9pmbCY7I9B0nlbrI';
+const API_KEY = import.meta.env.GOOGLE_SHEETS_API_KEY;
+
+interface Plant {
+	name: string;
+	category: string;
+	variety: string;
+	location: string;
+	potSize: string;
+	compost: string;
+	datePlanted: string;
+	expectedHarvest: string;
+	lastHarvested: string;
+	lastWatered: string;
+	lastFed: string;
+	status: string;
+	health: string;
+	notes: string;
+	slug: string;
+}
+
+let plants: Plant[] = [];
+let error = '';
+
+function slugify(name: string): string {
+	return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
+function healthClass(health: string): string {
+	const h = health.toLowerCase();
+	if (h === 'thriving' || h === 'healthy') return 'health-thriving';
+	if (h === 'stable' || h === 'good') return 'health-stable';
+	if (h === 'struggling' || h === 'poor') return 'health-struggling';
+	if (h === 'dead') return 'health-dead';
+	return '';
+}
+
+function categoryClass(cat: string): string {
+	const c = cat.toLowerCase();
+	if (c === 'vegetable') return 'cat-vegetable';
+	if (c === 'herb') return 'cat-herb';
+	if (c === 'fruit') return 'cat-fruit';
+	if (c === 'flower') return 'cat-flower';
+	if (c === 'houseplant') return 'cat-houseplant';
+	if (c === 'succulent') return 'cat-succulent';
+	return '';
+}
+
+if (!API_KEY) {
+	error = 'Google Sheets API key not configured.';
+} else {
+	try {
+		const url = 'https://sheets.googleapis.com/v4/spreadsheets/' + SHEET_ID + '/values/My%20Garden!A:N?key=' + API_KEY;
+		const res = await fetch(url);
+		if (!res.ok) throw new Error('Sheets API error');
+		const data = await res.json();
+		const rows: string[][] = data.values || [];
+		plants = rows.slice(1).filter((r: string[]) => r[0]).map((r: string[]) => ({
+			name: r[0] || '',
+			category: r[1] || '',
+			variety: r[2] || '',
+			location: r[3] || '',
+			potSize: r[4] || '',
+			compost: r[5] || '',
+			datePlanted: r[6] || '',
+			expectedHarvest: r[7] || '',
+			lastHarvested: r[8] || '',
+			lastWatered: r[9] || '',
+			lastFed: r[10] || '',
+			status: r[11] || '',
+			health: r[12] || '',
+			notes: r[13] || '',
+			slug: slugify(r[0] || ''),
+		}));
+	} catch (e) {
+		error = 'Could not load plant data.';
+	}
+}
+---
+
+<SectionPage title="Garden" description="Tracking what I am growing.">
+	<Fragment slot="eyebrow">~/garden</Fragment>
+	<Fragment slot="heading">Garden.</Fragment>
+	<Fragment slot="description">
+		A live tracker of everything I am growing.
+	</Fragment>
+
+	<section class="section" id="main-content">
+		<div class="container">
+			{error && (
+				<div class="empty-state">
+					<p class="empty-msg">{error}</p>
+				</div>
+			)}
+
+			{!error && plants.length === 0 && (
+				<div class="empty-state">
+					<p class="empty-msg">No plants in the garden yet.</p>
+				</div>
+			)}
+
+			{plants.length > 0 && (
+				<div class="plant-grid">
+					{plants.map((plant) => (
+						<a href={"/garden/" + plant.slug} class={"plant-card " + categoryClass(plant.category)}>
+							<div class="plant-top">
+								{plant.category && (
+									<span class={"cat-badge " + categoryClass(plant.category)}>{plant.category}</span>
+								)}
+								{plant.health && (
+									<span class={"health-dot " + healthClass(plant.health)} title={plant.health}></span>
+								)}
+							</div>
+							<h2 class="plant-name">{plant.name}</h2>
+							{plant.variety && (
+								<p class="plant-variety">{plant.variety}</p>
+							)}
+							<div class="plant-meta">
+								{plant.location && (
+									<div class="meta-item">
+										<span class="meta-label">Location</span>
+										<span class="meta-value">{plant.location}</span>
+									</div>
+								)}
+								{plant.status && (
+									<div class="meta-item">
+										<span class="meta-label">Status</span>
+										<span class="meta-value">{plant.status}</span>
+									</div>
+								)}
+								{plant.lastWatered && (
+									<div class="meta-item">
+										<span class="meta-label">Last watered</span>
+										<span class="meta-value">{plant.lastWatered}</span>
+									</div>
+								)}
+							</div>
+							{plant.notes && (
+								<p class="plant-notes">{plant.notes}</p>
+							)}
+						</a>
+					))}
+				</div>
+			)}
+		</div>
+	</section>
+</SectionPage>
+
+<style>
+	.container {
+		max-width: var(--page-max);
+		margin: 0 auto;
+		padding: 0 2rem;
+	}
+
+	.section {
+		padding: 0 0 5rem;
+	}
+
+	.empty-state {
+		padding: 1rem 0 0;
+	}
+
+	.empty-msg {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.76rem;
+		color: var(--fg-tertiary);
+	}
+
+	.plant-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+	}
+
+	.plant-card {
+		display: flex;
+		flex-direction: column;
+		gap: 0.6rem;
+		padding: 1.25rem;
+		padding-left: 1.5rem;
+		border-radius: 12px;
+		border: 1px solid var(--border);
+		border-left: 3px solid var(--border);
+		background: var(--surface);
+		text-decoration: none;
+		transition: border-color 0.15s ease, background 0.15s ease;
+	}
+
+	.plant-card:hover {
+		border-color: var(--border-strong);
+		background: var(--surface-hover);
+	}
+
+	/* Category card accents */
+	.plant-card.cat-vegetable {
+		border-left-color: #8ba778;
+		background: linear-gradient(135deg, rgba(139, 167, 120, 0.06) 0%, var(--surface) 60%);
+	}
+	.plant-card.cat-herb {
+		border-left-color: #7aab8a;
+		background: linear-gradient(135deg, rgba(122, 171, 138, 0.06) 0%, var(--surface) 60%);
+	}
+	.plant-card.cat-fruit {
+		border-left-color: #cf7e63;
+		background: linear-gradient(135deg, rgba(207, 126, 99, 0.06) 0%, var(--surface) 60%);
+	}
+	.plant-card.cat-flower {
+		border-left-color: #c4899b;
+		background: linear-gradient(135deg, rgba(196, 137, 155, 0.06) 0%, var(--surface) 60%);
+	}
+	.plant-card.cat-houseplant {
+		border-left-color: #6b9e8a;
+		background: linear-gradient(135deg, rgba(107, 158, 138, 0.06) 0%, var(--surface) 60%);
+	}
+	.plant-card.cat-succulent {
+		border-left-color: #948474;
+		background: linear-gradient(135deg, rgba(148, 132, 116, 0.06) 0%, var(--surface) 60%);
+	}
+
+	.plant-top {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 0.5rem;
+	}
+
+	.cat-badge {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.62rem;
+		letter-spacing: 0.1em;
+		text-transform: uppercase;
+		padding: 0.2rem 0.6rem;
+		border-radius: 999px;
+		border: 1px solid transparent;
+		background: rgba(120, 120, 120, 0.12);
+		color: #999;
+		border-color: rgba(120, 120, 120, 0.25);
+	}
+
+	.cat-badge.cat-vegetable {
+		background: rgba(139, 167, 120, 0.15);
+		color: #8ba778;
+		border-color: rgba(139, 167, 120, 0.3);
+	}
+	.cat-badge.cat-herb {
+		background: rgba(122, 171, 138, 0.15);
+		color: #7aab8a;
+		border-color: rgba(122, 171, 138, 0.3);
+	}
+	.cat-badge.cat-fruit {
+		background: rgba(207, 126, 99, 0.15);
+		color: #cf7e63;
+		border-color: rgba(207, 126, 99, 0.3);
+	}
+	.cat-badge.cat-flower {
+		background: rgba(196, 137, 155, 0.15);
+		color: #c4899b;
+		border-color: rgba(196, 137, 155, 0.3);
+	}
+	.cat-badge.cat-houseplant {
+		background: rgba(107, 158, 138, 0.15);
+		color: #6b9e8a;
+		border-color: rgba(107, 158, 138, 0.3);
+	}
+	.cat-badge.cat-succulent {
+		background: rgba(148, 132, 116, 0.15);
+		color: #948474;
+		border-color: rgba(148, 132, 116, 0.3);
+	}
+
+	.health-dot {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: #666;
+		flex-shrink: 0;
+	}
+
+	.health-dot.health-thriving {
+		background: #8ba778;
+		box-shadow: 0 0 6px rgba(139, 167, 120, 0.5);
+	}
+	.health-dot.health-stable {
+		background: #d6b669;
+		box-shadow: 0 0 6px rgba(214, 182, 105, 0.5);
+	}
+	.health-dot.health-struggling {
+		background: #cf7e63;
+		box-shadow: 0 0 6px rgba(207, 126, 99, 0.5);
+	}
+	.health-dot.health-dead {
+		background: #666;
+	}
+
+	.plant-name {
+		margin: 0;
+		font-family: 'Syne', sans-serif;
+		font-size: 1.3rem;
+		letter-spacing: -0.03em;
+		color: var(--fg);
+	}
+
+	.plant-variety {
+		margin: 0;
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.72rem;
+		color: var(--fg-tertiary);
+	}
+
+	.plant-meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		padding-top: 0.25rem;
+	}
+
+	.meta-item {
+		display: flex;
+		flex-direction: column;
+		gap: 0.15rem;
+	}
+
+	.meta-label {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.58rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--fg-tertiary);
+	}
+
+	.meta-value {
+		font-size: 0.85rem;
+		color: var(--fg-secondary);
+	}
+
+	.plant-notes {
+		margin: 0;
+		font-size: 0.82rem;
+		line-height: 1.6;
+		color: var(--fg-tertiary);
+		border-top: 1px solid var(--border);
+		padding-top: 0.6rem;
+	}
+
+	@media (max-width: 768px) {
+		.container {
+			padding: 0 1rem;
+		}
+
+		.section {
+			padding-bottom: 4rem;
+		}
+
+		.plant-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.plant-card {
+			padding: 1.1rem;
+		}
+	}
+</style>
