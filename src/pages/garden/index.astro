@@ -2,7 +2,8 @@
 import SectionPage from '../../layouts/SectionPage.astro';
 
 const SHEET_ID = '1YjIntCLU_VXtbW_ESPbChMdBnZA9pmbCY7I9B0nlbrI';
-const API_KEY = import.meta.env.GOOGLE_SHEETS_API_KEY;
+const runtime = Astro.locals.runtime;
+const API_KEY = runtime?.env?.GOOGLE_SHEETS_API_KEY ?? import.meta.env.GOOGLE_SHEETS_API_KEY;
 
 interface Plant {
 	name: string;
