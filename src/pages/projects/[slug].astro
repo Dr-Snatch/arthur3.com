@@ -315,6 +315,31 @@ const creativeWorkSchema = {
 		color: var(--accent);
 	}
 
+	.prose :global(.announcement) {
+		display: flex;
+		flex-direction: column;
+		gap: 0.4rem;
+		padding: 1rem 1.2rem;
+		border-radius: 8px;
+		border: 1px solid var(--accent-border);
+		background: var(--accent-dim);
+		margin: 0 0 2rem;
+	}
+
+	.prose :global(.announcement-label) {
+		font-family: 'JetBrains Mono', monospace;
+		font-size: 0.65rem;
+		letter-spacing: 0.12em;
+		text-transform: uppercase;
+		color: var(--accent);
+	}
+
+	.prose :global(.announcement p) {
+		margin: 0;
+		font-size: 0.95rem;
+		color: var(--fg-secondary);
+	}
+
 	@media (max-width: 900px) {
 		.summary-grid,
 		.showcase-grid {

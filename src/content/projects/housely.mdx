@@ -1,0 +1,39 @@
+---
+title: Housely
+description: "A real estate marketing platform. AI-generated listings, branded property pages, and a one-click pipeline from address to published site."
+headline: "Real estate marketing platform · AI-generated listings · Cloudflare proxy · Vercel deployment"
+problem: "Agents spend hours writing property descriptions and assembling marketing materials. The output is inconsistent and the process doesn't scale."
+system: "A web platform that takes a property address and generates a complete branded listing page — copy, layout, and all — using AI, then publishes it instantly."
+result: "A working pipeline from address input to live branded property page, proxied through arthur3.com/housely via a Cloudflare Pages Function."
+status: in-progress
+featured: true
+flagship: false
+tags: "AI, Real Estate, Cloudflare Pages, Vercel, Marketing Automation"
+liveUrl: "https://arthur3.com/housely"
+pubDate: 2026-05-03
+---
+
+<div class="announcement">
+  <span class="announcement-label">Hackathon launch</span>
+  <p>Housely is being built and shipped live at a hackathon on Sunday 3rd May 2026. Follow along — the platform goes live the same day.</p>
+</div>
+
+## What it is
+
+Housely is a real estate marketing platform that removes the manual work from property listings. You enter an address, and the system generates the full branded page — description, layout, imagery hooks — ready to share with buyers.
+
+The live version is proxied through arthur3.com/housely via a Cloudflare Pages Function, forwarding requests to the Vercel-hosted frontend.
+
+## Problem
+
+Writing property listings is slow, repetitive work. Every agent does it slightly differently, quality varies, and the whole process has to happen again for every new instruction. There's no leverage.
+
+## System
+
+The platform takes an address as input and runs it through an AI generation pipeline that produces structured marketing copy — headline, description, key features — then renders it into a ready-to-publish branded page.
+
+The infrastructure uses a split deployment: the frontend lives on Vercel, surfaced at `arthur3.com/housely` through a Cloudflare Pages Function that proxies all traffic transparently.
+
+## Result
+
+A working end-to-end pipeline: input an address, get a live, shareable property page. The proxy layer means it lives at a clean URL on the main domain with no visible seams.
